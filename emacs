@@ -3,6 +3,7 @@
 
 
 (add-to-list 'load-path "~/.emacs.d/")
+(load "~/.emacs.d/myfuncs.el")
 
 (setq inhibit-splash-screen t)
 
@@ -14,6 +15,8 @@
 ;;(setq use-file-dialog nil)
 (setq make-backup-files nil)
 (set-variable 'scroll-conservatively 5)
+;; (recentf-max-menu-items 20)
+;; (recentf-max-saved-items 60)
 
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
@@ -36,7 +39,8 @@
 
 (require 'cl)                ;; otherwise loop macros will not be recognised
 (require 'recentf)
-(require 'wdired)
+;;(require 'wdired)
+(require 'ace-jump-mode)
 
 
 ;;;;;;;;;;;;;;;;;;; Key bindings
@@ -54,6 +58,34 @@
 (define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
 (define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
 (define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
+
+;;;;;;;;;;;;;;;;;;;; Windows move
+(define-key my-keys-minor-mode-map (kbd "C-c <left>")  'windmove-left)   ;work also in terminal
+(define-key my-keys-minor-mode-map (kbd "C-c <right>") 'windmove-right)
+(define-key my-keys-minor-mode-map (kbd "C-c <up>")    'windmove-up)
+(define-key my-keys-minor-mode-map (kbd "C-c <down>") 'windmove-down)
+
+(define-key my-keys-minor-mode-map (kbd "s-<left>")  'windmove-left)   ;work also in terminal
+(define-key my-keys-minor-mode-map (kbd "s-<right>") 'windmove-right)
+(define-key my-keys-minor-mode-map (kbd "s-<up>")    'windmove-up)
+(define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
+
+;; ;;;;;;;;;;;;;;;;;;;; ACE Jump
+(define-key my-keys-minor-mode-map (kbd "C-c q")  'ace-jump-char-mode)
+(define-key my-keys-minor-mode-map (kbd "M-SPC")  'ace-jump-char-mode)
+(define-key my-keys-minor-mode-map (kbd "S-SPC")  'ace-jump-char-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c w")  'ace-jump-word-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c e")  'ace-jump-line-mode)
+
+;;;;;;;;;;;;;;;;;; F-keys
+(define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
+(define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
+(define-key my-keys-minor-mode-map [f4] 'bubble-buffer) 
+(define-key my-keys-minor-mode-map (kbd "<f6>") 'whitespace-mode)
+(global-set-key (kbd "<f8>") 'ispell-word)   ;; Flyspel
+(define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
+(define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
+
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
