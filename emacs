@@ -3,6 +3,7 @@
 
 
 (add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/multiple-cursors")
 (load "~/.emacs.d/myfuncs.el")
 
 (setq inhibit-splash-screen t)
@@ -43,7 +44,7 @@
 (require 'ace-jump-mode)
 (require 'tabbar)
 (tabbar-mode)
-
+(require 'multiple-cursors)
 
 ;;;;;;;;;;;;;;;;;;; Key bindings
 
@@ -72,7 +73,7 @@
 (define-key my-keys-minor-mode-map (kbd "s-<up>")    'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
-;; ;;;;;;;;;;;;;;;;;;;; ACE Jump
+;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "C-c q")  'ace-jump-char-mode)
 (define-key my-keys-minor-mode-map (kbd "M-SPC")  'ace-jump-char-mode)
 (define-key my-keys-minor-mode-map (kbd "S-SPC")  'ace-jump-char-mode)
@@ -81,6 +82,13 @@
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line) ; [Ctrl]-[L]   ; go to specifi line
+
+;;;;;;;;;;;;;;;;;;;; Multiple cursors
+(define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'mc/edit-lines)
+(define-key my-keys-minor-mode-map (kbd "C-c C-v") 'mc/mark-next-like-this)
+(define-key my-keys-minor-mode-map (kbd "C-c C-<SPC>") 'mc/mark-all-in-region)
+(define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
 ;;;;;;;;;;;;;;;;;; F-keys
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
