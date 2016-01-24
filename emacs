@@ -100,6 +100,9 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-<SPC>") 'mc/mark-all-in-region)
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
+;;;;;;;;;;;;;;;;;;;; Company
+(global-set-key "\t" 'company-complete-common)
+
 ;;;;;;;;;;;;;;;;;; F-keys
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
