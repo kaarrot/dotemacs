@@ -1,0 +1,475 @@
+(add-hook 'after-init-hook 'global-company-mode)
+
+
+
+;; (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+;; (global-visual-line-mode t) 
+;; (add-hook 'org-mode-hook
+;;           (lambda ()
+;;             (org-indent-mode t) (flyspell-prog-mode)
+;; 	    (setq org-src-fontify-natively t)
+;; 	    )
+;;           t)
+
+
+;; ;;;;;;;;;;;;;;;;;;; Initialize package manager
+;; (require 'package)
+;; ;; Any add to list for package-archives (to add marmalade or melpa) goes here
+;; ;(add-to-list 'package-archives    '("marmalade" .       "http://marmalade-repo.org/packages/"))
+;; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; (package-initialize)
+
+
+
+;; (add-to-list 'load-path "/home/kuba/PRJ/GIT/diagram-git") 
+;; (require 'scramble-mode)
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Autocomplete
+;; (add-to-list 'load-path "/Users/kuba/.emacs.d/")
+;; (require 'auto-complete-config)
+;; (add-to-list 'ac-dictionary-directories "/Users/kuba/.emacs.d/ac-dict")
+;; (ac-config-default)
+
+
+;; ;;;;;;;;;;;;;;;;;;;; Set Zenburn theme everywhere
+;; ;; (if window-system    
+;; ;;    (progn  ))
+;; (add-to-list 'custom-theme-load-path "~/.emacs.d/themes24/")
+;; (load-theme 'zenburn t)
+
+;; ;;;;;;;;;;;;;;;;;;;; SSetup proxy example
+;; ;(setq url-proxy-services
+;; ;   '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+;; ;     ("http" . "smoothwall:805")
+;; ;     ("https" . "proxy.com:805")))
+;; ;
+;; ;(setq url-http-proxy-basic-auth-storage
+;; ;    (list (list "smoothwall:805"
+;; ;                (cons "Input your LDAP UID !"
+;; ;                      (base64-encode-string "LOGIN:PASSWORD")))))
+
+
+;; ;;;;;;;;;;;;;;;;;;;; F4 switch between recently used buffers
+;; (defvar LIMIT 1)
+;; (defvar time 0)
+;; (defvar mylist nil)
+
+
+;; ;;;;;;;;;;;;;;;;;;;; Functions
+;;   (defun uniquify-all-lines-region (start end)
+;;     "Find duplicate lines in region START to END keeping first occurrence."
+;;     (interactive "*r")
+;;     (save-excursion
+;;       (let ((end (copy-marker end)))
+;;         (while
+;;             (progn
+;;               (goto-char start)
+;;               (re-search-forward "^\\(.*\\)\n\\(\\(.*\n\\)*\\)\\1\n" end t))
+;;           (replace-match "\\1\n\\2")))))
+ 
+;;   (defun uniquify-all-lines-buffer ()
+;;     "Delete duplicate lines in buffer and keep first occurrence."
+;;     (interactive "*")
+;;     (uniquify-all-lines-region (point-min) (point-max)))
+
+;; (defun ksplit ()
+;;   "Splits the current line into separate sublines"
+;;   (interactive )
+;;      (setq myStr (thing-at-point 'line))
+;;      (setq aaa (read-string "Split character: " nil 'my-history))
+;;      ;;(message  (concat myStr aaa)  )
+;;      ;;(print myStr))
+;;      (beginning-of-line)
+;;      (kill-line)
+;;      (setq bbb (split-string myStr aaa))
+;;      (loop for i in  bbb do (insert (concat "\n" i))))
+
+;; (defun tail-chop-line (stop)
+;;  (interactive "sChop character:")
+ 
+;;   (end-of-line)
+
+;;   (setq end (point))
+;;   (setq start (+ (search-backward stop) 1))
+
+;;   ;;(print start end)
+;;   ;;(print end)
+
+;;   (delete-region start end))
+
+
+
+;; (defun tail-chop-region (stop)
+;;  "ths function depends on lineNum"
+;;  (interactive "sChop character:")
+
+;;  (setq regStart (region-beginning))
+;;  (setq regEnd (region-end))
+
+;;  (goto-char regStart)           ;; go to start region character
+;;  (setq start (- (lineNum) 0))   ;; get the line number
+
+;;  (goto-char regEnd)
+;;  (setq end (+ (lineNum) 1))
+
+;;  (print start)
+;;  ;(print end)
+
+;;  (goto-char regStart)    ;; go to the first line of the selection
+
+
+;;  (setq count start)      ;; store start line as a variable start
+
+;;  (while (< count end)         ; true-or-false-test
+;;        ;;(print count)
+
+;;        (end-of-line)
+;;        (setq _end (point))
+;;        (setq _start (+ (search-backward stop) 1))
+;;        (delete-region _start _end)
+;;        (forward-line 1)
+;;        (setq count (1+ count))))
+
+
+;; (defun lineNum ()
+;;   "Returns current line number"
+;;   (interactive)
+;;   (save-restriction
+;;     (widen)
+;;     (save-excursion
+;;       (beginning-of-line)
+;;       (1+ (count-lines 1 (point))))))
+
+;; (defun nextLine ()                    ;; In Emacs 21.1 (next-line) function is not available
+;;   (end-of-line)
+;;   (goto-char (+ (point) 1))
+;; )
+
+;; (defun kdiff ()
+;;   (interactive)     
+;;   ; Works with the output file from xxdiff comandline
+;;   ; Save as both files together
+;;   ; open a file in the buffer and run the tool
+;;   ; --- -> ther is the differnece in content of the file
+;;   ; +++ -> file is missing in one version
+
+;;   (setq *remove-overlap* (read-string "Remove Overlap y/n: " nil 'my-history))
+;;   (goto-char (point-max))
+;;   (setq totalLines (lineNum))    ; store total of the lines
+;;   ;(message "%s" totalLines)     ; << some errors
+
+;;   (goto-char 1)                  ; move to the beginning
+
+;;   (setq count 1)
+;;   (while (< count totalLines)
+;;     ;(message "line %s" count)
+
+;;     (forward-line )             ; go to the next line
+;;     (setq myStr (thing-at-point 'line)) ; grab the current line
+;;     (setq myStr (substring myStr 0 -1))  ; remove \n
+    
+;;     (beginning-of-line)
+;;     ;(kill-line)
+;;     ;(insert "ASDAS")
+;;     ;(message "line %s" myStr)
+;;     (setq aaa (string-match "File 2" myStr))
+
+;;     (if aaa
+;;     (progn
+;;       (setq File2Lines (list `()))
+;;       (setq startPos (point) )
+;;       (setq lStart (lineNum))
+;;       ;;(message "===%s-%s" (lineNum) myStr)
+;;       (save-excursion
+    
+;;         (search-forward "<")             ; search for the end of File 2
+;;         (setq endPos (- (point) 2)) ;; go to the previouse line - < is the first character in the line
+;;         (setq lEnd (lineNum))    ; store the end of the line for File 2 block
+    
+;;         );end of excursion
+
+;;       ; search for the File 1
+;;       ; store eachline in the list
+    
+;;       (nextLine)                ;; Don't include the line ">>>>> File 2"
+;;       (setq lStart (lineNum))    ;;
+;;       (while (< lStart lEnd)  ;;go tru the section of File2
+;;         (setq myStrB (substring (thing-at-point 'line) 0 -1)) ; grab the current line withiut \n
+;;         ;;(message ":::%s" myStrB )
+
+;;         ;; move back to File 1 and search for each line
+;;         ;; if it's not match insert "+++"
+
+;;         (setq curPos (point))
+;;         (save-excursion
+;;           (if (search-backward myStrB 0 t)
+;;           (progn    ;; success search
+;;             ;; We can remove
+;;             (if (string= *remove-overlap* "y")
+;;             (kill-line))                ;; Some issues with +++ files -  Comment this out to keep orignal files from File 1
+           
+;;             (goto-char curPos)
+;;             (beginning-of-line)
+;;             (insert "---")
+;;             )
+;;         (progn    ;; failed search
+;;           (message "No found in File 1 %s" myStrB )
+;;           (goto-char curPos)
+;;           (beginning-of-line)
+;;           (insert "+++")
+;;           )
+;;         )  ;endif       
+;;           ) ; end of excersion
+         
+
+
+;;         (nextLine)              
+;;         (setq lStart (lineNum))   ;; inrease the while loop
+;;         ) ; end of while 2
+    
+;;       (setq File2 (buffer-substring-no-properties startPos endPos))  ; copy te section
+;;           ;(message "===%s" File2)
+;;       ;message "=+==%s-%s" startPos endPos)
+;;           ;(message "=+==%s-%s" lStart lEnd)
+          
+;;       );end main progn
+;;       (progn               ; everything else - hence files with no changes
+;;     (beginning-of-line)
+;;     (insert "\t\t\t\t")
+;;     )
+;;       );end if
+
+;;     (setq count (1+ count))
+;;     );end of while
+ 
+;;   ) ; end aaa function
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (defun kill-all-dired-buffers()
+;;       "Kill all dired buffers."
+;;       (interactive)
+;;       (save-excursion
+;;         (let((count 0))
+;;           (dolist(buffer (delq (current-buffer) (buffer-list)))  ;; This kills all dired buffers
+;;                                                                  ;; excepth the current one
+;;             (set-buffer buffer)
+;;             (when (equal major-mode 'dired-mode)
+;;               (setq count (1+ count))
+;;               (kill-buffer buffer)))
+;;           (message "Killed %i dired buffer(s)." count ))))
+
+
+
+;; (defun time-now ()
+;;    (car (cdr (current-time))))
+
+
+;; (defun flyspell-check-next-highlighted-word ()
+;;   "Custom function to spell check next highlighted word"
+;;   (interactive)
+;;   (flyspell-goto-next-error)
+;;   (ispell-word)
+;;   )
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;; DEV ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; Scrolling keeping cursor in place
+
+;; (defun scroll-down-keep-cursor ()
+;;    ;; Scroll the text one line down while keeping the cursor
+;;    (interactive)
+;;    (scroll-down 1))
+
+;; (defun scroll-up-keep-cursor ()
+;;    ;; Scroll the text one line up while keeping the cursor
+;;    (interactive)
+;;    (scroll-up 1))
+
+;; ;;;;; Python helper function
+;; (defun selectback ()
+;;   (interactive)
+
+;;   (let (start
+;;         end)
+
+;;     (setq previous-point (point))
+
+;;     (bm-previous)
+;;     (beginning-of-line)
+;;     (setq start (point))
+;;     (set-mark start)
+
+;;     (bm-next)
+;;     (end-of-line)
+;;     (setq end (+ 1 (point)))
+
+;;     (message "%s %s"start end)
+
+;;     ;;; this makes the selection python specific - not sure if useful
+;;     (python-shell-send-region start end)
+;;     (goto-char previous-point)
+;;     ))
+
+;; (defun goto-previous-point ()
+;;   (interactive)
+;;   (goto-char previous-point)
+;;   )
+
+
+
+;; ;;;;;;;;;;;;;;;;;;;; Fly-Spell
+;; ;; easy spell check
+;; ;(setq ispell-program-name "/usr/local/bin/ispell") ;; OSX 
+
+;; ;;; Disable grouping in mouse buffer mode
+;; ; This is used to prevend folding of the major modes intosubtabs
+;; ; 10 is the number of major modes used as a threshold
+;; (setq mouse-buffer-menu-mode-mult 10)
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Essential
+;; ;; Comment function
+;; (defun comment-or-uncomment-this (&optional lines)
+;;    (interactive "P")
+;;    (if mark-active
+;;       (if (< (mark) (point))
+;;          (comment-or-uncomment-region (mark) (point))
+;;          (comment-or-uncomment-region (point) (mark)))
+;;       (comment-or-uncomment-region
+;;          (line-beginning-position)
+;;          (line-end-position lines))))
+
+
+
+;; (defun bubble-buffer ()
+;;    (interactive)
+;;    (if (or (> (- (time-now) time) LIMIT) (null mylist))
+;;        (progn (setq mylist (copy-alist (buffer-list)))
+;;           (delq (get-buffer " *Minibuf-0*") mylist)
+;;           (delq (get-buffer " *Minibuf-1*") mylist)))
+;;    (bury-buffer (car mylist))
+;;    (setq mylist (cdr mylist))
+;;    (setq newtop (car mylist))
+;;    (switch-to-buffer (car mylist))
+;;    (setq rest (cdr (copy-alist mylist)))
+;;    (while rest
+;;      (bury-buffer (car rest))
+;;      (setq rest (cdr rest)))
+;;    (setq time (time-now)))
+
+;; ;;;;;;;;
+;; (defun my-switch-to-other-buffer ()
+;;   "Switch to other buffer"
+;;   (interactive)
+;;   (switch-to-buffer (other-buffer)))
+
+
+;; ;;;;;;;;;;;;;;;;;;;; Desktop
+;; ;desktop-change-dir
+;; ;desktop-save-in-desktop-dir 
+
+;; ;;;;;;;;;;;;;;;;;;;;; Org-mode links
+;; (global-set-key (kbd "C-c l") 'org-store-link)
+;; (global-set-key (kbd "C-c i") 'org-insert-link-global)
+
+;; ;;;;;;;;;;;;;;;;;;;; Rust
+;; (add-to-list 'ac-modes 'rust-mode)   ; no lenaguuage specific completion - activated by a TAB
+;; (add-hook 'rust-mode-hook 
+;;           (lambda ()
+;;             (auto-complete-mode) (racer-mode) )
+;;           t)
+
+;; (setq racer-cmd "/home/kuba/SRC/racer/target/release/racer")  ; C-M-i
+;; (setq racer-rust-src-path "/home/kuba/SRC/rust/src/")
+;; (add-hook 'rust-mode-hook #'racer-mode)
+;; (add-hook 'racer-mode-hook #'eldoc-mode)
+;; (add-hook 'racer-mode-hook #'company-mode)
+
+;; (global-set-key (kbd "C-M-i") #'company-indent-or-complete-common) ;
+;; (setq company-tooltip-align-annotations t)
+
+;; ;;;;;;;;;;;;;;;;;  Shell
+;; ;; Enabling autocomplete in shell by default
+;; (add-to-list 'ac-modes 'shell-mode)
+;; (add-hook 'shell-mode-hook 
+;;           (lambda ()
+;;             (auto-complete-mode))
+;;           t)
+
+;; ;;;;;;;;;;;;;;;;;;;; Julia
+;; (if window-system
+;;    (progn
+;;      (load "/home/kuba/.emacs.d/elpa/ess-20150921.336/lisp/ess-site") 
+;;      (setq inferior-julia-program-name "/home/kuba/bin/julia0.4/bin/julia")
+;;      ))
+
+;; ;;;;;;;;;;;;;;;;;;; Key bindings
+
+;; ;; In order to make sure all the key bindgins work in all the moudules
+;; ;; defiene them in the minor mode. This will guarantee C-c C-a in c++ mode will work
+;; (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
+;; (define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
+;; (define-key my-keys-minor-mode-map (kbd "<backtab>") 'ac-complete-words-in-buffer)
+
+;; (define-key my-keys-minor-mode-map (kbd "M-b") 'my-switch-to-other-buffer)
+
+;; (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
+;; (define-key my-keys-minor-mode-map "\C-l" 'goto-line) ; [Ctrl]-[L]   ; go to specifi line
+
+
+;; (define-key my-keys-minor-mode-map (kbd "C-c <backspace>")  'erase-buffer)      ; erase buffer
+
+;; ;; Set a human undo
+;; (global-unset-key "\C-z")
+;; (global-set-key "\C-z" 'advertised-undo)
+
+;; ;;; Evaluate region of python code  - Select region between bookmarks
+;; (global-set-key (kbd "C-c <RET>") 'selectback)
+;; (global-set-key (kbd "C-<RET>") 'selectback)
+;; (global-set-key (kbd "s-<SPC>") 'goto-previous-point)
+
+
+;; (define-key my-keys-minor-mode-map [C-M-left] 'backward-list)
+;; (define-key my-keys-minor-mode-map [C-M-right] 'forward-list)
+;; (define-key my-keys-minor-mode-map [C-M-up] 'up-list)
+;; (define-key my-keys-minor-mode-map [C-M-down] 'down-list)
+
+;; ;;;;;;;;;;;;;;;;;;;; Multiple cursors
+;; (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'mc/edit-lines)
+;; (define-key my-keys-minor-mode-map (kbd "C-c C-v") 'mc/mark-next-like-this)
+;; (define-key my-keys-minor-mode-map (kbd "C-c C-<SPC>") 'mc/mark-all-in-region)
+;; (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
+
+;; ;;;;;;;;;;;;;;;;;;; ESS
+;; (define-key my-keys-minor-mode-map (kbd "C-c C-b") 'ess-eval-buffer)
+;; (define-key my-keys-minor-mode-map (kbd "C-c C-f") 'ess-eval-function)
+
+;; ;;;;;;;;;;;;;;;;;; Flyspell
+;; (global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
+;; (global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
+;; (global-set-key (kbd "M-1") 'flyspell-check-next-highlighted-word)
+
+
+;; (define-minor-mode my-keys-minor-mode
+;;   "A minor mode so that my key settings override annoying major modes."
+;;    t " my-keys" 'my-keys-minor-mode-map)
+
+;; (my-keys-minor-mode 1)
+
+;; ; My julia related stuff
+;; (require 'julia-mode)
+;; (add-to-list 'ac-modes 'julia-mode)
+
+
+;; ;;;; or-mode auto complete
+;; (require 'org-ac)
+;; (org-ac/config-default)
+;; (put 'erase-buffer 'disabled nil)
+
+
+;; ;; scale Latex fragments
+;; (plist-put org-format-latex-options :scale 1.7)
+;; (org-babel-do-load-languages
+;;  'org-babel-load-languages
+;;  '((python . t)))
