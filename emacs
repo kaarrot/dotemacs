@@ -118,3 +118,6 @@
    t " my-keys" 'my-keys-minor-mode-map)
 
 (my-keys-minor-mode 1)
+
+(push (substitute-in-file-name "~/.emacs.d/idea-darkula-theme/") custom-theme-load-path)
+    (load-theme 'idea-darkula t)
