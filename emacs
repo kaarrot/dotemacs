@@ -46,6 +46,16 @@
 (tabbar-mode)
 (require 'multiple-cursors)
 
+;;;;;;;;;;;;;;;;;;; Initialize package manager
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://stable.melpa.org/packages/") t)
+(package-initialize)
+
+;;;;; ELPA
+(add-hook 'after-init-hook 'global-company-mode)
+(global-flycheck-mode)
+
 ;;;;;;;;;;;;;;;;;;; Key bindings
 
 ;; In order to make sure all the key bindgins work in all the moudules
