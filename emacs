@@ -41,6 +41,8 @@
 (require 'recentf)
 ;;(require 'wdired)
 (require 'ace-jump-mode)
+(require 'tabbar)
+(tabbar-mode)
 
 
 ;;;;;;;;;;;;;;;;;;; Key bindings
@@ -76,6 +78,9 @@
 (define-key my-keys-minor-mode-map (kbd "S-SPC")  'ace-jump-char-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c w")  'ace-jump-word-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c e")  'ace-jump-line-mode)
+
+(define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
+(define-key my-keys-minor-mode-map "\C-l" 'goto-line) ; [Ctrl]-[L]   ; go to specifi line
 
 ;;;;;;;;;;;;;;;;;; F-keys
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
