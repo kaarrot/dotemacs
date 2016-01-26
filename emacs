@@ -12,10 +12,13 @@
 (recentf-mode 1)
 (tool-bar-mode -1)
 (show-paren-mode 1)
+(global-visual-line-mode t)        ;; wrap text nicely
 (setq x-select-enable-clipboard t)
 ;;(setq use-file-dialog nil)
 (setq make-backup-files nil)
 (set-variable 'scroll-conservatively 5)
+(setq mouse-buffer-menu-mode-mult 10)
+
 ;; (recentf-max-menu-items 20)
 ;; (recentf-max-saved-items 60)
 
@@ -55,6 +58,19 @@
 ;;;;; ELPA
 (add-hook 'after-init-hook 'global-company-mode)
 (global-flycheck-mode)
+
+
+;;;;;;;;;;;;;;;;;; Hooks
+(add-hook 'org-mode-hook
+          (lambda ()
+            (org-indent-mode t) (flyspell-prog-mode)
+	    (setq org-src-fontify-natively t)
+	    )
+          t)
+
+;;;;;;;;;;;;;;;;;;; Theme
+(push (substitute-in-file-name "~/.emacs.d/idea-darkula-theme/") custom-theme-load-path)
+    (load-theme 'idea-darkula t)
 
 ;;;;;;;;;;;;;;;;;;; Key bindings
 
@@ -112,15 +128,14 @@
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 
+;;;;;;;;;;;;;;;;;;;; Other
+(define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
    t " my-keys" 'my-keys-minor-mode-map)
 
 (my-keys-minor-mode 1)
-
-(push (substitute-in-file-name "~/.emacs.d/idea-darkula-theme/") custom-theme-load-path)
-    (load-theme 'idea-darkula t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
