@@ -56,7 +56,6 @@
 (package-initialize)
 
 ;;;;; ELPA
-(add-hook 'after-init-hook 'global-company-mode)
 (global-flycheck-mode)
 
 
@@ -67,6 +66,9 @@
 	    (setq org-src-fontify-natively t)
 	    )
           t)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
 
 ;;;;;;;;;;;;;;;;;;; Theme
 (push (substitute-in-file-name "~/.emacs.d/idea-darkula-theme/") custom-theme-load-path)
@@ -117,7 +119,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
 ;;;;;;;;;;;;;;;;;;;; Company
-(global-set-key "\t" 'company-complete-common)
+;(global-set-key "\t" 'company-complete-common)
 
 ;;;;;;;;;;;;;;;;;; F-keys
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
@@ -137,12 +139,16 @@
 
 (my-keys-minor-mode 1)
 
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-auto-complete t))
+ '(company-abort-manual-when-too-short t)
+ '(company-auto-complete t)
+ '(company-auto-complete-chars (quote (41 46))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
