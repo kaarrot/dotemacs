@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+    <snippet group="Text" trigger="global" id="text_global" complement="example" removed="false" modified="true">// This is available in all editors.</snippet>
+    <snippet group="Text" trigger="testabc" id="" complement="openmp" removed="false" modified="false">project($name$)
+cmake_minimum_required(VERSION 2.8)
+</snippet>
+    <snippet group="C++" trigger="do" id="cpp_do" complement="" removed="false" modified="true">do {
+    $$
+} while ($condition$);</snippet>
+    <snippet group="C++" trigger="forloop" id="cpp_for" complement="loop" removed="false" modified="true">for (int $var$ = 0; $var$ &lt; $total$; ++$var$) {
+    $$
+}</snippet>
+    <snippet group="C++" trigger="printf" id="" complement="" removed="false" modified="false">printf(&quot;%$type$&quot;,$var$);</snippet>
+    <snippet group="C++" trigger="Q_PROPERTY" id="cpp_q_property" complement="" removed="false" modified="true">Q_PROPERTY($type$ $name$ READ $name$ WRITE set$name:c$ NOTIFY $name$Changed)</snippet>
+</snippets>

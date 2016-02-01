@@ -107,6 +107,7 @@
 (define-key my-keys-minor-mode-map (kbd "S-SPC")  'ace-jump-char-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c w")  'ace-jump-word-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c e")  'ace-jump-line-mode)
+(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'pop-global-mark)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line) ; [Ctrl]-[L]   ; go to specifi line
@@ -139,7 +140,9 @@
 
 (my-keys-minor-mode 1)
 
-
+(defun c-mode-keys()
+   (local-set-key (kbd "C-c <RET>") 'compile))
+(add-hook 'c++-mode-hook 'c-mode-keys)  ;; TODO - pass a string to the compile
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
