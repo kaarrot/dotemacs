@@ -133,6 +133,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; Other
 (define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
+(define-key my-keys-minor-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
@@ -142,7 +143,14 @@
 
 (defun c-mode-keys()
    (local-set-key (kbd "C-c <RET>") 'compile))
+
 (add-hook 'c++-mode-hook 'c-mode-keys)  ;; TODO - pass a string to the compile
+
+;;;;;;;;;;;;;;;;;;;; C-mode
+;; Changing styl of comments in CC-mode
+(add-hook 'c-mode-hook (lambda () (setq comment-start "//"
+                                        comment-end   "")))
+(add-hook 'c-mode-hook 'c-mode-keys)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

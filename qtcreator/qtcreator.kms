@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE KeyboardMappingScheme>
-<!-- Written by Qt Creator 3.6.82, 2016-01-31T17:18:16. -->
+<!-- Written by Qt Creator 3.6.82, 2016-01-31T23:28:02. -->
 <mapping>
  <shortcut id="Debugger.AttachToUnstartedProcess"/>
  <shortcut id="Debugger.StartAndDebugApplication"/>
@@ -129,9 +129,7 @@
  <shortcut id="QmlDesigner.Backspace">
   <key value="Backspace"/>
  </shortcut>
- <shortcut id="QmlDesigner.SwitchTextDesign">
-  <key value="F4"/>
- </shortcut>
+ <shortcut id="QmlDesigner.SwitchTextDesign"/>
  <shortcut id="QmlProfiler.Local"/>
  <shortcut id="Analyzer.Menu.StartAnalyzer.QMLProfilerOptions.LoadQMLTrace"/>
  <shortcut id="Analyzer.Menu.StartAnalyzer.QMLProfilerOptions.SaveQMLTrace"/>
@@ -159,9 +157,7 @@
  <shortcut id="FormEditor.LayoutHorizontally">
   <key value="Ctrl+H"/>
  </shortcut>
- <shortcut id="FormEditor.SignalsSlotsEditor">
-  <key value="F4"/>
- </shortcut>
+ <shortcut id="FormEditor.SignalsSlotsEditor"/>
  <shortcut id="FormEditor.BuddyEditor"/>
  <shortcut id="FormEditor.WidgetEditor">
   <key value="F3"/>
@@ -606,15 +602,15 @@
   <key value="Ctrl+."/>
  </shortcut>
  <shortcut id="Bookmarks.Toggle">
-  <key value="Ctrl+Up"/>
+  <key value="Alt+Up"/>
  </shortcut>
  <shortcut id="ResourceEditor.Refresh"/>
  <shortcut id="ResourceEditor.AddPrefix"/>
  <shortcut id="Bookmarks.NextDocument">
-  <key value="Ctrl+Right"/>
+  <key value="Alt+Right"/>
  </shortcut>
  <shortcut id="Bookmarks.PreviousDocument">
-  <key value="Ctrl+Left"/>
+  <key value="Alt+Left"/>
  </shortcut>
  <shortcut id="ResourceEditor.CopyPath"/>
  <shortcut id="ResourceEditor.CopyUrl"/>
@@ -787,16 +783,12 @@
   <key value="Ctrl+Shift+C"/>
  </shortcut>
  <shortcut id="Gerrit.Push"/>
- <shortcut id="Help.Next">
-  <key value="Alt+Right"/>
- </shortcut>
+ <shortcut id="Help.Next"/>
  <shortcut id="Help.AddBookmark">
   <key value="Ctrl+M"/>
  </shortcut>
  <shortcut id="Help.Home"/>
- <shortcut id="Help.Previous">
-  <key value="Alt+Left"/>
- </shortcut>
+ <shortcut id="Help.Previous"/>
  <shortcut id="Help.Search">
   <key value="Ctrl+Shift+/"/>
  </shortcut>
@@ -1073,13 +1065,13 @@
   <key value="Alt+2"/>
  </shortcut>
  <shortcut id="QtCreator.GoBack">
-  <key value="Alt+Left"/>
+  <key value="Ctrl+Alt+Left"/>
  </shortcut>
  <shortcut id="QtCreator.Pane.ApplicationOutput">
   <key value="Alt+3"/>
  </shortcut>
  <shortcut id="QtCreator.GoForward">
-  <key value="Alt+Right"/>
+  <key value="Ctrl+Alt+Right"/>
  </shortcut>
  <shortcut id="QtCreator.GotoPreviousInHistory">
   <key value="Meta+Down"/>
