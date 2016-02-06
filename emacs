@@ -1,6 +1,4 @@
-
-;; ;; .emacs
-
+;; .emacs
 
 (add-to-list 'load-path "~/.emacs.d/")
 (add-to-list 'load-path "~/.emacs.d/multiple-cursors")
@@ -141,16 +139,17 @@
 
 (my-keys-minor-mode 1)
 
+;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
-   (local-set-key (kbd "C-c <RET>") 'compile))
-
-(add-hook 'c++-mode-hook 'c-mode-keys)  ;; TODO - pass a string to the compile
+   (local-set-key (kbd "C-c <RET>") 'compile)
+   (local-set-key (kbd "C-c C-C") 'compile))
 
 ;;;;;;;;;;;;;;;;;;;; C-mode
 ;; Changing styl of comments in CC-mode
 (add-hook 'c-mode-hook (lambda () (setq comment-start "//"
                                         comment-end   "")))
 (add-hook 'c-mode-hook 'c-mode-keys)
+(add-hook 'c++-mode-hook 'c-mode-keys)  ;; TODO - pass a string to the compile
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
