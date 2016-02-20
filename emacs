@@ -102,7 +102,7 @@
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "C-c q")  'ace-jump-char-mode)
 (define-key my-keys-minor-mode-map (kbd "M-SPC")  'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "S-SPC")  'ace-jump-char-mode)
+(define-key my-keys-minor-mode-map (kbd "S-SPC")  'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c w")  'ace-jump-word-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c e")  'ace-jump-line-mode)
 (define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'pop-global-mark)
@@ -133,6 +133,9 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
+
+;; C-h k - find the key-binding
+
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
    t " my-keys" 'my-keys-minor-mode-map)
@@ -150,6 +153,14 @@
                                         comment-end   "")))
 (add-hook 'c-mode-hook 'c-mode-keys)
 (add-hook 'c++-mode-hook 'c-mode-keys)  ;; TODO - pass a string to the compile
+
+;;;;;;;;;;;;;;;;;;;; Python key-bindings
+(defun python-mode-keys()
+   (local-set-key (kbd "<backtab>") 'python-indent-shift-left)
+   (local-set-key (kbd "C-<tab>") 'python-indent-shift-right)
+)
+
+(add-hook 'python-mode-hook 'python-mode-keys)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
