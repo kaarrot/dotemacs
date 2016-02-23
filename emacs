@@ -10,6 +10,7 @@
 (recentf-mode 1)
 (tool-bar-mode -1)
 (show-paren-mode 1)
+(semantic-mode 1)
 (global-visual-line-mode t)        ;; wrap text nicely
 (setq x-select-enable-clipboard t)
 ;;(setq use-file-dialog nil)
@@ -128,6 +129,11 @@
 (global-set-key (kbd "<f8>") 'ispell-word)   ;; Flyspel
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
+
+;;;;;;;;;;;;;;;;;;; Jump around
+(define-key my-keys-minor-mode-map (kbd "S-C-M-<left>") 'pop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'pop-to-mark-command)
+(define-key my-keys-minor-mode-map (kbd "M-<down>") 'semantic-complete-jump)
 
 ;;;;;;;;;;;;;;;;;;;; Other
 (define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
