@@ -1,8 +1,8 @@
 ;; .emacs
 
-(add-to-list 'load-path "~/.emacs.d/")
-(add-to-list 'load-path "~/.emacs.d/multiple-cursors")
-(load "~/.emacs.d/myfuncs.el")
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/lisp/multiple-cursors")
+(load "~/.emacs.d/lisp/myfuncs.el")
 
 (setq inhibit-splash-screen t)
 
@@ -69,8 +69,9 @@
 
 
 ;;;;;;;;;;;;;;;;;;; Theme
-(push (substitute-in-file-name "~/.emacs.d/idea-darkula-theme/") custom-theme-load-path)
-    (load-theme 'idea-darkula t)
+;(push (substitute-in-file-name "~/.emacs.d/lisp/idea-darkula-theme") custom-theme-load-path)
+ ;   (load-theme 'idea-darkula t)
+  (load-theme 'tango-dark t)
 
 ;;;;;;;;;;;;;;;;;;; Key bindings
 
@@ -138,7 +139,6 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
 
-
 ;; C-h k - find the key-binding
 
 (define-minor-mode my-keys-minor-mode
@@ -165,7 +165,15 @@
    (local-set-key (kbd "C-<tab>") 'python-indent-shift-right)
 )
 
+(define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback)
+(define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
+
 (add-hook 'python-mode-hook 'python-mode-keys)
+(setq python-shell-interpreter "/home/kuba/miniconda2/bin/python")
+
+
+
+(load "/home/kuba/.opam/4.02.1/share/emacs/site-lisp/tuareg-site-file")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

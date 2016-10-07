@@ -53,6 +53,21 @@
     )
   )
 
+
+;;;;; Disaply iamged
+(defun refresh-iimages ()
+  "Only way I've found to refresh iimages (without also recentering)"
+  (interactive)
+  (clear-image-cache nil)
+  (iimage-mode nil)
+  (iimage-mode t))
+
+(add-to-list 'compilation-finish-functions 
+             (lambda (buffer msg)
+               (save-excursion
+                 (set-buffer buffer)
+                 (refresh-iimages))))
+
 ;;;;; Python helper function
 (defun selectback ()
   (interactive)
@@ -76,10 +91,22 @@
     ;;; this makes the selection python specific - not sure if useful
     (python-shell-send-region start end)
     (goto-char previous-point)
+
+    (sleep-for 1)
+    (refresh-iimages)  ;; this is optional
+    
     ))
 
 (defun goto-previous-point ()
   (interactive)
   (goto-char previous-point)
   )
+
+(defun increment-nums (start-num times-num)
+  (interactive "*r")
+  (dotimes (start-num times-num) (insert (format "%d." (1+ start-num))))
+  )
+
+
+(defun my-insert-image (image-file) (interactive "fImage File: ") (insert-image (create-image image-file)))
 
