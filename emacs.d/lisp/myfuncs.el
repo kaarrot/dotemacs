@@ -69,6 +69,39 @@
                  (refresh-iimages))))
 
 ;;;;; Python helper function
+(defun selectback-exec ()
+  (interactive)
+
+  (let (start
+        end)
+
+    (setq previous-point (point))
+
+    (bm-previous)
+    (beginning-of-line)  ;; make sure the mark will be at the begining of the next line
+    (next-line)
+    (setq start (point))
+    (set-mark start)
+
+    (bm-next)
+    (end-of-line)
+    (setq end (+ 1 (point)))
+
+    ;; (message "%s... " positions)
+    (message "%s %s"start end)
+
+
+    ;;; this makes the selection python specific - not sure if useful
+    (python-shell-send-region start end)
+
+    ;; (sleep-for 1)
+    ;; (refresh-iimages)  ;; this is optional
+
+
+
+    (goto-char previous-point)    
+    ))
+
 (defun selectback ()
   (interactive)
 
@@ -79,6 +112,7 @@
 
     (bm-previous)
     (beginning-of-line)
+    (next-line)
     (setq start (point))
     (set-mark start)
 
@@ -86,16 +120,21 @@
     (end-of-line)
     (setq end (+ 1 (point)))
 
-    (message "%s %s"start end)
+    ;; (message "%s... " positions)
+    ;; (message "%s %s"start end)
+
 
     ;;; this makes the selection python specific - not sure if useful
-    (python-shell-send-region start end)
-    (goto-char previous-point)
+    ;; (python-shell-send-region start end)
 
-    (sleep-for 1)
-    (refresh-iimages)  ;; this is optional
-    
+    ;; (sleep-for 1)
+    ;; (refresh-iimages)  ;; this is optional
+
+
+
+    ;; (goto-char previous-point)    
     ))
+
 
 (defun goto-previous-point ()
   (interactive)
@@ -110,3 +149,16 @@
 
 (defun my-insert-image (image-file) (interactive "fImage File: ") (insert-image (create-image image-file)))
 
+(defun kill-dired-buffers ()
+  "Kill all dired buffers except current buffer."
+  (interactive)
+  (let ((current-buf (current-buffer)))
+    (dolist (buffer (buffer-list))
+      (set-buffer buffer)
+      (unless (eq current-buf buffer)
+           (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+             (kill-buffer buffer))
+	   )
+      )
+    )
+  )

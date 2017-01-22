@@ -10,7 +10,7 @@
 (recentf-mode 1)
 (tool-bar-mode -1)
 (show-paren-mode 1)
-(semantic-mode 1)
+;;(semantic-mode 1)
 (global-visual-line-mode t)        ;; wrap text nicely
 (setq x-select-enable-clipboard t)
 ;;(setq use-file-dialog nil)
@@ -20,7 +20,6 @@
 
 ;; (recentf-max-menu-items 20)
 ;; (recentf-max-saved-items 60)
-
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (setq bm-restore-repository-on-load t)
@@ -47,7 +46,6 @@
 (require 'tabbar)
 (tabbar-mode)
 (require 'multiple-cursors)
-
 ;;;;;;;;;;;;;;;;;;; Initialize package manager
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -100,13 +98,16 @@
 (define-key my-keys-minor-mode-map (kbd "s-<up>")    'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
+;;;;;;;;;;;;;;;;;;;; Tabbar
+(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'tabbar-backward)
+(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'tabbar-forward)
+
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "C-c q")  'ace-jump-char-mode)
 (define-key my-keys-minor-mode-map (kbd "M-SPC")  'ace-jump-char-mode)
 (define-key my-keys-minor-mode-map (kbd "S-SPC")  'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c w")  'ace-jump-word-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c e")  'ace-jump-line-mode)
-(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'pop-global-mark)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line) ; [Ctrl]-[L]   ; go to specifi line
@@ -131,13 +132,15 @@
 (define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 
 ;;;;;;;;;;;;;;;;;;; Jump around
-(define-key my-keys-minor-mode-map (kbd "S-C-M-<left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'pop-to-mark-command)
-(define-key my-keys-minor-mode-map (kbd "M-<down>") 'semantic-complete-jump)
+;; (define-key my-keys-minor-mode-map (kbd "S-M-<left>") 'pop-global-mark)
+;; (define-key my-keys-minor-mode-map (kbd "S-M-<right>") 'pop-to-mark-command)
+(define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'semantic-complete-jump)
+;;; to jump back use - C-u C-<space>
 
 ;;;;;;;;;;;;;;;;;;;; Other
 (define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
-(define-key my-keys-minor-mode-map (kbd "C-c C-w") 'wdired-change-to-wdired-mode)
+(define-key my-keys-minor-mode-map (kbd "<f12>")  'revert-buffer)
+
 
 ;; C-h k - find the key-binding
 
@@ -163,14 +166,27 @@
 (defun python-mode-keys()
    (local-set-key (kbd "<backtab>") 'python-indent-shift-left)
    (local-set-key (kbd "C-<tab>") 'python-indent-shift-right)
+   (local-set-key (kbd "C-c i") 'iimage-mode)
+   (local-set-key (kbd "C-c r") 'refresh-iimages)
 )
 
-(define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback)
+(define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback-exec)
+(define-key my-keys-minor-mode-map (kbd "S-C-c <RET>") 'selectback)
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
 
 (add-hook 'python-mode-hook 'python-mode-keys)
 (setq python-shell-interpreter "/home/kuba/miniconda2/bin/python")
 
+;;;;;;;;;;;;;;;;;;;; Dired
+; open dired in the same window, mouseclicks not affected
+(put 'dired-find-alternate-file 'disabled nil)
+(defun dired-mode-keys()
+
+   (local-set-key   (kbd "C-w") 'wdired-change-to-wdired-mode )
+   (local-set-key (kbd "C-k") 'kill-dired-buffers)
+   )
+
+(add-hook 'dired-mode-hook 'dired-mode-keys)
 
 
 (load "/home/kuba/.opam/4.02.1/share/emacs/site-lisp/tuareg-site-file")
@@ -182,7 +198,8 @@
  ;; If there is more than one, they won't work right.
  '(company-abort-manual-when-too-short t)
  '(company-auto-complete t)
- '(company-auto-complete-chars (quote (41 46))))
+ '(company-auto-complete-chars (quote (41 46)))
+ '(dumb-jump-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
