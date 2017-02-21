@@ -78,7 +78,7 @@
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 ;; ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
-(define-key my-keys-minor-mode-map (kbd "M-<up>") 'bm-toggle)
+(define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c .")   'bm-next)   ;   >
 (define-key my-keys-minor-mode-map (kbd "M-<right>")   'bm-next)   ;   >
 (define-key my-keys-minor-mode-map (kbd "C-c ,") 'bm-previous) ;   <
@@ -99,8 +99,8 @@
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
 ;;;;;;;;;;;;;;;;;;;; Tabbar
-(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'tabbar-backward)
-(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'tabbar-forward)
+;;(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'tabbar-backward)
+;;(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'tabbar-forward)
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "C-c q")  'ace-jump-char-mode)
@@ -132,14 +132,22 @@
 (define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 
 ;;;;;;;;;;;;;;;;;;; Jump around
-;; (define-key my-keys-minor-mode-map (kbd "S-M-<left>") 'pop-global-mark)
-;; (define-key my-keys-minor-mode-map (kbd "S-M-<right>") 'pop-to-mark-command)
-(define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'semantic-complete-jump)
+(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'pop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'pop-to-mark-command)
+;;(define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'semantic-complete-jump)
+(define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
+(define-key my-keys-minor-mode-map (kbd "M-<down>") 'dumb-jump-go-current-window)
+(define-key my-keys-minor-mode-map (kbd "M-<up>") 'dumb-jump-back)
+
+
 ;;; to jump back use - C-u C-<space>
 
 ;;;;;;;;;;;;;;;;;;;; Other
 (define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
 (define-key my-keys-minor-mode-map (kbd "<f12>")  'revert-buffer)
+;;; Partial completion
+(define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
+(define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 
 
 ;; C-h k - find the key-binding
@@ -168,7 +176,13 @@
    (local-set-key (kbd "C-<tab>") 'python-indent-shift-right)
    (local-set-key (kbd "C-c i") 'iimage-mode)
    (local-set-key (kbd "C-c r") 'refresh-iimages)
+   (local-set-key (kbd "C-f <down>") 'python-nav-forward-defun)
+   (local-set-key (kbd "C-f <up>") 'python-nav-backward-defun)
+   ;(local-set-key (kbd "C-S-M <up>") 'previous-complete-history-element)
+   ;(local-set-key (kbd "C-S-M  (kbd "<down>") 'next-complete-history-element)
+
 )
+
 
 (define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback-exec)
 (define-key my-keys-minor-mode-map (kbd "S-C-c <RET>") 'selectback)
@@ -176,6 +190,14 @@
 
 (add-hook 'python-mode-hook 'python-mode-keys)
 (setq python-shell-interpreter "/home/kuba/miniconda2/bin/python")
+
+;;;;;;;;;;;;;;;;;;;; Partial completion to shell and python-inferior mode
+(defun shell-mode-keys()
+   (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
+   (local-set-key (kbd "S-<down>") 'comint-next-matching-input-from-input)
+   )
+(add-hook 'shell-mode-hook 'shell-mode-keys)
+(add-hook 'inferior-python-mode-hook 'shell-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Dired
 ; open dired in the same window, mouseclicks not affected
