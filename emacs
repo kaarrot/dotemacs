@@ -99,8 +99,8 @@
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
 ;;;;;;;;;;;;;;;;;;;; Tabbar
-;;(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'tabbar-backward)
-;;(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'tabbar-forward)
+(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'tabbar-forward-tab)
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "C-c q")  'ace-jump-char-mode)
@@ -132,9 +132,9 @@
 (define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 
 ;;;;;;;;;;;;;;;;;;; Jump around
-(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'pop-to-mark-command)
-;;(define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'semantic-complete-jump)
+(define-key my-keys-minor-mode-map (kbd "S-C-<left>") 'pop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "S-C-<right>") 'pop-to-mark-command)
+(define-key my-keys-minor-mode-map (kbd "S-C-<down>") 'semantic-complete-jump)
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
 (define-key my-keys-minor-mode-map (kbd "M-<down>") 'dumb-jump-go-current-window)
 (define-key my-keys-minor-mode-map (kbd "M-<up>") 'dumb-jump-back)
@@ -172,8 +172,8 @@
 
 ;;;;;;;;;;;;;;;;;;;; Python key-bindings
 (defun python-mode-keys()
-   (local-set-key (kbd "<backtab>") 'python-indent-shift-left)
-   (local-set-key (kbd "C-<tab>") 'python-indent-shift-right)
+   (local-set-key (kbd "C-<") 'python-indent-shift-left)
+   (local-set-key (kbd "C->") 'python-indent-shift-right)
    (local-set-key (kbd "C-c i") 'iimage-mode)
    (local-set-key (kbd "C-c r") 'refresh-iimages)
    (local-set-key (kbd "C-f <down>") 'python-nav-forward-defun)
@@ -227,4 +227,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(bm-fringe-persistent-face ((t (:background "dark orange" :foreground "White")))))
