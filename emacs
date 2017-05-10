@@ -15,11 +15,15 @@
 (setq x-select-enable-clipboard t)
 ;;(setq use-file-dialog nil)
 (setq make-backup-files nil)
+
 (set-variable 'scroll-conservatively 5)
 (setq mouse-buffer-menu-mode-mult 10)
 
 ;; (recentf-max-menu-items 20)
 ;; (recentf-max-saved-items 60)
+
+;;;;;;;;;;;;;;;;;;;; Set path to Anaconda python
+(setq python-shell-interpreter "/home/kuba/anaconda2/bin/python")
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (setq bm-restore-repository-on-load t)
@@ -189,7 +193,7 @@
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
 
 (add-hook 'python-mode-hook 'python-mode-keys)
-(setq python-shell-interpreter "/home/kuba/miniconda2/bin/python")
+
 
 ;;;;;;;;;;;;;;;;;;;; Partial completion to shell and python-inferior mode
 (defun shell-mode-keys()
