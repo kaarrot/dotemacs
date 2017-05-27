@@ -18,7 +18,7 @@
 
 ;;;;;;;;;;;;;;;;;;; Mouse smooth-scroll
 ;;(set-variable 'scroll-conservatively 5)
-;;(setq mouse-buffer-menu-mode-mult 10)
+(setq mouse-buffer-menu-mode-mult 100)
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;;
