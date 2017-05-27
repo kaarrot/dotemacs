@@ -101,7 +101,7 @@
 
 
     (goto-char previous-point)
-    (set-mark (point)) ;; (setq quit-flag t) ;; disable selected region (emacs25)
+    (keyboard-quit)  ;; disable selected region (emacs25)
 
     ))
 
