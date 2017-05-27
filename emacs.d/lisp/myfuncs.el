@@ -101,7 +101,8 @@
 
 
     (goto-char previous-point)
-    (setq quit-flag t) ;; disable selected region if it is still selected (emacs25)
+    (set-mark (point)) ;; (setq quit-flag t) ;; disable selected region (emacs25)
+
     ))
 
 (defun selectback ()
