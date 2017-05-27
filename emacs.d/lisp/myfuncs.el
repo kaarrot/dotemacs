@@ -1,6 +1,7 @@
 (defun get-file-path ()
   (interactive)
   (message (buffer-file-name))
+  (kill-new (buffer-file-name)) ;; copy to clipboard
 )
 
 (defun uniquify-all-lines-region (start end)
@@ -99,7 +100,8 @@
 
 
 
-    (goto-char previous-point)    
+    (goto-char previous-point)
+    (setq quit-flag t) ;; disable selected region if it is still selected (emacs25)
     ))
 
 (defun selectback ()

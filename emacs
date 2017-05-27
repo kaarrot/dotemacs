@@ -16,11 +16,15 @@
 ;;(setq use-file-dialog nil)
 (setq make-backup-files nil)
 
-(set-variable 'scroll-conservatively 5)
-(setq mouse-buffer-menu-mode-mult 10)
+;;;;;;;;;;;;;;;;;;; Mouse smooth-scroll
+;;(set-variable 'scroll-conservatively 5)
+;;(setq mouse-buffer-menu-mode-mult 10)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;;
 
-;; (recentf-max-menu-items 20)
-;; (recentf-max-saved-items 60)
+;;(recentf-max-menu-items 20)
+;;(recentf-max-saved-items 60)
 
 ;;;;;;;;;;;;;;;;;;;; Set path to Anaconda python
 (setq python-shell-interpreter "/home/kuba/anaconda2/bin/python")
@@ -225,7 +229,10 @@
  '(company-abort-manual-when-too-short t)
  '(company-auto-complete t)
  '(company-auto-complete-chars (quote (41 46)))
- '(dumb-jump-mode t))
+ '(dumb-jump-mode t)
+ '(package-selected-packages
+   (quote
+    (dumb-jump tuareg python-environment merlin julia-mode flycheck epc company-irony auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
