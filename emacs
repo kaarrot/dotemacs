@@ -15,6 +15,7 @@
 (setq x-select-enable-clipboard t)
 ;;(setq use-file-dialog nil)
 (setq make-backup-files nil)
+(set-face-attribute 'default nil :height 100) ;; default font size 10pt
 
 ;;;;;;;;;;;;;;;;;;; Mouse smooth-scroll
 ;;(set-variable 'scroll-conservatively 5)
