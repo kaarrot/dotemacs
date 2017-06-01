@@ -144,8 +144,8 @@
 (define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 
 ;;;;;;;;;;;;;;;;;;; Jump around
-(define-key my-keys-minor-mode-map (kbd "S-C-<left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "S-C-<right>") 'pop-to-mark-command)
+;;(define-key my-keys-minor-mode-map (kbd "S-C-<left>") 'pop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "S-C-<left>") 'pop-to-mark-command)
 (define-key my-keys-minor-mode-map (kbd "S-C-<down>") 'semantic-complete-jump)
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
 (define-key my-keys-minor-mode-map (kbd "M-<down>") 'dumb-jump-go-current-window)
