@@ -242,7 +242,7 @@
  '(dumb-jump-mode t)
  '(package-selected-packages
    (quote
-    (dumb-jump tuareg python-environment merlin julia-mode flycheck epc company-irony auto-complete))))
+    (concurrent ctable dumb-jump tuareg python-environment merlin julia-mode flycheck epc company-irony auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
