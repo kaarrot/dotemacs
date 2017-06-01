@@ -16,6 +16,8 @@
 ;;(setq use-file-dialog nil)
 (setq make-backup-files nil)
 (set-face-attribute 'default nil :height 100) ;; default font size 10pt
+(global-auto-revert-mode t)
+
 
 ;;;;;;;;;;;;;;;;;;; Mouse smooth-scroll
 ;;(set-variable 'scroll-conservatively 5)
@@ -134,10 +136,11 @@
 ;;;;;;;;;;;;;;;;;; F-keys
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
-(define-key my-keys-minor-mode-map [f4] 'bubble-buffer) 
+(define-key my-keys-minor-mode-map [f4] 'desktop-save-in-desktop-dir)
 (define-key my-keys-minor-mode-map (kbd "<f6>") 'whitespace-mode)
 (global-set-key (kbd "<f8>") 'ispell-word)   ;; Flyspel
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
+(define-key my-keys-minor-mode-map (kbd "<f10>") 'occur)
 (define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 
 ;;;;;;;;;;;;;;;;;;; Jump around
@@ -148,6 +151,8 @@
 (define-key my-keys-minor-mode-map (kbd "M-<down>") 'dumb-jump-go-current-window)
 (define-key my-keys-minor-mode-map (kbd "M-<up>") 'dumb-jump-back)
 
+
+(global-set-key (kbd "C-k") 'delete-line)
 
 ;;; to jump back use - C-u C-<space>
 
@@ -181,6 +186,10 @@
 
 ;;;;;;;;;;;;;;;;;;;; Python key-bindings
 (defun python-mode-keys()
+   (python-indent-guess-indent-offset)
+   (infer-indentation-style)
+   ;;(setq indent-tabs-mode t)
+   
    (local-set-key (kbd "C-<") 'python-indent-shift-left)
    (local-set-key (kbd "C->") 'python-indent-shift-right)
    (local-set-key (kbd "C-c i") 'iimage-mode)
