@@ -91,9 +91,9 @@
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c .")   'bm-next)   ;   >
-(define-key my-keys-minor-mode-map (kbd "M-<right>")   'bm-next)   ;   >
+(define-key my-keys-minor-mode-map (kbd "C-M-<right>")   'bm-next)   ;   >
 (define-key my-keys-minor-mode-map (kbd "C-c ,") 'bm-previous) ;   <
-(define-key my-keys-minor-mode-map (kbd "M-<left>") 'bm-previous) ;   <
+(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'bm-previous) ;   <
 (define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
 (define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
 (define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
@@ -110,8 +110,8 @@
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
 ;;;;;;;;;;;;;;;;;;;; Tabbar
-(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'tabbar-backward-tab)
-(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "S-C-M-<left>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "S-C-M-<right>") 'tabbar-forward-tab)
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "C-c q")  'ace-jump-char-mode)
@@ -137,11 +137,13 @@
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
 (define-key my-keys-minor-mode-map [f4] 'desktop-save-in-desktop-dir)
+(define-key my-keys-minor-mode-map [f5] 'desktop-change-dir)
 (define-key my-keys-minor-mode-map (kbd "<f6>") 'whitespace-mode)
 (global-set-key (kbd "<f8>") 'ispell-word)   ;; Flyspel
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "<f10>") 'occur)
-(define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
+;;(define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
+(define-key my-keys-minor-mode-map (kbd "<f12>")  'revert-buffer)
 
 ;;;;;;;;;;;;;;;;;;; Jump around
 ;;(define-key my-keys-minor-mode-map (kbd "S-C-<left>") 'pop-global-mark)
@@ -158,7 +160,6 @@
 
 ;;;;;;;;;;;;;;;;;;;; Other
 (define-key my-keys-minor-mode-map (kbd "C-c C-a")  'mark-whole-buffer)
-(define-key my-keys-minor-mode-map (kbd "<f12>")  'revert-buffer)
 ;;; Partial completion
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
