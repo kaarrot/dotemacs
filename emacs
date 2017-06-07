@@ -147,13 +147,14 @@
 
 ;;;;;;;;;;;;;;;;;;; Jump around
 ;;(define-key my-keys-minor-mode-map (kbd "S-C-<left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "S-C-<left>") 'pop-to-mark-command)
+(define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-to-mark-command)
+(define-key my-keys-minor-mode-map (kbd "M-<right>") 'unpop-to-mark-command)
 (define-key my-keys-minor-mode-map (kbd "S-C-<down>") 'semantic-complete-jump)
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
 (define-key my-keys-minor-mode-map (kbd "M-<down>") 'dumb-jump-go-current-window)
 (define-key my-keys-minor-mode-map (kbd "M-<up>") 'dumb-jump-back)
 
-
+;; Overwrites the default behaviour and does not copy text into kill-ring
 (global-set-key (kbd "C-k") 'delete-line)
 
 ;;; to jump back use - C-u C-<space>
