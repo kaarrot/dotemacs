@@ -146,9 +146,13 @@
 (define-key my-keys-minor-mode-map (kbd "<f12>")  'revert-buffer)
 
 ;;;;;;;;;;;;;;;;;;; Jump around
-;;(define-key my-keys-minor-mode-map (kbd "S-C-<left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-to-mark-command)
-(define-key my-keys-minor-mode-map (kbd "M-<right>") 'unpop-to-mark-command)
+;; across multiple buffers
+(define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "M-<right>") 'unpop-global-mark)
+;; within a buffer
+(define-key my-keys-minor-mode-map (kbd "C-S-<left>") 'pop-to-mark-command)
+(define-key my-keys-minor-mode-map (kbd "C-S-<right>") 'unpop-to-mark-command)
+
 (define-key my-keys-minor-mode-map (kbd "S-C-<down>") 'semantic-complete-jump)
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
 (define-key my-keys-minor-mode-map (kbd "M-<down>") 'dumb-jump-go-current-window)
