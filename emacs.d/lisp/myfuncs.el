@@ -236,3 +236,30 @@ This command does not push text to `kill-ring'."
 )
 
  
+(defun g-unpop()
+        (interactive)
+        ;; (message "%s" global-mark-ring)
+        (setq _buf (marker-buffer (nth 0 (last global-mark-ring  ))) )
+        (setq _pos (marker-position (nth 0 (last global-mark-ring  ))) )
+        ;; (message "buffer:%s"_buf)
+        (setq m (point-marker))
+
+        (set-marker m _pos)
+        (switch-to-buffer _buf)
+
+
+        (setq aaa global-mark-ring)
+        ;; (message "%s\n" aaa)
+        (setq _last (nth 0 (last aaa)))
+        ;; (setq _first (first aaa))
+        ;; (message "_first %s _last %s" _first _last)
+
+        ;; (setq aaa (delete _first aaa)) ---
+        (setq aaa (delete _last aaa))
+        ;; (message "%s\n" aaa)
+        (add-to-list 'aaa _last)
+        ;; (setq aaa (append aaa _first) )
+        ;; (message "%s\n----\n" aaa)
+
+        (setq global-mark-ring aaa)
+)

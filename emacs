@@ -219,6 +219,7 @@
 (defun shell-mode-keys()
    (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
    (local-set-key (kbd "S-<down>") 'comint-next-matching-input-from-input)
+   ;;(local-set-key (kbd "<tab>") 'completion-at-point) 
    )
 (add-hook 'shell-mode-hook 'shell-mode-keys)
 (add-hook 'inferior-python-mode-hook 'shell-mode-keys)
@@ -226,6 +227,7 @@
 ;;;;;;;;;;;;;;;;;;;; Dired
 ; open dired in the same window, mouseclicks not affected
 (put 'dired-find-alternate-file 'disabled nil)
+(setq dired-dwim-target t) ;; pick the second open buffer as a destination
 (defun dired-mode-keys()
 
    (local-set-key   (kbd "C-w") 'wdired-change-to-wdired-mode )
