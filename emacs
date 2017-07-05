@@ -123,6 +123,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line) ; [Ctrl]-[L]   ; go to specifi line
 
+
 ;;;;;;;;;;;;;;;;;;;; Multiple cursors
 (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'mc/edit-lines)
@@ -148,7 +149,9 @@
 ;;;;;;;;;;;;;;;;;;; Jump around
 ;; across multiple buffers
 (define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "M-<right>") 'unpop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "M-<right>") 'g-ring-unpop)
+(define-key my-keys-minor-mode-map (kbd "C-SPC <up>")  'g-ring-add-to)
+
 ;; within a buffer
 (define-key my-keys-minor-mode-map (kbd "C-S-<left>") 'pop-to-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-S-<right>") 'unpop-to-mark-command)

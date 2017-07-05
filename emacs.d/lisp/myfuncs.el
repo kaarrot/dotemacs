@@ -202,41 +202,9 @@ This command does not push text to `kill-ring'."
   (message "%s" global-mark-ring)
   )
 
-(defun unpop-global-mark()
-  (interactive)
-   (let (_buf
-	 _pos
-	 aaa)
-
-     ;; (message "%s" global-mark-ring)
-     (setq _buf (marker-buffer (nth 0 (last global-mark-ring  ))) )
-     (setq _pos (marker-position (nth 0 (last global-mark-ring  ))) )
-     ;; (message "buffer:%s"_buf)
-     (setq m (point-marker))
-
-     (set-marker m _pos)
-     (switch-to-buffer _buf)
 
 
-     (setq aaa global-mark-ring)
-     ;; (message "%s\n" aaa)
-     (setq _last (nth 0 (last aaa)))
-     ;; (setq _first (first aaa))
-     ;; (message "_first %s _last %s" _first _last)
-     
-     ;; (setq aaa (delete _first aaa)) ---
-     (setq aaa (delete _last aaa))
-     ;; (message "%s\n" aaa)
-     (add-to-list 'aaa _last)
-     ;; (setq aaa (append aaa _first) )
-     ;; (message "%s\n----\n" aaa)
-     
-     (setq global-mark-ring aaa)
-     )
-)
-
- 
-(defun g-unpop()
+(defun g-ring-unpop()
         (interactive)
         ;; (message "%s" global-mark-ring)
         (setq _buf (marker-buffer (nth 0 (last global-mark-ring  ))) )
@@ -247,7 +215,8 @@ This command does not push text to `kill-ring'."
         (set-marker m _pos)
         (switch-to-buffer _buf)
 
-
+	(goto-char _pos)
+	
         (setq aaa global-mark-ring)
         ;; (message "%s\n" aaa)
         (setq _last (nth 0 (last aaa)))
@@ -263,3 +232,93 @@ This command does not push text to `kill-ring'."
 
         (setq global-mark-ring aaa)
 )
+
+
+(defun g-ring-add-to()
+  ;; Force push a mark into a global ring even if it already exists
+  (interactive)
+  (let (_marker )
+        (setq deactivate-mark nil)
+
+         (setq _marker (make-marker))
+         (set-marker _marker (point))
+         (setq global-mark-ring (append (list _marker) global-mark-ring ) )
+         )
+)
+
+;; (defun unpop-global-mark()
+;;   (interactive)
+;;    (let (_buf
+;; 	 _pos
+;; 	 aaa)
+
+;;      ;; (message "%s" global-mark-ring)
+;;      (setq _buf (marker-buffer (nth 0 (last global-mark-ring  ))) )
+;;      (setq _pos (marker-position (nth 0 (last global-mark-ring  ))) )
+;;      ;; (message "buffer:%s"_buf)
+;;      (setq m (point-marker))
+
+;;      (set-marker m _pos)
+;;      (switch-to-buffer _buf)
+
+;;      (goto-char _pos)
+     
+;;      (setq aaa global-mark-ring)
+;;      ;; (message "%s\n" aaa)
+;;      (setq _last (nth 0 (last aaa)))
+;;      ;; (setq _first (first aaa))
+;;      ;; (message "_first %s _last %s" _first _last)
+     
+;;      ;; (setq aaa (delete _first aaa)) ---
+;;      (setq aaa (delete _last aaa))
+;;      ;; (message "%s\n" aaa)
+;;      (add-to-list 'aaa _last)
+;;      ;; (setq aaa (append aaa _first) )
+;;      ;; (message "%s\n----\n" aaa)
+     
+;;      (setq global-mark-ring aaa)
+;;      )
+;; )
+
+ 
+;; (defun g-unpop()
+;;         (interactive)
+;;         ;; (message "%s" global-mark-ring)
+;;         (setq _buf (marker-buffer (nth 0 (last global-mark-ring  ))) )
+;;         (setq _pos (marker-position (nth 0 (last global-mark-ring  ))) )
+;;         ;; (message "buffer:%s"_buf)
+;;         (setq m (point-marker))
+
+;;         (set-marker m _pos)
+;;         (switch-to-buffer _buf)
+
+;; 	(goto-char _pos)
+	
+;;         (setq aaa global-mark-ring)
+;;         ;; (message "%s\n" aaa)
+;;         (setq _last (nth 0 (last aaa)))
+;;         ;; (setq _first (first aaa))
+;;         ;; (message "_first %s _last %s" _first _last)
+
+;;         ;; (setq aaa (delete _first aaa)) ---
+;;         (setq aaa (delete _last aaa))
+;;         ;; (message "%s\n" aaa)
+;;         (add-to-list 'aaa _last)
+;;         ;; (setq aaa (append aaa _first) )
+;;         ;; (message "%s\n----\n" aaa)
+
+;;         (setq global-mark-ring aaa)
+;; )
+
+
+;; (defun add-to-global-ring()
+;;   ;; Force push a mark into a global ring even if it already exists
+;;   (interactive)
+;;   (let (_marker )
+;;         (setq deactivate-mark nil)
+
+;;          (setq _marker (make-marker))
+;;          (set-marker _marker (point))
+;;          (setq global-mark-ring (append (list _marker) global-mark-ring ) )
+;;          )
+;; )
