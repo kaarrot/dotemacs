@@ -82,7 +82,9 @@
  ;   (load-theme 'idea-darkula t)
   (load-theme 'tango-dark t)
 
+
 ;;;;;;;;;;;;;;;;;;; Key bindings
+
 
 ;; In order to make sure all the key bindgins work in all the moudules
 ;; defiene them in the minor mode. This will guarantee C-c C-a in c++ mode will work
@@ -122,7 +124,7 @@
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line) ; [Ctrl]-[L]   ; go to specifi line
-
+(define-key my-keys-minor-mode-map (kbd "C-%") 'vi-type-paren-match)
 
 ;;;;;;;;;;;;;;;;;;;; Multiple cursors
 (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -138,11 +140,16 @@
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
 (define-key my-keys-minor-mode-map [f4] 'desktop-save-in-desktop-dir)
-(define-key my-keys-minor-mode-map [f5] 'desktop-change-dir)
+(define-key my-keys-minor-mode-map (kbd "S-<f4>") 'desktop-change-dir)
 (define-key my-keys-minor-mode-map (kbd "<f6>") 'whitespace-mode)
 (global-set-key (kbd "<f8>") 'ispell-word)   ;; Flyspel
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
-(define-key my-keys-minor-mode-map (kbd "<f10>") 'occur)
+(define-key my-keys-minor-mode-map (kbd "<f10> c") (lambda ()
+                      (interactive)
+		      (occur-1 "{$\\|)$" 1 (list (current-buffer)))  ) )
+(define-key my-keys-minor-mode-map (kbd "<f10> p") (lambda ()
+                      (interactive)
+		      (occur-1 "def\\|class" 1 (list (current-buffer))) ))	    
 ;;(define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 (define-key my-keys-minor-mode-map (kbd "<f12>")  'revert-buffer)
 
@@ -150,7 +157,7 @@
 ;; across multiple buffers
 (define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-global-mark)
 (define-key my-keys-minor-mode-map (kbd "M-<right>") 'g-ring-unpop)
-(define-key my-keys-minor-mode-map (kbd "C-SPC <up>")  'g-ring-add-to)
+(define-key my-keys-minor-mode-map (kbd "C-c <SPC>")  'g-ring-add-to)
 
 ;; within a buffer
 (define-key my-keys-minor-mode-map (kbd "C-S-<left>") 'pop-to-mark-command)

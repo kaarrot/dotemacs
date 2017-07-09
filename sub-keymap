@@ -1,4 +1,11 @@
 [
+    { "keys": ["j", "j"], "command": "exit_insert_mode",
+    "context":
+    [
+        { "key": "setting.command_mode", "operand": false },
+        { "key": "setting.is_widget", "operand": false }
+    ]
+    },
     { "keys": ["ctrl+a"], "command": "move_to", "args": { "to": "bol" }  },
     { "keys": ["ctrl+e"], "command": "move_to", "args": { "to": "eol" }  },
     { "keys": ["alt+a"], "command": "select_all" },
@@ -20,7 +27,8 @@
         "command": "easy_motion",
         "args": {"select_text": true}
     },
-    { "keys": ["ctrl+b"], "command": "build" },
+    { "keys": ["ctrl+b", "b"], "command": "build" },
+    { "keys": ["ctrl+b", "c"], "command": "build", "args": {"variant":"Clean"} },
     { "keys": ["ctrl+F9"], "command": "build" },
     { "keys": ["ctrl+shift+b"], "command": "build", "args": {"variant":"Run"} },
     { "keys": ["shift+F10"], "command": "build", "args": {"variant":"Run"} },
@@ -65,7 +73,7 @@
     { "keys": ["ctrl+alt+space"], "command": "set_mark" },
     { "keys": ["ctrl+space"], "command": "select_to_mark" },
 
-    { "keys": ["ctrl+enter", "ctrl+enter"],
+    { "keys": ["ctrl+shift+enter"],
         "command": "run_multiple",
         "args": {
         "commands": [
@@ -75,7 +83,16 @@
         ]
         }
     },
-    { "keys": ["ctrl+k", "k"], "command": "run_existing_window_command", "args": {"id": "repl_python", "file": "config/Python/Main.sublime-menu"} },
+    
+    { "keys": ["ctrl+enter"],
+        "command": "run_multiple",
+        "args": {
+        "commands": [
+        {"command": "focus_group", "args": { "group": 0 }, "context": "window"  },
+        {"command": "repl_transfer_current", "args": {"scope": "file"} }
+        ]
+        }
+    },
     
     { "keys": ["ctrl+enter", "\\"], "command": "run_macro_file", "args": {"file": "Packages/User/runPythonBlock.sublime-macro"} },
     {"command": "sublime_jedi_goto", "keys": ["ctrl+alt+down"],
