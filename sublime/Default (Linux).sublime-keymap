@@ -94,12 +94,6 @@
         }
     },
     
-    { "keys": ["ctrl+enter", "\\"], "command": "run_macro_file", "args": {"file": "Packages/User/runPythonBlock.sublime-macro"} },
-    {"command": "sublime_jedi_goto", "keys": ["ctrl+alt+down"],
-        "context": [
-            {"key": "selector", "operator": "equal", "operand":  "source.python - string - comment"}
-        ]
-    },
     { "keys": ["alt+down"], "command": "goto_definition" },
     { "keys": ["ctrl+shift+alt+right"], "command": "next_view" },
     { "keys": ["ctrl+shift+alt+left"], "command": "prev_view" },

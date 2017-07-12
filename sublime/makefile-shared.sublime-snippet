@@ -1,0 +1,25 @@
+<snippet>
+        <content><![CDATA[
+CC=${1:gcc}
+CFLAGS=-c -Wall ${4:-fpic}
+LDFLAGS=${5:-shared}
+SOURCES=${2:hello}.${3:c}
+OBJECTS=\$(SOURCES:.${3:c}=.o)
+EXECUTABLE=${2:hello}
+
+all: \$(SOURCES) \$(EXECUTABLE)
+
+\$(EXECUTABLE): \$(OBJECTS)
+        \$(CC) \$(LDFLAGS) \$(OBJECTS) -o lib\$@.so
+
+.${3:c}.o:
+        \$(CC) \$(CFLAGS) \$< -o \$@
+
+clean:
+        rm *.o
+]]></content>
+        <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+        <!-- <tabTrigger>Makefile-Start</tabTrigger> -->
+        <!-- Optional: Set a scope to limit where the snippet will trigger -->
+        <!-- <scope>source.python</scope> -->
+</snippet>

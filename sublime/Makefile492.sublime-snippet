@@ -1,0 +1,13 @@
+<snippet>
+    <content>
+OBJ_NAME = ${1:out}
+OBJS     := \$(wildcard *.cpp)
+INCDIRS  := -I${2:~/toolchains/gcc492/include}
+LIBDIRS  := ${3:-L~/toolchains/gcc492/lib -L~/toolchains/gcc492/lib64}
+FLAGS    := -std=c++11
+LIBS     := ${4:-static-libstdc++}
+
+all : \$(OBJS)
+&#009;~/toolchains/bin/g++ \$(OBJS) \$(FLAGS) \$(INCDIRS) \$(LIBDIRS) \$(LIBS) -o \$(OBJ_NAME)
+</content>
+</snippet>
