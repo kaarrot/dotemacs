@@ -191,7 +191,10 @@
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
    (local-set-key (kbd "C-c <RET>") 'compile)
-   (local-set-key (kbd "C-c C-C") 'compile))
+   (local-set-key (kbd "C-c C-C") 'compile)
+   (local-set-key (kbd "<f5>") 'gdb)
+   (local-set-key [pause] 'toggle-window-dedicated)
+   )
 
 ;;;;;;;;;;;;;;;;;;;; C-mode
 ;; Changing styl of comments in CC-mode
@@ -199,6 +202,13 @@
                                         comment-end   "")))
 (add-hook 'c-mode-hook 'c-mode-keys)
 (add-hook 'c++-mode-hook 'c-mode-keys)  ;; TODO - pass a string to the compile
+
+
+;;;;;;;;;;;;;;;;;;;; Gdb
+(defun gdb-mode-keys()
+   (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
+)
+(add-hook 'gdb-mode-hook 'gdb-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Python key-bindings
 (defun python-mode-keys()
