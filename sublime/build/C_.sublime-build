@@ -1,0 +1,38 @@
+{
+    "env" :{
+        "TMPDIR":"/tmp",
+        "EXAMPLE_VARIABLE":"",
+    
+    },
+    "file_regex": " (..[^:]*):([0-9]+):?([0-9]+)?:?",// added space at the from to extract path properly from color bulid output
+    "working_dir": "/home/kuba/temp",
+    "variants":
+    [
+        {
+            "name": "Simple Build",
+            "shell_cmd": "g++ -std=c++11 -g ${file} -o ${file_base_name}",
+        },
+        {
+            "name": "Simple Run",
+            "shell_cmd": "$file_path/${file_base_name}",
+        },
+        {
+            "name": "Build",
+            "shell_cmd": "echo DSDS",
+        },
+        {
+            "name": "Run",
+            "shell_cmd" : "\\$EXAMPLE_VARIABLE 'run'"
+        },
+        {
+            "name": "Clean",
+            "shell_cmd": "\\$EXAMPLE_VARIABLE clean'",
+        },
+        {   "name": "CCache",
+            "shell_cmd": "\\$EXAMPLE_VARIABLE -i -- bash -c 'export CCACHE_DIR=\\$TMPDIR/ccache; ccache -s'",
+            "working_dir": "/home/kuba",
+
+        },
+
+    ]
+}
