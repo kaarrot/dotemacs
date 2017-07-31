@@ -27,8 +27,8 @@
         "command": "easy_motion",
         "args": {"select_text": true}
     },
-    { "keys": ["ctrl+b", "b"], "command": "build" },
-    { "keys": ["ctrl+b", "c"], "command": "build", "args": {"variant":"Clean"} },
+    { "keys": ["ctrl+b"], "command": "build" },
+    { "keys": ["alt+c", "l"], "command": "build", "args": {"variant":"Clean"} },
     { "keys": ["ctrl+F9"], "command": "build" },
     { "keys": ["ctrl+shift+b"], "command": "build", "args": {"variant":"Run"} },
     { "keys": ["shift+F10"], "command": "build", "args": {"variant":"Run"} },
@@ -98,5 +98,8 @@
     { "keys": ["ctrl+shift+alt+right"], "command": "next_view" },
     { "keys": ["ctrl+shift+alt+left"], "command": "prev_view" },
     { "keys": ["alt+enter"], "command": "show_history" },
-
+    { "keys": ["f4"], "command": "switch_file", "args": {"extensions": ["cpp", "cxx", "cc", "c", "C", "hpp", "hxx", "hh", "h", "ipp", "inl", "m", "mm"]} },
+    { "keys": ["shift+alt+b"], "command": "show_panel", "args": {"panel": "output.exec"}},
+    { "keys": ["alt+b"], "command": "next_result"},
+    { "keys": ["alt+h"], "command": "class_hierarchy" },
 ]

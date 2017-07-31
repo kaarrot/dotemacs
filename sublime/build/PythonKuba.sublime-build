@@ -1,0 +1,21 @@
+{
+    "env" :{
+        "TMPDIR":"/tmp",
+        "ROOT":"/home/kuba/PRJ/",  // root dir of the project
+        "PATH":"/home/kuba/anaconda2/bin:\\$PATH"                            // to set up pandas numpy etc
+    },
+    "file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$",// added space at the from to extract path properly from color bulid output
+    "working_dir": "${file_path}",
+    "variants":
+    [
+        {
+            "name": "Run",
+            "shell_cmd": "PYTHONPATH=..:. python ${file}",  // no need to chenge dir as the working is set to {file_path}
+        },
+        {
+            "name": "Run Main.py",
+            "shell_cmd": "PYTHONPATH=..:. python ./main.py",  // no need to chenge dir as the working is set to {file_path}
+
+        },
+    ]
+}

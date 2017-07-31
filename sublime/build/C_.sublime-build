@@ -17,6 +17,16 @@
             "shell_cmd": "$file_path/${file_base_name}",
         },
         {
+            "name": "Make",
+            "shell_cmd": "make",
+            "working_dir": "${file_path}",
+        },
+        {
+            "name": "Make Run",
+            "shell_cmd": "./out",
+            "working_dir": "${file_path}",
+        },
+        {
             "name": "Build",
             "shell_cmd": "echo DSDS",
         },
@@ -31,7 +41,14 @@
         {   "name": "CCache",
             "shell_cmd": "\\$EXAMPLE_VARIABLE -i -- bash -c 'export CCACHE_DIR=\\$TMPDIR/ccache; ccache -s'",
             "working_dir": "/home/kuba",
-
+        },
+        {
+            "name": "Hcustom Build",
+            "shell_cmd" : "source /home/kuba/.bashrc; env_houdini && echo \\$HOUDINI_VERSION && hcustom -g -e ${file}"
+        },
+        {
+            "name": "Hcustom Run",
+            "shell_cmd": "source /home/kuba/.bashrc; env_houdini && houdini-bin -f /home/kuba/PRJ/cpp_rozne/StarSOP_/star.hipnc",
         },
 
     ]

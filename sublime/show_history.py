@@ -49,12 +49,15 @@ class CaptureWindowCommand(sublime_plugin.EventListener):
                      'quick_panel',
                      'hide_panel',
                      'focus_group',
+                     'goto_definition',
+                     'find_all_under',
+                     'prev_view',
                      ]
         ## Skip opening panels etc.
         if cmd in blacklist:
             return
         ## Skip selection: build {'select':True}
-        if 'select' in args and len(args.keys()) == 1:
+        if args and 'select' in args and len(args.keys()) == 1:
             return
         ## Remove existing duplicates first
         if item in history:
