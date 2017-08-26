@@ -1,0 +1,34 @@
+<snippet>
+    <content><![CDATA[
+{
+    "folders":
+    [
+        {
+            "path": "${1:/opt/hfs16.0/toolkit/samples}"
+        }
+    ],
+      "settings":
+  {
+    "ecc_common_flags": ["-Isrc", "-I/usr/include", "-I/opt/hfs16.0/toolkit/include" ],
+    "easy_clang_complete_verbose": true
+  },
+   "build_systems":
+    [
+        {
+            "name": "${2:Build_Name}",
+            "shell_cmd" : "${3:pwd}",
+            "working_dir" : "${file_path}",
+            "env" : {
+                "TMPDIR":"/tmp",
+            },
+        },
+    ]
+}
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <!-- <tabTrigger>hello</tabTrigger> -->
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+
+
+</snippet>
