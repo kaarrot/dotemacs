@@ -1,0 +1,48 @@
+<snippet>
+    <content>
+import inlinecpp
+
+${1:mymodule} = inlinecpp.createLibrary(
+    name="${1:mymodule}",
+    includes=
+&apos;&apos;&apos;
+#include &lt;GU/GU_Detail.h&gt;
+#include "${2:aaa}.h"
+&apos;&apos;&apos;,
+function_sources=[
+&apos;&apos;&apos;
+void ${3:_main}(GU_Detail *gdp) {
+    go();
+}
+&apos;&apos;&apos;
+])
+
+node = hou.pwd()
+geo = node.geometry()
+${1:mymodule}.${3:_main}(geo) 
+/////////////////////////////// and this goes to you ~/houdiniX.X/inlinecpp/${2:aaa}.h
+
+#ifndef ${2:aaa}
+#define ${2:aaa}
+
+#include &lt;iostream&gt;
+#include &lt;UT/UT_String.h&gt;
+#include &lt;GU/GU_Detail.h&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+int go() {
+  using namespace std;
+
+  cout &lt;&lt; "Done" &lt;&lt;endl;
+
+  return 0;
+}
+#endif
+</content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <!-- <tabTrigger>hello</tabTrigger> -->
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>
+

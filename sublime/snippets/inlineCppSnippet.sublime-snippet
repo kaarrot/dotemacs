@@ -1,0 +1,33 @@
+<snippet>
+    <content>
+import inlinecpp
+
+${1:mymodule} = inlinecpp.createLibrary(
+    name="${1:mymodule}",
+    includes=
+&apos;&apos;&apos;
+#include &lt;UT/UT_String.h&gt;
+#include &lt;GU/GU_Detail.h&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+&apos;&apos;&apos;,
+function_sources=[
+&apos;&apos;&apos;
+void ${2:_main}(GU_Detail *gdp) {
+
+    using namespace std;
+    cout &lt;&lt; "Testing inlinecpp module" &lt;&lt; endl;
+
+}
+&apos;&apos;&apos;
+])
+
+node = hou.pwd()
+geo = node.geometry()
+${1:mymodule}.${2:_main}(geo) 
+</content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <!-- <tabTrigger>hello</tabTrigger> -->
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <!-- <scope>source.python</scope> -->
+</snippet>

@@ -20,7 +20,10 @@ export PS1="[\A]\u@\h \w\\n$ "
 
 alias u='cd ..; ls'
 alias ee='emacs -nw'
+alias sub='$HOME/bin/sublime_text_3/sublime_text -n .'
 alias EDITOR='emacs'
+alias he='hescape'
+alias hsource='cd /opt/hfs13.0.547/; source houdini_setup_bash'
 alias gogit='cd ~/PRJ/GIT'
 alias gosrc='cd ~/SRC'
 export PATH=/home/kuba/bin:/usr/local/bin/:/home/kuba/bin/nim/bin:/home/kuba/.nimble/bin:$PATH
@@ -33,6 +36,20 @@ export GOPATH=$HOME/work
 
 export PYTHONPATH=$PYTHONPATH:/home/kuba/SRC/PyPDF2
 
+
+# Grumpy
+env_grumpy(){
+  cd $HOME/SRC/grumpy
+  make
+  export GOPATH=$PWD/build
+  export PYTHONPATH=$PWD/build/lib/python2.7/site-packages
+  
+  echo "--------"
+  echo "echo 'print \"hello, world\"' > hello.py"
+  echo "tools/grumpc hello.py > hello.go"
+  echo "go build -o hello hello.go"
+}
+
 # this for the racer completion
 #alias cmake='/home/kuba/SRC/clion/bin/cmake/bin/cmake'
 alias hist='history $1'
@@ -42,8 +59,18 @@ alias hist='history $1'
 
 # Rust
 export PATH=/home/kuba/toolchains/rust/cargo/bin:/home/kuba/toolchains/rust/rustc/bin:$PATH
+## Point to std on ubuntu
+export RUSTFLAGS="-L /home/kuba/toolchains/rust/rust-std-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib"
+
+## Clang 6
+export PATH=/home/kuba/toolchains/llvm/bin:$PATH
+export LD_LIBRARY_PATH=/home/kuba/toolchains/llvm/lib:$LD_LIBRARY_PATH
 
 # export LD_LIBRARY_PATH=/home/kuba/toolchains/lib:$LD_LIBRARY_PATH
+### RACER completin stuff
+### before: cargo install racer
+export RUST_SRC_PATH=/home/kuba/SRC/rust/src/
+export PATH=$PATH:/home/kuba/.cargo/bin
 
 complete -f  ee
 
@@ -56,6 +83,7 @@ alias g-c='git checkout'
 alias g-s='git status'
 alias g-d='git diff --name-only'
 alias g-r='git for-each-ref --sort=committerdate refs/heads/'
+alias g-prev='git reset --hard `git log -n 1 --skip 1 --format="%H"`'
 
 alias julia-svn='/home/kuba/SRC/julia-svn/usr/bin/julia'
 alias julia3='/home/kuba/julia3.11/bin/julia'
@@ -81,7 +109,22 @@ copy-from-git(){
 # codeblocks and other default stuff
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
+juliaExec(){
+  rm /home/kuba/bin/julia0.4/bin/../share/julia/base/userimg.jl
+  rm /home/kuba/bin/julia0.4/lib/julia/libout_julia.ji
+  julia /home/kuba/SRC/julia/contrib/build_executable.jl out_julia $1 
+}
 
+# env_julia (){
+#     export LD_LIBRARY_PATH=/home/kuba/toolchains/lib:/home/kuba/toolchains/lib64:$LD_LIBRARY_PATH
+#     export PATH=/home/kuba/toolchains/bin:$PATH
+
+#     export CC=/home/kuba/toolchains/bin/gcc
+#     export CXX=/home/kuba/toolchains/bin/g++
+#     export FC=/home/kuba/toolchains/bin/gfortran
+#     alias cmake='/data/app/sci6_x86_64/CMake/2.8.10.2/cmake/bin/cmake'
+
+# }
 
 env_gcc49 (){
     export CC=/usr/bin/gcc-4.9;
@@ -97,7 +140,7 @@ env_gcc49 (){
     alias cc=/usr/bin/gcc-4.9;
 
     # export LD_LIBRARY_PATH=/home/kuba/toolchains/gcc492/lib64:/home/kuba/toolchains/gcc492/lib
-    export PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    export PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
     export PATH=$HOME/toolchains/qt59/bin:$HOME/toolchains/bin:$PATH
 
 }
@@ -123,6 +166,38 @@ env_houdini (){
     source ./houdini_setup_bash
 }
 
+env_clang (){
+    export LD_LIBRARY_PATH=/home/kuba/toolchains/llvm/lib:$LD_LIBRARY_PATH
+    export INCLUDE_PATH=/home/kuba/toolchains/llvm/include:$INCLUDE_PATH
+    export PATH=/home/kuba/toolchains/llvm/bin/:$PATH
+    
+    export CC=/home/kuba/toolchains/llvm/bin/clang;
+    export CPP=/home/kuba/toolchains/llvm/bin/clang-cpp;
+    export CXX=/home/kuba/toolchains/llvm/bin/clang++;
+    export CCC=/home/kuba/toolchains/llvm/bin/clang++;
+    export LD=/home/kuba/toolchains/llvm/bin/llvm-link;
+    
+    alias cc=/home/kuba/toolchains/llvm/bin/clang;
+    alias gcc=/home/kuba/toolchains/llvm/bin/clang;
+    alias cpp=/home/kuba/toolchains/llvm/bin/clang-cpp;
+    alias g++=/home/kuba/toolchains/llvm/bin/clang++;
+    alias ld=/home/kuba/toolchains/llvm/bin/llvm-link;   
+}
+
+# env_qt (){
+#     export LD_LIBRARY_PATH=/home/kuba/toolchains/qt560/lib:/home/kuba/toolchains/lib:$LD_LIBRARY_PATH
+#     export PATH=/home/kuba/toolchains/qt560/bin/:$PATH
+# }
+
+
+
+copy-from-git(){
+   rsync  -avz --exclude '*.git*' --exclude '.idea' $1/ $2
+}
+
+copy-from-git(){
+   rsync  -avz --exclude '*.git*' $1/ $2
+}
 
 function title {
     echo -ne "\033]0;"$*"\007"
@@ -205,4 +280,6 @@ if [[ $BASH_VERSION > "2.05a" ]]; then
 fi
 
 # added by Anaconda
-export PATH=/home/kuba/anaconda2/bin:$PATH
+env_anaconda(){
+    export PATH=/home/kuba/anaconda2/bin:$PATH
+}
