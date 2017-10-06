@@ -50,6 +50,15 @@
             "name": "Hcustom Run",
             "shell_cmd": "source /home/kuba/.bashrc; env_houdini && houdini-bin -f /home/kuba/PRJ/cpp_rozne/StarSOP_/star.hipnc",
         },
+        {
+            "env" :{
+            "CXXFLAGS":"/home/kuba/toolchains/fltk/bin/fltk-config --cxxflags",
+            "LDFLAGS":"/home/kuba/toolchains/fltk/bin/fltk-config --ldflags",
+            },
+            "name": "Build cpp11 FLTK",
+            "shell_cmd": "g++ -std=c++11 `\\$CXXFLAGS` ${file} `\\$LDFLAGS` -o ${file_base_name}",
+            // "shell_cmd" : "echo \"`\\$CXXFLAGS`\""
+        },
 
     ]
 }

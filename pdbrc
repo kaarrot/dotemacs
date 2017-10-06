@@ -1,0 +1,4 @@
+# Extract current stackframe and open sublime in the background
+alias ww import pdb;;ff = open("/home/kuba/pdbout.txt", "w");;pdb.traceback.print_stack(file=ff);;ff.close();;ff = open("/home/kuba/pdbout.txt", "r");;lines = ff.readlines(); ff.close();;import re;;'--- the regex removes non-paths and non-standarpython module';;stackframe = [(re.findall('["/](.*?)"', line), re.findall('(?s)(?<=line ).*?[0-9]+', line)) for line in lines];;stackframe = [i for i in stackframe if len(i[1]) > 0 and i[0][0].find('bdb.py')==-1 and i[0][0].find('pdb.py')==-1 and i[0][0].find('cmd.py')==-1 and i[0][0].find('.py')!=-1];;filepath = stackframe[-1][0][0];;linenum = stackframe[-1][1][0];;print filepath;;print linenum;;import subprocess;;cmd = "/home/kuba/bin/sublime_text_3/sublime_text -b {0}:{1}".format(filepath, linenum);;process = subprocess.Popen(cmd, shell=True)
+# Move to the next line in sublime
+alias nn next;;ww

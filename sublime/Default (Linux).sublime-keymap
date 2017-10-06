@@ -18,12 +18,12 @@
     { "keys": ["super+left"], "command": "focus_group", "args": { "group": 0 } },
     { "keys": ["super+right"], "command": "focus_group", "args": { "group": 1 } },
     {
-        "keys": ["alt+space","<character>"],
+        "keys": ["ctrl+space","<character>"],
         "command": "easy_motion",
         "args": {"select_text": false}
     },
     {
-        "keys": ["alt+space","alt+space" ,"<character>"],
+        "keys": ["ctrl+space","ctrl+space" ,"<character>"],
         "command": "easy_motion",
         "args": {"select_text": true}
     },
@@ -73,7 +73,7 @@
     { "keys": ["ctrl+escape"], "command": "exec", "args": {"kill": true} },
     
     { "keys": ["ctrl+alt+space"], "command": "set_mark" },
-    { "keys": ["ctrl+space"], "command": "select_to_mark" },
+    { "keys": ["alt+space"], "command": "select_to_mark" },
 
     { "keys": ["ctrl+shift+enter"],
         "command": "run_multiple",
