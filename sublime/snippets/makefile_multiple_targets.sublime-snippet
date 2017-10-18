@@ -1,0 +1,23 @@
+<snippet>
+<content><![CDATA[
+CC=${1:g++}
+CXXFLAGS=-std=c++11 -Wall
+LDFLAGS=-static-libstdc++ -pthread
+SOURCES=${2:test1}.cpp \
+		${3:test2}.cpp
+TARGETS=\$(SOURCES:.cpp=)
+
+all: \$(TARGETS)
+
+\$(TARGETS): \$(SOURCES)
+	\$(CC) \$(CXXFLAGS) \$@.cpp \$(LDFLAGS) -o \$@
+
+clean:
+		rm \$(TARGETS)
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<!-- <tabTrigger>Makefile-Start</tabTrigger> -->
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
