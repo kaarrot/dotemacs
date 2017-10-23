@@ -1,23 +1,37 @@
 <snippet>
-<content><![CDATA[
+        <content><![CDATA[
 CC=${1:g++}
 CXXFLAGS=-std=c++11 -Wall
-LDFLAGS=-static-libstdc++ -pthread
 SOURCES=${2:test1}.cpp \
-		${3:test2}.cpp
+                ${3:test2}.cpp
+OBJECTS=\$(SOURCES:.cpp=.o)
 TARGETS=\$(SOURCES:.cpp=)
+INCLUDES=-I/
+LDFLAGS=-L/
 
-all: \$(TARGETS)
+#FLTK_CXXFLAGS=\$(shell /u/kr/toolchains/fltk/bin/fltk-config --cxxflags )
+#FLTK_LDFLAGS=\$(shell /u/kr/toolchains/fltk/bin/fltk-config --ldflags )
 
-\$(TARGETS): \$(SOURCES)
-	\$(CC) \$(CXXFLAGS) \$@.cpp \$(LDFLAGS) -o \$@
+all: \$(TARGETS) #fltk_simple
+
+\$(TARGETS): \$(OBJECTS)
+        \$(CC) \$@.o \$(LDFLAGS) -o \$@
+
+## suffix rule
+.cpp.o:
+        \$(CC) -c \$(CXXFLAGS) \$(INCLUDES) \$< -o \$@
+
+#fltk_simple: fltk_simple.cpp
+#       \$(CC) \$(CXXFLAGS) \$(INCLUDES) \$(FLTK_CXXFLAGS) \$@.cpp \$(FLTK_LDFLAGS) \$(LDFLAGS) -o \$@
 
 clean:
-		rm \$(TARGETS)
+        rm \$(TARGETS)
+        # rm fltk_simple
+        rm *.o
 
 ]]></content>
-	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<!-- <tabTrigger>Makefile-Start</tabTrigger> -->
-	<!-- Optional: Set a scope to limit where the snippet will trigger -->
-	<!-- <scope>source.python</scope> -->
+        <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+        <!-- <tabTrigger>Makefile-Start</tabTrigger> -->
+        <!-- Optional: Set a scope to limit where the snippet will trigger -->
+        <!-- <scope>source.python</scope> -->
 </snippet>

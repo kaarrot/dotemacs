@@ -1,0 +1,26 @@
+{
+
+    "file_regex": " (..[^:]*):([0-9]+):?([0-9]+)?:?",// added space at the from to extract path properly
+    "target": "ansi_color_build",                    // color error output
+    "syntax": "Packages/ANSIescape/ANSI.tmLanguage", // color error output
+    //"working_dir": "/u/kr/temp/",
+    "variants":
+    [
+        {
+            "name": "Make",
+            "shell_cmd": "cd ${file_path}; make",
+        },
+        {
+            "name": "Run Current",
+            "shell_cmd": "$file_path/${file_base_name}",
+        },
+        {
+            "name": "Make Clean",
+            "shell_cmd": "cd ${file_path}; make clean",
+        },
+        {
+            "name": "Echo Makefile path",
+            "cmd": "echo ${file_path}/Makefile",
+        },
+    ]
+}
