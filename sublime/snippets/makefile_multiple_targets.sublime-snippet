@@ -1,5 +1,5 @@
 <snippet>
-        <content><![CDATA[
+<content><![CDATA[
 CC=${1:g++}
 CXXFLAGS=-std=c++11 -Wall
 SOURCES=${2:test1}.cpp \

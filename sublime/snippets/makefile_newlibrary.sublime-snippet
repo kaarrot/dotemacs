@@ -16,7 +16,7 @@ all: \$(SOURCES) \$(EXECUTABLE)
 	\$(CC) \$(CXXFLAGS) \$< -o \$@
 
 clean:
-		rm *.o
+	rm *.o
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<!-- <tabTrigger>Makefile-Start</tabTrigger> -->
