@@ -1,14 +1,19 @@
 {
 
-    "file_regex": " (..[^:]*):([0-9]+):?([0-9]+)?:?",// added space at the from to extract path properly
-    "target": "ansi_color_build",                    // color error output
-    "syntax": "Packages/ANSIescape/ANSI.tmLanguage", // color error output
+    // "file_regex": " (..[^:]*):([0-9]+):?([0-9]+)?:?",// added space at the from to extract path properly
+    // "target": "ansi_color_build",                    // color error output
+    // "syntax": "Packages/ANSIescape/ANSI.tmLanguage", // color error output
     //"working_dir": "/u/kr/temp/",
+    
+    "file_regex": "^(..[^:\n]*):([0-9]+):?([0-9]+)?:? (.*)$",
+    // "working_dir": "${project_path:${folder:${file_path}}}",
+    "selector": "source.makefile",
+    "syntax": "Packages/Makefile/Make.build-language",    
     "variants":
     [
         {
             "name": "Make",
-            "shell_cmd": "cd ${file_path}; make",
+            "shell_cmd": "echo cd ${file_path}; make -j",
         },
         {
             "name": "Run Current",
