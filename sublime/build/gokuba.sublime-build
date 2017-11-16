@@ -1,0 +1,31 @@
+// {
+// 	"shell_cmd": "/home/kuba/toolchains/go/bin/go run ${file}"
+// }
+
+
+{
+    "env" : {
+        "GOPATH":"/home/kuba/PRJ/go",
+        "GOROOT":"/home/kuba/toolchains/go",
+        "PATH":"/home/kuba/toolchains/go/bin:\\$PATH"
+    },
+    "shell_cmd": "go run ${file}",
+    "working_dir": "$file_path",
+    "variants": [
+        {
+            "name": "GO Build+Run",
+            "shell_cmd": "go run ${file}",
+            "working_dir": "$file_path",
+        },
+        {
+            "name": "Build Go",
+            "shell_cmd": "go build ${file}",
+            "working_dir": "$file_path",
+        },
+        {
+            "name": "Run Go",
+            "shell_cmd": "${file_path}/${file_base_name}",
+            "working_dir": "$file_path",
+        },
+    ]
+}
