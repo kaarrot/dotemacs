@@ -1,6 +1,9 @@
 import os.path, os
 import pdb
 
+
+def ttt():
+    print "SDASDA"
 # save this in .pdbrc.py in your home directory
 def complete(self, text, state):
     """return the next possible completion for text, using the current frame's
@@ -22,8 +25,8 @@ def complete(self, text, state):
 
 ## Update the current view in sublime
 def show_line_in_sublime():
+    import os
     home = os.environ['HOME']
-    print "SASASASSA"
     ff = open("%s/pdbout.txt" % home, "w")
     pdb.traceback.print_stack(file=ff)
     ff.close()
@@ -32,7 +35,7 @@ def show_line_in_sublime():
     import re
     ## the regex removes non-paths and non-standarpython module
     stackframe = [(re.findall('["/](.*?)"', line), re.findall('(?s)(?<=line ).*?[0-9]+', line)) for line in lines]
-    print stackframe
+    # print stackframe
     stackframe = [i for i in stackframe if len(i[1]) > 0 and \
                               i[0][0].find('bdb.py')==-1 and \
                               i[0][0].find('.pdbrc.py')==-1 and \
@@ -42,11 +45,11 @@ def show_line_in_sublime():
 
     filepath = stackframe[-1][0][0]
     linenum = stackframe[-1][1][0]
-    print filepath
-    print linenum
+    # print filepath, linenum
     import subprocess
-    cmd = "/{0}/bin/sublime_text_3/sublime_text -b {1}:{2}".format(home,filepath, linenum)
-    print cmd
+    cmd = '''/%s/bin/sublime_text_3/sublime_text --command 'focus_group {"group": 1}' -b %s:%s''' % (home,filepath, linenum)
+    # print cmd
+
     process = subprocess.Popen(cmd, shell=True)
     # Move to the next line in sublime
 

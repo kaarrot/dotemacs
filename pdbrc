@@ -16,5 +16,5 @@ sys._getframe(1).f_locals['self'].use_rawinput = 1
 
 
 ## aliases
-alias ww show_line_in_sublime()
+alias ww import os; execfile(os.path.expanduser("~/.pdbrc.py"));; show_line_in_sublime()
 alias nn next;;ww

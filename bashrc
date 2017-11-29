@@ -22,19 +22,25 @@ alias u='cd ..; ls'
 alias ee='emacs -nw'
 alias sub='$HOME/bin/sublime_text_3/sublime_text -n .'
 alias EDITOR='emacs'
+alias subl='$HOME/bin/sublime_text_3/sublime_text -n . &'
+alias um='micro'
 alias he='hescape'
 alias hsource='cd /opt/hfs13.0.547/; source houdini_setup_bash'
 alias gogit='cd ~/PRJ/GIT'
 alias gosrc='cd ~/SRC'
-export PATH=/home/kuba/bin:/usr/local/bin/:/home/kuba/bin/nim/bin:/home/kuba/.nimble/bin:$PATH
+alias goprj='cd /home/kuba/PRJ'
+
+export PATH=/home/kuba/bin:/home/kuba/bin/emacs/bin:/usr/local/bin/:/home/kuba/bin/nim/bin:/home/kuba/.nimble/bin:$PATH
 export PATH=/home/kuba/bin/kak/usr/local/bin:$PATH
+export PATH=$HOME/toolchains/clang50/bin/:$PATH
+export PATH=$HOME/toolchains/qt510/bin:$HOME/toolchains/bin:$PATH
 
 # Golang
 export GOROOT=$HOME/toolchains/go
 export PATH=$HOME/toolchains/go/bin:$PATH
-export GOPATH=$HOME/work
+export GOPATH=$HOME/PRJ/go
 
-export PYTHONPATH=$PYTHONPATH:/home/kuba/SRC/PyPDF2
+#export PYTHONPATH=$PYTHONPATH:/home/kuba/SRC/PyPDF2
 
 
 # Grumpy
@@ -141,7 +147,7 @@ env_gcc49 (){
 
     # export LD_LIBRARY_PATH=/home/kuba/toolchains/gcc492/lib64:/home/kuba/toolchains/gcc492/lib
     export PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
-    export PATH=$HOME/toolchains/qt59/bin:$HOME/toolchains/bin:$PATH
+    export PATH=$HOME/toolchains/qt510/bin:$HOME/toolchains/bin:$PATH
 
 }
 
@@ -282,4 +288,5 @@ fi
 # added by Anaconda
 env_anaconda(){
     export PATH=/home/kuba/anaconda2/bin:$PATH
+    # export LD_LIBRARY_PATH=/home/kuba/anaconda2/lib:/home/kuba/anaconda2/lib64:/home/kuba/anaconda2/x86_64-conda_cos6-linux-gnu/sysroot/lib:$LD_LIBRARY_PATH
 }
