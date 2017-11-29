@@ -15,8 +15,10 @@
 	[
 		"receve"
 	],
-	"line_numbers": false,
+	"line_numbers": true,
 	"show_errors_inline": false,
+	"show_panel_on_build": true,
+	"theme": "Adaptive.sublime-theme",
 	"translate_tabs_to_spaces": false,
 	"trim_automatic_white_space": false,
 	"update_check": false

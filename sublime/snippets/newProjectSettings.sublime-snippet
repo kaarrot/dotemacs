@@ -12,17 +12,50 @@
     "ecc_common_flags": ["-Isrc", "-I/usr/include", "-I/opt/hfs16.0/toolkit/include" ],
     "easy_clang_complete_verbose": true
   },
-   "build_systems":
+    "build_systems":
     [
         {
-            "name": "${2:Build_Name}",
-            "shell_cmd" : "${3:pwd}",
-            "working_dir" : "${file_path}",
-            "env" : {
-                "TMPDIR":"/tmp",
+            "env":
+            {
+                "PATH":"/home/kuba/anaconda2/bin:\\$PATH"
             },
+            "name": "Anaconda CompPhoto",
+            "shell_cmd": "python ${file} ",
+            "working_dir": "${file_path}",
+            "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+            "selector": "source.python"
         },
-    ]
+        {
+            "env":
+            {
+                "GOPATH":"/home/kuba/PRJ/go",
+                "GOROOT":"/home/kuba/toolchains/go",
+                "PATH":"/home/kuba/toolchains/go/bin:\\$PATH"
+            },
+            "name": "Go Run CompPhoto",
+            "shell_cmd": "go run ${file}",
+            "working_dir": "$file_path",
+            "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+            "selector": "source.go"
+        },
+        {
+            "name": "1 Make CompPhoto",
+            "shell_cmd": "cd ${file_path}; make -j",
+            "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+            "selector": "source.c++"
+        },
+        {
+            "name": "2 Run Current CompPhoto",
+            "shell_cmd": "$file_path/${file_base_name}",
+             "selector": "source.c++"
+        },
+        {
+            "name": "3 Make Clean CompPhoto",
+            "shell_cmd": "cd ${file_path}; make clean",
+            "selector": "source.c++"
+        },
+
+    ],
 }
 ]]></content>
     <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->

@@ -9,6 +9,7 @@
         "GOROOT":"/home/kuba/toolchains/go",
         "PATH":"/home/kuba/toolchains/go/bin:\\$PATH"
     },
+    "file_regex": "^(..[^:\n]*):([0-9]+):?([0-9]+)?:? (.*)$",
     "shell_cmd": "go run ${file}",
     "working_dir": "$file_path",
     "variants": [

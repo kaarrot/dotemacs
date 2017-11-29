@@ -27,5 +27,9 @@
             "name": "Echo Makefile path",
             "cmd": "echo ${file_path}/Makefile",
         },
+        {
+            "name": "Run Latest",
+            "shell_cmd": "${file_path}/\\$(ls ${file_path} -t  | head -1)"   // This line finds the latest build file - which is main.(cpp)
+        }
     ]
 }

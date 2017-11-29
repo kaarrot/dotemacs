@@ -59,6 +59,10 @@
             "shell_cmd": "g++ -std=c++11 `\\$CXXFLAGS` ${file} `\\$LDFLAGS` -o ${file_base_name}",
             // "shell_cmd" : "echo \"`\\$CXXFLAGS`\""
         },
+        {
+            "name": "Simple Build Eigen",
+            "shell_cmd": "g++ -std=c++11 -g ${file} -I/usr/local/include/eigen3/ -o ${file_base_name}",
+        },        
 
     ]
 }
