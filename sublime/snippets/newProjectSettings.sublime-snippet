@@ -7,17 +7,17 @@
             "path": "${1:/opt/hfs16.0/toolkit/samples}"
         }
     ],
-      "settings":
-  {
-    "ecc_common_flags": ["-Isrc", "-I/usr/include", "-I/opt/hfs16.0/toolkit/include" ],
-    "easy_clang_complete_verbose": true
-  },
+  //  "settings":
+  // {
+  //   "ecc_common_flags": ["-Isrc", "-I/usr/include", "-I/opt/hfs16.0/toolkit/include" ],
+  //   "easy_clang_complete_verbose": true
+  // },
     "build_systems":
     [
         {
             "env":
             {
-                "PATH":"/home/kuba/anaconda2/bin:\\$PATH"
+                "PATH":"/home/kuba/anaconda2/bin:\$PATH"
             },
             "name": "Anaconda CompPhoto",
             "shell_cmd": "python ${file} ",
@@ -30,7 +30,7 @@
             {
                 "GOPATH":"/home/kuba/PRJ/go",
                 "GOROOT":"/home/kuba/toolchains/go",
-                "PATH":"/home/kuba/toolchains/go/bin:\\$PATH"
+                "PATH":"/home/kuba/toolchains/go/bin:\$PATH"
             },
             "name": "Go Run CompPhoto",
             "shell_cmd": "go run ${file}",
