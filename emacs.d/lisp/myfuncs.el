@@ -275,3 +275,56 @@ This command does not push text to `kill-ring'."
     "Window '%s' is normal")
  (current-buffer)))
 
+
+(defvar previous-major-mode nil)
+(make-variable-buffer-local 'previous-major-mode)
+(put 'previous-major-mode 'permanent-local t)
+
+
+(defun ditaa/insert-src-template ()
+  (interactive)
+  (insert
+"#+begin_src ditaa :file ./helloworld.png
+
++--------+   +-------+    +-------+
+|        +---+ ditaa +--> |       |
+|  Text  |   +-------+    |diagram|
+|Document|   |!magic!|    |       |
+|     {d}|   |       |    |       |
++---+----+   +-------+    +-------+
+    :                         ^
+    |       Lots of work      |
+    +-------------------------+
+
+/--------\   +-------+
+|cAAA    +---+Version|
+|  Data  |   |   V3  |
+|  Base  |   |cRED{d}|
+|     {s}|   +-------+
+\---+----/
+     
+     
++---+-----+   +----------+
+| cBLU    |   | {io}     |
+| Ext-Foo |   |  S-ATA   |
+|   +-----+   |   cFEA   |
+|   |cPNK |   +----------+
+|   | Foo |  
++---+-----+
+
+
+/-------------+-------------\
+|cRED RED     |cBLU BLU     |
++-------------+-------------+
+|cGRE GRE     |cPNK PNK     |
++-------------+-------------+
+|cAAA               AAA     |
++-------------+-------------+
+|cCCC               CCC     |
++-------------+-------------+
+|cBLK BLK     |cYEL YEL     |
+\-------------+-------------/
+
+#+end_src"))
+
+

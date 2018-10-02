@@ -71,6 +71,12 @@
           (lambda ()
             (org-indent-mode t) (flyspell-prog-mode)
 	    (setq org-src-fontify-natively t)
+
+	    (org-babel-do-load-languages			
+	         'org-babel-load-languages
+		      '((ditaa . t)))
+	
+	(setq org-ditaa-jar-path   	     "/home/kuba/bin/emacs/share/emacs/25.3/lisp/contrib/scripts/ditaa0_9.jar")
 	    )
           t)
 
@@ -152,6 +158,8 @@
 		      (occur-1 "def\\|class" 1 (list (current-buffer))) ))	    
 ;;(define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 (define-key my-keys-minor-mode-map (kbd "<f12>")  'revert-buffer)
+(define-key my-keys-minor-mode-map (kbd "<C-f12>") 'artist-mode)
+
 
 ;;;;;;;;;;;;;;;;;;; Jump around
 ;; across multiple buffers
@@ -169,7 +177,7 @@
 (define-key my-keys-minor-mode-map (kbd "M-<up>") 'dumb-jump-back)
 
 ;; Overwrites the default behaviour and does not copy text into kill-ring
-(global-set-key (kbd "C-k") 'delete-line)
+;;(global-set-key (kbd "C-k") 'delete-line)
 
 ;;; to jump back use - C-u C-<space>
 
@@ -259,6 +267,11 @@
 
 ;;(load "/home/kuba/.opam/4.02.1/share/emacs/site-lisp/tuareg-site-file")
 
+
+
+
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -267,10 +280,11 @@
  '(company-abort-manual-when-too-short t)
  '(company-auto-complete t)
  '(company-auto-complete-chars (quote (41 46)))
+ '(doc-view-continuous t)
  '(dumb-jump-mode t)
  '(package-selected-packages
    (quote
-    (concurrent ctable dumb-jump tuareg python-environment merlin julia-mode flycheck epc company-irony auto-complete))))
+    (markdown-mode concurrent ctable dumb-jump tuareg python-environment merlin julia-mode flycheck epc company-irony auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
