@@ -29,6 +29,16 @@
 ;;(recentf-max-menu-items 20)
 ;;(recentf-max-saved-items 60)
 
+;; Save sessions history
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file "~/.emacs.d/savehist")
+(savehist-mode t)
+
+;; Treat )( as stops in backward-kill-word
+(modify-syntax-entry ?) "w")
+(modify-syntax-entry ?( "w")
+
+
 ;;;;;;;;;;;;;;;;;;;; Set path to Anaconda python
 (setq python-shell-interpreter "/home/kuba/anaconda2/bin/python")
 
