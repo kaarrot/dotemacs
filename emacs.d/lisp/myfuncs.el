@@ -194,6 +194,17 @@ This command does not push text to `kill-ring'."
   (delete-char 1))
 
 
+(defun backward-kill-char-or-word ()
+  (interactive)
+  (cond
+   ((looking-back (rx (char word)) 1)
+    (backward-kill-word 1))
+   ((looking-back (rx (char blank)) 1)
+    (delete-horizontal-space t))
+   (t
+    (backward-delete-char 1))))
+
+
 (defun infer-indentation-style ()
   ;; if our source file uses tabs, we use tabs, if spaces spaces, and if
   ;; neither, we use the current indent-tabs-mode

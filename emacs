@@ -34,13 +34,8 @@
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file "~/.emacs.d/savehist")
 (savehist-mode t)
 
-;; Treat )( as stops in backward-kill-word
-(modify-syntax-entry ?) "w")
-(modify-syntax-entry ?( "w")
-
-
 ;;;;;;;;;;;;;;;;;;;; Set path to Anaconda python
-(setq python-shell-interpreter "/home/kuba/anaconda2/bin/python")
+;;(setq python-shell-interpreter "/home/kuba/anaconda2/bin/python")
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (setq bm-restore-repository-on-load t)
@@ -52,13 +47,13 @@
 
 ;; Save bookmarks on emacs exit
 (add-hook 'kill-emacs-hook '(lambda nil            
-			      (bm-buffer-save-all)
-			      (bm-repository-save)))
+            (bm-buffer-save-all)
+            (bm-repository-save)))
 ;Update bookmark repository when saving the file.
 (add-hook 'after-save-hook '(lambda nil 
-			      (bm-buffer-save)
-			      (bm-repository-save)
-			      ))
+            (bm-buffer-save)
+            (bm-repository-save)
+            ))
 
 (require 'cl)                ;; otherwise loop macros will not be recognised
 (require 'recentf)
@@ -73,21 +68,21 @@
 (package-initialize)
 
 ;;;;; ELPA
-(global-flycheck-mode)
+;;(global-flycheck-mode)
 
 
 ;;;;;;;;;;;;;;;;;; Hooks
 (add-hook 'org-mode-hook
           (lambda ()
             (org-indent-mode t) (flyspell-prog-mode)
-	    (setq org-src-fontify-natively t)
+      (setq org-src-fontify-natively t)
 
-	    (org-babel-do-load-languages			
-	         'org-babel-load-languages
-		      '((ditaa . t)))
-	
-	(setq org-ditaa-jar-path   	     "/home/kuba/bin/emacs/share/emacs/25.3/lisp/contrib/scripts/ditaa0_9.jar")
-	    )
+      (org-babel-do-load-languages      
+           'org-babel-load-languages
+          '((ditaa . t)))
+  
+  (setq org-ditaa-jar-path         "/home/kuba/bin/emacs/share/emacs/25.3/lisp/contrib/scripts/ditaa0_9.jar")
+      )
           t)
 
 (add-hook 'after-init-hook 'global-company-mode)
@@ -162,10 +157,10 @@
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "<f10> c") (lambda ()
                       (interactive)
-		      (occur-1 "{$\\|)$" 1 (list (current-buffer)))  ) )
+          (occur-1 "{$\\|)$" 1 (list (current-buffer)))  ) )
 (define-key my-keys-minor-mode-map (kbd "<f10> p") (lambda ()
                       (interactive)
-		      (occur-1 "def\\|class" 1 (list (current-buffer))) ))	    
+          (occur-1 "def\\|class" 1 (list (current-buffer))) ))      
 ;;(define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
 (define-key my-keys-minor-mode-map (kbd "<f12>")  'revert-buffer)
 (define-key my-keys-minor-mode-map (kbd "<C-f12>") 'artist-mode)
@@ -196,6 +191,7 @@
 ;;; Partial completion
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
+(global-set-key (kbd "M-<backspace>") 'backward-kill-char-or-word)
 
 
 ;; C-h k - find the key-binding
@@ -258,8 +254,10 @@
    (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
    (local-set-key (kbd "S-<down>") 'comint-next-matching-input-from-input)
    ;;(local-set-key (kbd "<tab>") 'completion-at-point) 
+   ;;(company-mode -1) ;; locks up emacs with the huge buffers
    )
 (add-hook 'shell-mode-hook 'shell-mode-keys)
+
 (add-hook 'inferior-python-mode-hook 'shell-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Dired
@@ -274,30 +272,15 @@
 
 (add-hook 'dired-mode-hook 'dired-mode-keys)
 
-
-;;(load "/home/kuba/.opam/4.02.1/share/emacs/site-lisp/tuareg-site-file")
-
-
-
-
-
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-abort-manual-when-too-short t)
- '(company-auto-complete t)
- '(company-auto-complete-chars (quote (41 46)))
- '(doc-view-continuous t)
- '(dumb-jump-mode t)
- '(package-selected-packages
-   (quote
-    (markdown-mode concurrent ctable dumb-jump tuareg python-environment merlin julia-mode flycheck epc company-irony auto-complete))))
+ '(package-selected-packages (quote (dumb-jump markdown-mode multiple-cursors company))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(bm-fringe-persistent-face ((t (:background "dark orange" :foreground "White")))))
+ )
