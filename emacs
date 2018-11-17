@@ -1,107 +1,191 @@
 
-;; ;; .emacs
+
+(defun comment-or-uncomment-this (&optional lines)
+(interactive "P")
+(if mark-active
+(if (< (mark) (point))
+(comment-or-uncomment-region (mark) (point))
+(comment-or-uncomment-region (point) (mark)))
+(comment-or-uncomment-region
+(line-beginning-position)
+(line-end-position lines))))
 
 
-(add-to-list 'load-path "~/.emacs.d/")
-(add-to-list 'load-path "~/.emacs.d/multiple-cursors")
-(load "~/.emacs.d/myfuncs.el")
+(defun infer-indentation-style ()
+;; if our source file uses tabs, we use tabs, if spaces spaces, and if 
+;; neither, we use the current indent-tabs-mode
+(let ((space-count (how-many "^ " (point-min) (point-max)))
+(tab-count (how-many "^\t" (point-min) (point-max))))
+(if (> space-count tab-count) (setq indent-tabs-mode nil))
+(if (> tab-count space-count) (setq indent-tabs-mode t))))
+
+
+(defun g-ring()
+(interactive)
+(message "%s" global-mark-ring)
+)
+
+(defun unpop-global-mark()
+;; Move cursor forward to the next mark sotred in the ring
+(interactive)
+(let (_buf
+_pos
+aaa)
+
+;; (message "%s" global-mark-ring)
+(setq _buf (marker-buffer (nth 0 (last global-mark-ring ))) )
+(setq _pos (marker-position (nth 0 (last global-mark-ring ))) )
+;; (message "buffer:%s pos %s" _buf _pos)
+(setq m (point-marker))
+
+(set-marker m _pos)
+(switch-to-buffer _buf)
+
+(goto-char _pos)
+
+(setq aaa global-mark-ring)
+;; (message "%s\n" aaa)
+(setq _last (nth 0 (last aaa)))
+;; (setq _first (first aaa))
+;; (message "_first %s _last %s" _first _last)
+
+;; (setq aaa (delete _first aaa)) ---
+(setq aaa (delete _last aaa))
+;; (message "%s\n" aaa)
+(add-to-list 'aaa _last)
+;; (setq aaa (append aaa _first) )
+;; (message "%s\n----\n" aaa)
+
+(setq global-mark-ring aaa)
+)
+)
+
+(defun add-to-global-ring()
+;; Force push a mark into a global ring even if it already exists
+(interactive)
+(let (_marker )
+;; (activate-mark nil)
+(setq _marker (make-marker))
+(set-marker _marker (point))
+(setq global-mark-ring (append (list _marker) global-mark-ring ) )
+
+;; (setq deactivate-mark nil)
+
+)
+)
+
+(defun toggle-window-dedicated ()
+"Toggle whether the current active window is dedicated or not"
+(interactive)
+(message
+(if (let (window (get-buffer-window (current-buffer)))
+(set-window-dedicated-p window
+(not (window-dedicated-p window))))
+"Window '%s' is dedicated"
+"Window '%s' is normal")
+(current-buffer)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
+
+;; Save sessions history
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file "~/.emacs.d/savehist")
+(savehist-mode t)
 
 (setq inhibit-splash-screen t)
-
+(setq tramp-default-method "ssh")
+(setq tab-width 2)
 
 (recentf-mode 1)
-(tool-bar-mode -1)
 (show-paren-mode 1)
+;;(semantic-mode 1)
 (setq x-select-enable-clipboard t)
+(global-visual-line-mode t)
 ;;(setq use-file-dialog nil)
 (setq make-backup-files nil)
-(set-variable 'scroll-conservatively 5)
-;; (recentf-max-menu-items 20)
-;; (recentf-max-saved-items 60)
+(setq mouse-buffer-menu-mode-mult 10)
+(global-auto-revert-mode t)
 
+(define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
+(define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
+(define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
+(define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
+(define-key my-keys-minor-mode-map [f4] 'desktop-save-in-desktop-dir)
+(define-key my-keys-minor-mode-map (kbd "<f6>") 'whitespace-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
+(global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
+(global-set-key (kbd "C-c 8") 'ispell-word);; Flyspel
+(define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
+(define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
+(define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (setq tab-width 4)))
 
-;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
-(setq bm-restore-repository-on-load t)
-(require 'bm)
-(setq-default bm-buffer-persistence t)
-
-;; Load bookmarks on file load
-(add-hook 'find-file-hooks '(lambda nil (bm-load-and-restore)))
-
-;; Save bookmarks on emacs exit
-(add-hook 'kill-emacs-hook '(lambda nil            
-			      (bm-buffer-save-all)
-			      (bm-repository-save)))
-;Update bookmark repository when saving the file.
-(add-hook 'after-save-hook '(lambda nil 
-			      (bm-buffer-save)
-			      (bm-repository-save)
-			      ))
-
-(require 'cl)                ;; otherwise loop macros will not be recognised
-(require 'recentf)
-;;(require 'wdired)
-(require 'ace-jump-mode)
-(require 'tabbar)
-(tabbar-mode)
-(require 'multiple-cursors)
-
-;;;;;;;;;;;;;;;;;;; Key bindings
-
-;; In order to make sure all the key bindgins work in all the moudules
-;; defiene them in the minor mode. This will guarantee C-c C-a in c++ mode will work
-(defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
-;; ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
-(define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
-(define-key my-keys-minor-mode-map (kbd "M-<up>") 'bm-toggle)
-(define-key my-keys-minor-mode-map (kbd "C-c .")   'bm-next)   ;   >
-(define-key my-keys-minor-mode-map (kbd "M-<right>")   'bm-next)   ;   >
-(define-key my-keys-minor-mode-map (kbd "C-c ,") 'bm-previous) ;   <
-(define-key my-keys-minor-mode-map (kbd "M-<left>") 'bm-previous) ;   <
-(define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-5>") 'bm-next-mouse)
-(define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-4>") 'bm-previous-mouse)
-(define-key my-keys-minor-mode-map (kbd "<left-fringe> <mouse-1>") 'bm-toggle-mouse)
-
-;;;;;;;;;;;;;;;;;;;; Windows move
-(define-key my-keys-minor-mode-map (kbd "C-c <left>")  'windmove-left)   ;work also in terminal
-(define-key my-keys-minor-mode-map (kbd "C-c <right>") 'windmove-right)
-(define-key my-keys-minor-mode-map (kbd "C-c <up>")    'windmove-up)
-(define-key my-keys-minor-mode-map (kbd "C-c <down>") 'windmove-down)
-
-(define-key my-keys-minor-mode-map (kbd "s-<left>")  'windmove-left)   ;work also in terminal
-(define-key my-keys-minor-mode-map (kbd "s-<right>") 'windmove-right)
-(define-key my-keys-minor-mode-map (kbd "s-<up>")    'windmove-up)
-(define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
-
-;;;;;;;;;;;;;;;;;;;; ACE Jump
-(define-key my-keys-minor-mode-map (kbd "C-c q")  'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "M-SPC")  'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "S-SPC")  'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "C-c w")  'ace-jump-word-mode)
-(define-key my-keys-minor-mode-map (kbd "C-c e")  'ace-jump-line-mode)
+(define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
+(define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
+(define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
+(define-key my-keys-minor-mode-map (kbd "M-<SPC>") 'set-mark-command)
+(define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
-(define-key my-keys-minor-mode-map "\C-l" 'goto-line) ; [Ctrl]-[L]   ; go to specifi line
+(define-key my-keys-minor-mode-map (kbd "C-b") 'comment-or-uncomment-this)
+(define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
 
-;;;;;;;;;;;;;;;;;;;; Multiple cursors
-(define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'mc/edit-lines)
-(define-key my-keys-minor-mode-map (kbd "C-c C-v") 'mc/mark-next-like-this)
-(define-key my-keys-minor-mode-map (kbd "C-c C-<SPC>") 'mc/mark-all-in-region)
-(define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
-;;;;;;;;;;;;;;;;;; F-keys
-(define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
-(define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
-(define-key my-keys-minor-mode-map [f4] 'bubble-buffer) 
-(define-key my-keys-minor-mode-map (kbd "<f6>") 'whitespace-mode)
-(global-set-key (kbd "<f8>") 'ispell-word)   ;; Flyspel
-(define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
-(define-key my-keys-minor-mode-map (kbd "S-<f12>") 'goto-pydef)
+(define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 
+;;;;;;;;;;;;;;;;;;; Jump around
+(define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
+(define-key my-keys-minor-mode-map (kbd "C-c <up>") 'add-to-global-ring)
+(define-key my-keys-minor-mode-map (kbd "M <up>") 'add-to-global-ring)
+(define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "M-<right>") 'unpop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "C-c  <left>") 'pop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "C-c <right>") 'unpop-global-mark)
 
 (define-minor-mode my-keys-minor-mode
-  "A minor mode so that my key settings override annoying major modes."
-   t " my-keys" 'my-keys-minor-mode-map)
+"A minor mode so that my key settings override annoying major modes."
+t " my-keys" 'my-keys-minor-mode-map)
 
 (my-keys-minor-mode 1)
+
+;;;;;;;;;;;;;;;;;;;; C-key-bindings
+(defun c-mode-keys()
+(local-set-key (kbd "C-c <RET>") 'compile)
+(local-set-key (kbd "C-c C-C") 'compile)
+(local-set-key (kbd "<f5>") 'gdb)
+(local-set-key [pause] 'toggle-window-dedicated)
+)
+
+(add-hook 'c++-mode-hook 'c-mode-keys) ;; TODO - pass a
+(add-hook 'c++-mode-hook (lambda ()
+(setq tab-width 2)
+(setq comment-start "//" comment-end "")
+(set-default 'truncate-lines nil)
+))
+
+;;;;;;;;;;;;;;;;;;; Gdb
+(defun gdb-mode-keys()
+(local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
+)
+(add-hook 'gdb-mode-hook 'gdb-mode-keys)
+
+;;;;;;;;;;;;;;;;;;; Python
+(defun python-mode-keys()
+(python-indent-guess-indent-offset)
+(infer-indentation-style)
+;;(setq indent-tabs-mode t)
+(local-set-key (kbd "C->") 'python-indent-shift-right)
+(local-set-key (kbd "C-<") 'python-indent-shift-left)
+(setq tab-width 4)
+)
+(add-hook 'python-mode-hook 'python-mode-keys)
+
+;;;;;;;;;;;;;;;;;;;; Dired
+(defun dired-mode-keys()
+(local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
+(local-set-key (kbd "C-k") 'kill-dired-buffers)
+)
+(add-hook 'dired-mode-hook 'dired-mode-keys) 
+
