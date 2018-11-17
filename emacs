@@ -233,6 +233,7 @@
    (python-indent-guess-indent-offset)
    (infer-indentation-style)
    ;;(setq indent-tabs-mode t)
+   (python-shell-completion-native-turn-on)
    
    (local-set-key (kbd "C-<") 'python-indent-shift-left)
    (local-set-key (kbd "C->") 'python-indent-shift-right)
