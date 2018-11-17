@@ -1,4 +1,4 @@
-;; .emacs
+; .emacs
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'load-path "~/.emacs.d/lisp/multiple-cursors")
@@ -85,7 +85,11 @@
       )
           t)
 
-(add-hook 'after-init-hook 'global-company-mode)
+;;;;;;;;;;;;;;;;;; Company mode
+;(add-hook 'after-init-hook 'global-company-mode)
+
+;;;;;;;;;;;;;;;;; Autocomplete
+(ac-config-default)
 
 
 ;;;;;;;;;;;;;;;;;;; Theme
@@ -205,8 +209,8 @@
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
    (local-set-key (kbd "C-c <RET>") 'compile)
-   (local-set-key (kbd "C-c C-C") 'compile)
-   (local-set-key (kbd "<f5>") 'gdb)
+   (local-set-key (kbd "C-c C-c") 'compile)
+   (local-set-key (kbd "<f5>") 'gud-gdb)
    (local-set-key [pause] 'toggle-window-dedicated)
    )
 
@@ -277,7 +281,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (dumb-jump markdown-mode multiple-cursors company))))
+ '(package-selected-packages
+   (quote
+    (auto-complete dumb-jump markdown-mode multiple-cursors))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
