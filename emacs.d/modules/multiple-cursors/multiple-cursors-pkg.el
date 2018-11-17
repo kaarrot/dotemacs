@@ -1,4 +1,5 @@
-(define-package "multiple-cursors" "20141026.503" "Multiple cursors for Emacs." 'nil)
+(define-package "multiple-cursors" "20180913.1237" "Multiple cursors for Emacs."
+  '((cl-lib "0.5")))
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; End:
