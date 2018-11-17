@@ -1,4 +1,9 @@
 
+(add-to-list 'load-path "~/.emacs.d/modules")
+;(add-to-list 'load-path "~/.emacs.d/modules/multiple-cursor")
+
+(load "~/.emacs.d/modules/myfuncs.el")
+;(require 'dumb-jump')
 
 (defun comment-or-uncomment-this (&optional lines)
 (interactive "P")
