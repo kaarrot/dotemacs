@@ -5,7 +5,7 @@
 (load "~/.emacs.d/modules/myfuncs.el")
 (require 'dumb-jump)
 (require 'multiple-cursors)
-;(require 'ace-jump-mode)
+(require 'ace-jump-mode)
 ;(tabbar-mode)
 
 (defun comment-or-uncomment-this (&optional lines)
