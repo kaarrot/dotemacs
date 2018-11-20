@@ -10,6 +10,7 @@
 (require 'tabbar)
 (require 'dumb-jump)
 (require 'company)
+(require 'bm)
 
 (dumb-jump-mode t)
 (tabbar-mode)
@@ -35,23 +36,22 @@
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (when (display-graphic-p)
-(require 'bm)
-(setq bm-repository-file "~/.emacs.d/bm-repository")
-(setq bm-restore-repository-on-load t)
-(setq-default bm-buffer-persistence t)
+  (setq bm-repository-file "~/.emacs.d/bm-repository")
+  (setq bm-restore-repository-on-load t)
+  (setq-default bm-buffer-persistence t)
 
-;; Load bookmarks on file load
-(add-hook 'find-file-hooks '(lambda nil (bm-load-and-restore)))
-;; Save bookmarks on emacs exit
-(add-hook 'kill-emacs-hook '(lambda nil 
-(bm-buffer-save-all)
-(bm-repository-save)))
-;; Update bookmark repository when saving the file.
-(add-hook 'after-save-hook '(lambda nil 
-(bm-buffer-save)
-(bm-repository-save)
-))
-)
+  ;; Load bookmarks on file load
+  (add-hook 'find-file-hooks '(lambda nil (bm-load-and-restore)))
+  ;; Save bookmarks on emacs exit
+  (add-hook 'kill-emacs-hook '(lambda nil 
+				(bm-buffer-save-all)
+				(bm-repository-save)))
+  ;; Update bookmark repository when saving the file.
+  (add-hook 'after-save-hook '(lambda nil 
+				(bm-buffer-save)
+				(bm-repository-save)
+				))
+  )
 
 ;;;;;;;;;;;;;;;;;; Theme
 (load-theme 'tango-dark t)
@@ -96,13 +96,13 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
 
-(when (display-graphic-p)
+
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c .") 'bm-next) ; >
 (define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next) ; >
-)
+
 
 ;;;;;;;;;;;;;;;;;;;; Move between windows
 (define-key my-keys-minor-mode-map (kbd "C-c <left>") 'windmove-left) ;work also in terminal
@@ -181,6 +181,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (python-indent-guess-indent-offset)
 (infer-indentation-style)
 ;;(setq indent-tabs-mode t)
+(python-shell-completion-native-turn-on)
 (local-set-key (kbd "C->") 'python-indent-shift-right)
 (local-set-key (kbd "C-<") 'python-indent-shift-left)
 (local-set-key (kbd "C-c i") 'iimage-mode)
