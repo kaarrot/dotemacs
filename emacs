@@ -30,6 +30,7 @@
 (setq mouse-buffer-menu-mode-mult 10)
 (global-auto-revert-mode t)
 
+
 (when (display-graphic-p)
   (tool-bar-mode -1)
 )
@@ -208,10 +209,11 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'shell-mode-hook 'shell-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Dired
+(eval-after-load 'dired '(progn (require 'single-dired)))
 (defun dired-mode-keys()
-(local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
-(local-set-key (kbd "C-k") 'kill-dired-buffers)
-)
+  (local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
+  (local-set-key (kbd "C-k") 'kill-dired-buffers)
+  )
 (add-hook 'dired-mode-hook 'dired-mode-keys) 
 
 ;;;;;;;;;;;;;;;;;;;; ORG
