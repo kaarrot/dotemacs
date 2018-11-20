@@ -1,138 +1,184 @@
+;; (defun comment-or-uncomment-this (&optional lines)
+;; (interactive "P")
+;; (if mark-active
+;; (if (< (mark) (point))
+;; (comment-or-uncomment-region (mark) (point))
+;; (comment-or-uncomment-region (point) (mark)))
+;; (comment-or-uncomment-region
+;; (line-beginning-position)
+;; (line-end-position lines))))
+
+
+;;(defun infer-indentation-style ()
+;; if our source file uses tabs, we use tabs, if spaces spaces, and if 
+;; neither, we use the current indent-tabs-mode
+;; (let ((space-count (how-many "^ " (point-min) (point-max)))
+;; (tab-count (how-many "^\t" (point-min) (point-max))))
+;; (if (> space-count tab-count) (setq indent-tabs-mode nil))
+;; (if (> tab-count space-count) (setq indent-tabs-mode t))))
+
+
+;; (defun g-ring()
+;; (interactive)
+;; (message "%s" global-mark-ring)
+;; )
+
+;; (defun unpop-global-mark()
+;; ;; Move cursor forward to the next mark sotred in the ring
+;; (interactive)
+;; (let (_buf
+;; _pos
+;; aaa)
+
+;; ;; (message "%s" global-mark-ring)
+;; (setq _buf (marker-buffer (nth 0 (last global-mark-ring ))) )
+;; (setq _pos (marker-position (nth 0 (last global-mark-ring ))) )
+;; ;; (message "buffer:%s pos %s" _buf _pos)
+;; (setq m (point-marker))
+
+;; (set-marker m _pos)
+;; (switch-to-buffer _buf)
+
+;; (goto-char _pos)
+
+;; (setq aaa global-mark-ring)
+;; ;; (message "%s\n" aaa)
+;; (setq _last (nth 0 (last aaa)))
+;; ;; (setq _first (first aaa))
+;; ;; (message "_first %s _last %s" _first _last)
+
+;; ;; (setq aaa (delete _first aaa)) ---
+;; (setq aaa (delete _last aaa))
+;; ;; (message "%s\n" aaa)
+;; (add-to-list 'aaa _last)
+;; ;; (setq aaa (append aaa _first) )
+;; ;; (message "%s\n----\n" aaa)
+
+;; (setq global-mark-ring aaa)
+;; )
+;; )
+
+;; (defun add-to-global-ring()
+;; ;; Force push a mark into a global ring even if it already exists
+;; (interactive)
+;; (let (_marker )
+;; ;; (activate-mark nil)
+;; (setq _marker (make-marker))
+;; (set-marker _marker (point))
+;; (setq global-mark-ring (append (list _marker) global-mark-ring ) )
+
+;; ;; (setq deactivate-mark nil)
+
+;; )
+;; )
+
+;; (defun toggle-window-dedicated ()
+;; "Toggle whether the current active window is dedicated or not"
+;; (interactive)
+;; (message
+;; (if (let (window (get-buffer-window (current-buffer)))
+;; (set-window-dedicated-p window
+;; (not (window-dedicated-p window))))
+;; "Window '%s' is dedicated"
+;; "Window '%s' is normal")
+;; (current-buffer)))
+
+; ^ ^ ^ ^ ^
+; | | | | | 
+; essentials from emecs.d/modules/myfuncs.el
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (add-to-list 'load-path "~/.emacs.d/modules")
 (add-to-list 'load-path "~/.emacs.d/modules/multiple-cursors")
+(add-to-list 'load-path "~/.emacs.d/modules/auto-complete")
+(add-to-list 'load-path "~/.emacs.d/modules/company-mode")
 
 (load "~/.emacs.d/modules/myfuncs.el")
 (require 'dumb-jump)
 (require 'multiple-cursors)
 (require 'ace-jump-mode)
-;(tabbar-mode)
+(require 'tabbar)
+(require 'dumb-jump)
+(require 'company)
 
-(defun comment-or-uncomment-this (&optional lines)
-(interactive "P")
-(if mark-active
-(if (< (mark) (point))
-(comment-or-uncomment-region (mark) (point))
-(comment-or-uncomment-region (point) (mark)))
-(comment-or-uncomment-region
-(line-beginning-position)
-(line-end-position lines))))
+(dumb-jump-mode t)
+(tabbar-mode)
 
-
-(defun infer-indentation-style ()
-;; if our source file uses tabs, we use tabs, if spaces spaces, and if 
-;; neither, we use the current indent-tabs-mode
-(let ((space-count (how-many "^ " (point-min) (point-max)))
-(tab-count (how-many "^\t" (point-min) (point-max))))
-(if (> space-count tab-count) (setq indent-tabs-mode nil))
-(if (> tab-count space-count) (setq indent-tabs-mode t))))
-
-
-(defun g-ring()
-(interactive)
-(message "%s" global-mark-ring)
-)
-
-(defun unpop-global-mark()
-;; Move cursor forward to the next mark sotred in the ring
-(interactive)
-(let (_buf
-_pos
-aaa)
-
-;; (message "%s" global-mark-ring)
-(setq _buf (marker-buffer (nth 0 (last global-mark-ring ))) )
-(setq _pos (marker-position (nth 0 (last global-mark-ring ))) )
-;; (message "buffer:%s pos %s" _buf _pos)
-(setq m (point-marker))
-
-(set-marker m _pos)
-(switch-to-buffer _buf)
-
-(goto-char _pos)
-
-(setq aaa global-mark-ring)
-;; (message "%s\n" aaa)
-(setq _last (nth 0 (last aaa)))
-;; (setq _first (first aaa))
-;; (message "_first %s _last %s" _first _last)
-
-;; (setq aaa (delete _first aaa)) ---
-(setq aaa (delete _last aaa))
-;; (message "%s\n" aaa)
-(add-to-list 'aaa _last)
-;; (setq aaa (append aaa _first) )
-;; (message "%s\n----\n" aaa)
-
-(setq global-mark-ring aaa)
-)
-)
-
-(defun add-to-global-ring()
-;; Force push a mark into a global ring even if it already exists
-(interactive)
-(let (_marker )
-;; (activate-mark nil)
-(setq _marker (make-marker))
-(set-marker _marker (point))
-(setq global-mark-ring (append (list _marker) global-mark-ring ) )
-
-;; (setq deactivate-mark nil)
-
-)
-)
-
-(defun toggle-window-dedicated ()
-"Toggle whether the current active window is dedicated or not"
-(interactive)
-(message
-(if (let (window (get-buffer-window (current-buffer)))
-(set-window-dedicated-p window
-(not (window-dedicated-p window))))
-"Window '%s' is dedicated"
-"Window '%s' is normal")
-(current-buffer)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
-
-;; Save sessions history
-(setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file "~/.emacs.d/savehist")
-(savehist-mode t)
+;;;;;;;;;;;;;;;;;;; Configuration
 
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")
-(setq tab-width 2)
+(setq tab-width 4)
 
 (recentf-mode 1)
 (show-paren-mode 1)
-;;(semantic-mode 1)
 (setq x-select-enable-clipboard t)
 (global-visual-line-mode t)
-;;(setq use-file-dialog nil)
+(setq use-file-dialog nil)
 (setq make-backup-files nil)
 (setq mouse-buffer-menu-mode-mult 10)
 (global-auto-revert-mode t)
 
+(when (display-graphic-p)
+  (tool-bar-mode -1)
+)
+
+;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
+(when (display-graphic-p)
+(require 'bm)
+(setq bm-repository-file "~/.emacs.d/bm-repository")
+(setq bm-restore-repository-on-load t)
+(setq-default bm-buffer-persistence t)
+
+;; Load bookmarks on file load
+(add-hook 'find-file-hooks '(lambda nil (bm-load-and-restore)))
+;; Save bookmarks on emacs exit
+(add-hook 'kill-emacs-hook '(lambda nil 
+(bm-buffer-save-all)
+(bm-repository-save)))
+;; Update bookmark repository when saving the file.
+(add-hook 'after-save-hook '(lambda nil 
+(bm-buffer-save)
+(bm-repository-save)
+))
+)
 
 ;;;;;;;;;;;;;;;;;; Theme
 (load-theme 'tango-dark t)
 
-;;;;;;;;;;;;;;;;;; Company mode
-;(add-hook 'after-init-hook 'global-company-mode)
+;;;;;;;;;;;;;;;;;;;;; Save minibuffer commands accross sessions
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file "~/.emacs.d/savehist")
+(savehist-mode t)
 
-;;;;;;;;;;;;;;;;; Autocomplete
+;;;;;;;;;;;;;;;;;; Company mode
+(add-hook 'after-init-hook 'global-company-mode)
+
+;;;;;;;;;;;;;;;;;; Autocomplete
 ;(ac-config-default)
 
+(defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
+
 ;;;;;;;;;;;;;;;;;;;; Tabbar
-;(define-key my-keys-minor-mode-map (kbd "S-C-M-<left>") 'tabbar-backward-tab)
-;(define-key my-keys-minor-mode-map (kbd "S-C-M-<right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "S-C-M-<left>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "S-C-M-<right>") 'tabbar-forward-tab)
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c j") 'ace-jump-char-mode)
+
+;;;;;;;;;;;;;;;;;;; Dumb Jump
+(define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
+(define-key my-keys-minor-mode-map (kbd "M-<down>") 'dumb-jump-go-current-window)
+(define-key my-keys-minor-mode-map (kbd "M-<up>") 'dumb-jump-back)
+
+;;;;;;;;;;;;;;;;;;; Cursor history 
+(define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
+(define-key my-keys-minor-mode-map (kbd "S-SPC") 'add-to-global-ring)
+(define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "M-<right>") 'unpop-global-mark)
 
 ;;;;;;;;;;;;;;;;;;;; Multiple cursors
 (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -142,8 +188,26 @@ aaa)
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
 
+(when (display-graphic-p)
+;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
+(define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
+(define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
+(define-key my-keys-minor-mode-map (kbd "C-c .") 'bm-next) ; >
+(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next) ; >
+)
+
+;;;;;;;;;;;;;;;;;;;; Move between windows
+(define-key my-keys-minor-mode-map (kbd "C-c <left>") 'windmove-left) ;work also in terminal
+(define-key my-keys-minor-mode-map (kbd "C-c <right>") 'windmove-right)
+(define-key my-keys-minor-mode-map (kbd "C-c <up>") 'windmove-up)
+(define-key my-keys-minor-mode-map (kbd "C-c <down>") 'windmove-down) 
+(define-key my-keys-minor-mode-map (kbd "s-<left>") 'windmove-left) ;work also in terminal
+(define-key my-keys-minor-mode-map (kbd "s-<right>") 'windmove-right)
+(define-key my-keys-minor-mode-map (kbd "s-<up>") 'windmove-up)
+(define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
 
+;;;;;;;;;;;;;;;;;;; Common
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
@@ -160,24 +224,14 @@ aaa)
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "M-<SPC>") 'set-mark-command)
+;(define-key my-keys-minor-mode-map (kbd "M-<SPC>") 'set-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-b") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
-
-
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 
-;;;;;;;;;;;;;;;;;;; Jump around
-(define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "C-c <up>") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "M <up>") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "M-<right>") 'unpop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "C-c  <left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "C-c <right>") 'unpop-global-mark)
 
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
@@ -203,10 +257,10 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
-   (local-set-key (kbd "C-c <RET>") 'compile)
-   (local-set-key (kbd "C-c C-c") 'compile)
-   (local-set-key (kbd "<f5>") 'gud-gdb)
-   (local-set-key [pause] 'toggle-window-dedicated)
+(local-set-key (kbd "C-c <RET>") 'compile)
+(local-set-key (kbd "C-c C-c") 'compile)
+(local-set-key (kbd "<f5>") 'gud-gdb)
+(local-set-key [pause] 'toggle-window-dedicated)
 )
 
 ;;;;;;;;;;;;;;;;;;; Gdb
@@ -230,16 +284,24 @@ t " my-keys" 'my-keys-minor-mode-map)
 (define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback-exec)
 (define-key my-keys-minor-mode-map (kbd "S-C-c <RET>") 'selectback)
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
+;; Other
+(define-key my-keys-minor-mode-map (kbd "<f10> c") (lambda ()
+(interactive)
+(occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
+(define-key my-keys-minor-mode-map (kbd "<f10> p") (lambda ()
+(interactive)
+(occur-1 "def\\|class" 1 (list (current-buffer))) ))
+
 
 (add-hook 'python-mode-hook 'python-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Partial completion to shell and python-inferior mode
 (defun shell-mode-keys()
-   (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
-   (local-set-key (kbd "S-<down>") 'comint-next-matching-input-from-input)
-   ;;(local-set-key (kbd "<tab>") 'completion-at-point) 
-   ;;(company-mode -1) ;; locks up emacs with the huge buffers
-   )
+(local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
+(local-set-key (kbd "S-<down>") 'comint-next-matching-input-from-input)
+;;(local-set-key (kbd "<tab>") 'completion-at-point) 
+;;(company-mode -1) ;; locks up emacs with the huge buffers
+)
 (add-hook 'shell-mode-hook 'shell-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Dired
@@ -248,4 +310,15 @@ t " my-keys" 'my-keys-minor-mode-map)
 (local-set-key (kbd "C-k") 'kill-dired-buffers)
 )
 (add-hook 'dired-mode-hook 'dired-mode-keys) 
+
+;;;;;;;;;;;;;;;;;;;; ORG
+
+(add-hook 'org-mode-hook
+(lambda ()
+(org-indent-mode t)
+(flyspell-prog-mode)
+(setq org-src-fontify-natively t)
+;;(my-keys-minor-mode 0) ;; disable my keys
+)
+t)	
 
