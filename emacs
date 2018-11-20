@@ -121,7 +121,7 @@
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
 (define-key my-keys-minor-mode-map [f4] 'desktop-save-in-desktop-dir)
-(define-key my-keys-minor-mode-map (kbd "<f6>") 'whitespace-mode)
+(define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
 (global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
 (global-set-key (kbd "C-c 8") 'ispell-word);; Flyspel
@@ -140,55 +140,6 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
 
-(define-minor-mode my-keys-minor-mode
-"A minor mode so that my key settings override annoying major modes."
-t " my-keys" 'my-keys-minor-mode-map)
-
-(my-keys-minor-mode 1)
-
-;;;;;;;;;;;;;;;;;;;; C-key-bindings
-(defun c-mode-keys()
-(local-set-key (kbd "C-c <RET>") 'compile)
-(local-set-key (kbd "C-c C-C") 'compile)
-(local-set-key (kbd "<f5>") 'gdb)
-(local-set-key [pause] 'toggle-window-dedicated)
-)
-
-(add-hook 'c++-mode-hook 'c-mode-keys) ;; TODO - pass a
-(add-hook 'c++-mode-hook (lambda ()
-(setq tab-width 2)
-(setq comment-start "//" comment-end "")
-(set-default 'truncate-lines nil)
-))
-
-
-;;;;;;;;;;;;;;;;;;;; C-key-bindings
-(defun c-mode-keys()
-(local-set-key (kbd "C-c <RET>") 'compile)
-(local-set-key (kbd "C-c C-c") 'compile)
-(local-set-key (kbd "<f5>") 'gud-gdb)
-(local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
-)
-
-;;;;;;;;;;;;;;;;;;; Gdb
-(defun gdb-mode-keys()
-(local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
-)
-(add-hook 'gdb-mode-hook 'gdb-mode-keys)
-
-;;;;;;;;;;;;;;;;;;; Python
-(defun python-mode-keys()
-(python-indent-guess-indent-offset)
-(infer-indentation-style)
-;;(setq indent-tabs-mode t)
-(python-shell-completion-native-turn-on)
-(local-set-key (kbd "C->") 'python-indent-shift-right)
-(local-set-key (kbd "C-<") 'python-indent-shift-left)
-(local-set-key (kbd "C-c i") 'iimage-mode)
-(local-set-key (kbd "C-c r") 'refresh-iimages)
-(setq tab-width 4)
-)
-
 (define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback-exec)
 (define-key my-keys-minor-mode-map (kbd "S-C-c <RET>") 'selectback)
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
@@ -201,15 +152,59 @@ t " my-keys" 'my-keys-minor-mode-map)
 (occur-1 "def\\|class" 1 (list (current-buffer))) ))
 
 
+
+;;;;;;;;;;;;;;;;;;; 
+(define-minor-mode my-keys-minor-mode
+"A minor mode so that my key settings override annoying major modes."
+t " my-keys" 'my-keys-minor-mode-map)
+
+(my-keys-minor-mode 1)
+
+;;;;;;;;;;;;;;;;;;;; C-key-bindings
+(defun c-mode-keys()
+  (local-set-key (kbd "C-c <RET>") 'compile)
+  (local-set-key (kbd "C-c C-C") 'compile)
+  (local-set-key (kbd "<f5>") 'gud-gdb)
+  (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
+  (local-set-key [pause] 'toggle-window-dedicated)
+  (setq comment-start "//" comment-end "")
+  (set-default 'truncate-lines nil)
+
+  )
+
+;; Changing styl of comments in CC-mode
+(add-hook 'c-mode-hook  (lambda () (setq comment-start "//" comment-end "") ))
+(add-hook 'c++-mode-hook 'c-mode-keys)
+(add-hook 'c-mode-hook 'c-mode-keys)
+
+;;;;;;;;;;;;;;;;;;; Gdb
+(defun gdb-mode-keys()
+  (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
+  )
+(add-hook 'gdb-mode-hook 'gdb-mode-keys)
+
+;;;;;;;;;;;;;;;;;;; Python
+(defun python-mode-keys()
+  (python-indent-guess-indent-offset)
+  (infer-indentation-style)
+  (setq indent-tabs-mode t)
+  (python-shell-completion-native-turn-on)
+  (local-set-key (kbd "C->") 'python-indent-shift-right)
+  (local-set-key (kbd "C-<") 'python-indent-shift-left)
+  (local-set-key (kbd "C-c i") 'iimage-mode)
+  (local-set-key (kbd "C-c r") 'refresh-iimages)
+  (setq tab-width 4)
+  )
+
 (add-hook 'python-mode-hook 'python-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Partial completion to shell and python-inferior mode
 (defun shell-mode-keys()
-(local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
-(local-set-key (kbd "S-<down>") 'comint-next-matching-input-from-input)
-;;(local-set-key (kbd "<tab>") 'completion-at-point) 
-;;(company-mode -1) ;; locks up emacs with the huge buffers
-)
+  (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
+  (local-set-key (kbd "S-<down>") 'comint-next-matching-input-from-input)
+  ;;(local-set-key (kbd "<tab>") 'completion-at-point) 
+  ;;(company-mode -1) ;; locks up emacs with the huge buffers
+  )
 (add-hook 'shell-mode-hook 'shell-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Dired
