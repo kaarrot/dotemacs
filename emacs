@@ -11,6 +11,7 @@
 (require 'dumb-jump)
 (require 'company)
 (require 'bm)
+(require 'markdown-mode)
 
 (dumb-jump-mode t)
 (tabbar-mode)
@@ -145,6 +146,9 @@
 (define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback-exec)
 (define-key my-keys-minor-mode-map (kbd "S-C-c <RET>") 'selectback)
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
+(define-key my-keys-minor-mode-map (kbd "C-c i") 'iimage-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c r") 'refresh-iimages)
+
 ;; Other
 (define-key my-keys-minor-mode-map (kbd "<f10> c")
   (lambda ()  (interactive)  (occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
@@ -193,8 +197,6 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
-  (local-set-key (kbd "C-c i") 'iimage-mode)
-  (local-set-key (kbd "C-c r") 'refresh-iimages)
   (setq tab-width 4)
   )
 
@@ -227,4 +229,3 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;(my-keys-minor-mode 0) ;; disable my keys
 )
 t)	
-
