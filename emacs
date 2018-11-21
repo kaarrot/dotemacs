@@ -29,7 +29,7 @@
 (setq make-backup-files nil)
 (setq mouse-buffer-menu-mode-mult 10)
 (global-auto-revert-mode t)
-
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 
 (when (display-graphic-p)
   (tool-bar-mode -1)
@@ -103,7 +103,8 @@
 (define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c .") 'bm-next) ; >
 (define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next) ; >
-
+(define-key my-keys-minor-mode-map (kbd "C-c ,") 'bm-previous) ;   <
+(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'bm-previous) ; <
 
 ;;;;;;;;;;;;;;;;;;;; Move between windows
 (define-key my-keys-minor-mode-map (kbd "C-c <left>") 'windmove-left) ;work also in terminal
@@ -125,7 +126,7 @@
 (define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
 (global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
-(global-set-key (kbd "C-c 8") 'ispell-word);; Flyspel
+(global-set-key (kbd "C-c 8") 'ispell-word)
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (setq tab-width 4)))
@@ -145,14 +146,10 @@
 (define-key my-keys-minor-mode-map (kbd "S-C-c <RET>") 'selectback)
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
 ;; Other
-(define-key my-keys-minor-mode-map (kbd "<f10> c") (lambda ()
-(interactive)
-(occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
-(define-key my-keys-minor-mode-map (kbd "<f10> p") (lambda ()
-(interactive)
-(occur-1 "def\\|class" 1 (list (current-buffer))) ))
-
-
+(define-key my-keys-minor-mode-map (kbd "<f10> c")
+  (lambda ()  (interactive)  (occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
+(define-key my-keys-minor-mode-map (kbd "<f10> p")
+  (lambda ()  (interactive)  (occur-1 "def\\|class" 1 (list (current-buffer))) ))
 
 ;;;;;;;;;;;;;;;;;;; 
 (define-minor-mode my-keys-minor-mode
@@ -201,8 +198,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; Partial completion to shell and python-inferior mode
 (defun shell-mode-keys()
-  (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
-  (local-set-key (kbd "S-<down>") 'comint-next-matching-input-from-input)
+  (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
+  (local-set-key (kbd "C-S-<down>") 'comint-next-matching-input-from-input)
   ;;(local-set-key (kbd "<tab>") 'completion-at-point) 
   ;;(company-mode -1) ;; locks up emacs with the huge buffers
   )

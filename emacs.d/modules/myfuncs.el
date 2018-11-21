@@ -89,6 +89,7 @@
 
 (defun get-file-path ()
   (interactive)
+  (kill-new (buffer-file-name)) ;; copy to clipboard
   (message (buffer-file-name))
 )
 
