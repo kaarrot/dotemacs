@@ -186,7 +186,11 @@ t " my-keys" 'my-keys-minor-mode-map)
   (python-indent-guess-indent-offset)
   (infer-indentation-style)
   (setq indent-tabs-mode t)
+
   (python-shell-completion-native-turn-on)
+  ;; Fallback option to mute the warning
+  (setq python-shell-completion-native-disabled-interpreters '("python")) 
+
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
   (local-set-key (kbd "C-c i") 'iimage-mode)
