@@ -45,14 +45,14 @@
   ;; Load bookmarks on file load
   (add-hook 'find-file-hooks '(lambda nil (bm-load-and-restore)))
   ;; Save bookmarks on emacs exit
-  (add-hook 'kill-emacs-hook '(lambda nil 
-				(bm-buffer-save-all)
-				(bm-repository-save)))
+  (add-hook 'kill-emacs-hook '(lambda nil
+                                (bm-buffer-save-all)
+                                (bm-repository-save)))
   ;; Update bookmark repository when saving the file.
-  (add-hook 'after-save-hook '(lambda nil 
-				(bm-buffer-save)
-				(bm-repository-save)
-				))
+  (add-hook 'after-save-hook '(lambda nil
+                                (bm-buffer-save)
+                                (bm-repository-save)
+                                ))
   )
 
 ;;;;;;;;;;;;;;;;;; Theme
@@ -84,7 +84,7 @@
 (define-key my-keys-minor-mode-map (kbd "M-<down>") 'dumb-jump-go-current-window)
 (define-key my-keys-minor-mode-map (kbd "M-<up>") 'dumb-jump-back)
 
-;;;;;;;;;;;;;;;;;;; Cursor history 
+;;;;;;;;;;;;;;;;;;; Cursor history
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
 (define-key my-keys-minor-mode-map (kbd "S-SPC") 'add-to-global-ring)
 (define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-global-mark)
@@ -111,7 +111,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-c <left>") 'windmove-left) ;work also in terminal
 (define-key my-keys-minor-mode-map (kbd "C-c <right>") 'windmove-right)
 (define-key my-keys-minor-mode-map (kbd "C-c <up>") 'windmove-up)
-(define-key my-keys-minor-mode-map (kbd "C-c <down>") 'windmove-down) 
+(define-key my-keys-minor-mode-map (kbd "C-c <down>") 'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "s-<left>") 'windmove-left) ;work also in terminal
 (define-key my-keys-minor-mode-map (kbd "s-<right>") 'windmove-right)
 (define-key my-keys-minor-mode-map (kbd "s-<up>") 'windmove-up)
@@ -126,11 +126,13 @@
 (define-key my-keys-minor-mode-map [f4] 'desktop-save-in-desktop-dir)
 (define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
+(define-key my-keys-minor-mode-map (kbd "<C-f6>")
+  (lambda () (interactive) (if indent-tabs-mode (setq indent-tabs-mode nil) (setq indent-tabs-mode t))))
 (global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
 (global-set-key (kbd "C-c 8") 'ispell-word)
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
-(define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (setq tab-width 4)))
+(define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (interactive) (setq tab-width 4)))
 
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
@@ -189,11 +191,10 @@ t " my-keys" 'my-keys-minor-mode-map)
 (defun python-mode-keys()
   (python-indent-guess-indent-offset)
   (infer-indentation-style)
-  (setq indent-tabs-mode t)
 
   (python-shell-completion-native-turn-on)
   ;; Fallback option to mute the warning
-  (setq python-shell-completion-native-disabled-interpreters '("python")) 
+  (setq python-shell-completion-native-disabled-interpreters '("python"))
 
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
@@ -206,7 +207,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (defun shell-mode-keys()
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
   (local-set-key (kbd "C-S-<down>") 'comint-next-matching-input-from-input)
-  ;;(local-set-key (kbd "<tab>") 'completion-at-point) 
+  ;;(local-set-key (kbd "<tab>") 'completion-at-point)
   ;;(company-mode -1) ;; locks up emacs with the huge buffers
   )
 (add-hook 'shell-mode-hook 'shell-mode-keys)
@@ -217,15 +218,15 @@ t " my-keys" 'my-keys-minor-mode-map)
   (local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
   (local-set-key (kbd "C-k") 'kill-dired-buffers)
   )
-(add-hook 'dired-mode-hook 'dired-mode-keys) 
+(add-hook 'dired-mode-hook 'dired-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; ORG
 
 (add-hook 'org-mode-hook
-(lambda ()
-(org-indent-mode t)
-(flyspell-prog-mode)
-(setq org-src-fontify-natively t)
-;;(my-keys-minor-mode 0) ;; disable my keys
-)
-t)	
+          (lambda ()
+            (org-indent-mode t)
+            (flyspell-prog-mode)
+            (setq org-src-fontify-natively t)
+            ;;(my-keys-minor-mode 0) ;; disable my keys
+            )
+          t)
