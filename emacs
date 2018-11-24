@@ -127,7 +127,7 @@
 (define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "<C-f6>")
-  (lambda () (interactive) (if indent-tabs-mode (setq indent-tabs-mode nil) (setq indent-tabs-mode t))))
+  (lambda () (interactive) (if indent-tabs-mode (progn (setq indent-tabs-mode nil) (message "spaces")) (progn (setq indent-tabs-mode t) (message "tabs")) )))
 (global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
 (global-set-key (kbd "C-c 8") 'ispell-word)
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
@@ -183,7 +183,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;; Gdb
 (defun gdb-mode-keys()
-  (local-set-key (kbd "S-<up>") 'comint-previous-matching-input-from-input)
+  (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
   )
 (add-hook 'gdb-mode-hook 'gdb-mode-keys)
 
@@ -210,8 +210,10 @@ t " my-keys" 'my-keys-minor-mode-map)
   ;;(local-set-key (kbd "<tab>") 'completion-at-point)
   ;;(company-mode -1) ;; locks up emacs with the huge buffers
   )
+ 
 (add-hook 'shell-mode-hook 'shell-mode-keys)
-
+(add-hook 'inferior-python-mode-hook 'shell-mode-keys)
+          
 ;;;;;;;;;;;;;;;;;;;; Dired
 (eval-after-load 'dired '(progn (require 'single-dired)))
 (defun dired-mode-keys()
