@@ -77,7 +77,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "C-c j") 'ace-jump-char-mode)
+(define-key my-keys-minor-mode-map (kbd "C-d") 'ace-jump-char-mode)
 
 ;;;;;;;;;;;;;;;;;;; Dumb Jump
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
@@ -137,7 +137,7 @@
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
-;(define-key my-keys-minor-mode-map (kbd "M-<SPC>") 'set-mark-command)
+(define-key my-keys-minor-mode-map (kbd "M-<SPC>") 'set-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
