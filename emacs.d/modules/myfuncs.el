@@ -15,12 +15,13 @@
   ;; neither, we use the current indent-tabs-mode
   (let ((space-count (how-many "^ " (point-min) (point-max)))
 	(tab-count (how-many "^\t" (point-min) (point-max))))
-    (if (> space-count tab-count)
+    (when (> space-count tab-count)
         (message "using spaces")
         (setq indent-tabs-mode nil))
-    (if (> tab-count space-count)
-        (message "using tabs")
-        (setq indent-tabs-mode t))))
+    (when (> tab-count space-count)
+	(message "using tabs")
+	(setq indent-tabs-mode t))
+  ))
 
 
 (defun g-ring()

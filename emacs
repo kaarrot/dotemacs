@@ -192,10 +192,6 @@ t " my-keys" 'my-keys-minor-mode-map)
   (python-indent-guess-indent-offset)
   (infer-indentation-style)
 
-  (python-shell-completion-native-turn-on)
-  ;; Fallback option to mute the warning
-  (setq python-shell-completion-native-disabled-interpreters '("python"))
-
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
   (setq tab-width 4)
@@ -207,8 +203,11 @@ t " my-keys" 'my-keys-minor-mode-map)
 (defun shell-mode-keys()
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
   (local-set-key (kbd "C-S-<down>") 'comint-next-matching-input-from-input)
-  ;;(local-set-key (kbd "<tab>") 'completion-at-point)
-  ;;(company-mode -1) ;; locks up emacs with the huge buffers
+
+  (python-shell-completion-native-turn-on)
+  ;; Fallback option to mute the warning
+  (setq python-shell-completion-native-disabled-interpreters '("python"))
+  
   )
  
 (add-hook 'shell-mode-hook 'shell-mode-keys)
