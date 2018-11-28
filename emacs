@@ -12,6 +12,7 @@
 (require 'company)
 (require 'bm)
 (require 'markdown-mode)
+(require 'desktop+)
 
 (dumb-jump-mode t)
 (tabbar-mode)
@@ -123,7 +124,6 @@
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
-(define-key my-keys-minor-mode-map [f4] 'desktop-save-in-desktop-dir)
 (define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "<C-f6>")
@@ -151,7 +151,12 @@
 (define-key my-keys-minor-mode-map (kbd "C-c i") 'iimage-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c r") 'refresh-iimages)
 
-;; Other
+;;;;;;;;;;;;;;;;;;; Save desktops
+(define-key my-keys-minor-mode-map (kbd "C-M-p") 'desktop+-load)
+(define-key my-keys-minor-mode-map (kbd "S-C-M-p") 'desktop+-create)
+
+
+;;;;;;;;;;;;;;;;;;; Other
 (define-key my-keys-minor-mode-map (kbd "<f10> c")
   (lambda ()  (interactive)  (occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
 (define-key my-keys-minor-mode-map (kbd "<f10> p")
