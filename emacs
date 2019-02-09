@@ -95,7 +95,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; Multiple cursors
 (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'mc/edit-lines)
+(define-key my-keys-minor-mode-map (kbd "C-c m") 'mc/edit-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c C-v") 'mc/mark-next-like-this)
 (define-key my-keys-minor-mode-map (kbd "C-c C-<SPC>") 'mc/mark-all-in-region)
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
@@ -143,6 +143,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
+(define-key my-keys-minor-mode-map (kbd "C-c ;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
@@ -173,14 +174,15 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
+	(setq compile-command (message "g++ -O0 -g -std=c++11 %s -o a.out" (buffer-file-name)))
   (local-set-key (kbd "C-c <RET>") 'compile)
-  ;;(local-set-key (kbd "C-c C-c") 'compile)
+  (local-set-key (kbd "C-b") 'compile)
+  (local-set-key (kbd "C-q") 'compile)
   (local-set-key (kbd "<f5>") 'gud-gdb)
   (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
   (set-default 'truncate-lines nil)
-
   )
 
 ;; Changing styl of comments in CC-mode
@@ -201,7 +203,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
-  (setq tab-width 4)
+  (setq tab-width 2)
   )
 
 (add-hook 'python-mode-hook 'python-mode-keys)
@@ -225,7 +227,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 (defun dired-mode-keys()
   (local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
   (local-set-key (kbd "C-k") 'kill-dired-buffers)
-  )
+  (setq truncate-lines nil)
+ )
 (add-hook 'dired-mode-hook 'dired-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; ORG
