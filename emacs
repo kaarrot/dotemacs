@@ -38,7 +38,7 @@
 )
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
-(when (display-graphic-p)
+;;(when (display-graphic-p)
   (setq bm-repository-file "~/.emacs.d/bm-repository")
   (setq bm-restore-repository-on-load t)
   (setq-default bm-buffer-persistence t)
@@ -54,7 +54,7 @@
                                 (bm-buffer-save)
                                 (bm-repository-save)
                                 ))
-  )
+  ;;)
 
 ;;;;;;;;;;;;;;;;;; Theme
 (load-theme 'tango-dark t)
@@ -75,6 +75,8 @@
 ;;;;;;;;;;;;;;;;;;;; Tabbar
 (define-key my-keys-minor-mode-map (kbd "S-C-M-<left>") 'tabbar-backward-tab)
 (define-key my-keys-minor-mode-map (kbd "S-C-M-<right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-c <") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-c >") 'tabbar-forward-tab)
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
@@ -137,7 +139,6 @@
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "M-<SPC>") 'set-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-c C-c") 'set-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
