@@ -21,7 +21,7 @@
 
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")
-(setq tab-width 4)
+(setq tab-width 2)
 
 (recentf-mode 1)
 (show-paren-mode 1)
@@ -138,6 +138,7 @@
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
 (define-key my-keys-minor-mode-map (kbd "M-<SPC>") 'set-mark-command)
+(define-key my-keys-minor-mode-map (kbd "C-c C-c") 'set-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
@@ -148,8 +149,8 @@
 (define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback-exec)
 (define-key my-keys-minor-mode-map (kbd "S-C-c <RET>") 'selectback)
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
-(define-key my-keys-minor-mode-map (kbd "C-c i") 'iimage-mode)
-(define-key my-keys-minor-mode-map (kbd "C-c r") 'refresh-iimages)
+(define-key my-keys-minor-mode-map (kbd "C-c C-i") 'iimage-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c C-r") 'refresh-iimages)
 
 ;;;;;;;;;;;;;;;;;;; Save desktops
 (define-key my-keys-minor-mode-map (kbd "C-M-p") 'desktop+-load)
@@ -172,7 +173,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
   (local-set-key (kbd "C-c <RET>") 'compile)
-  (local-set-key (kbd "C-c C-C") 'compile)
+  ;;(local-set-key (kbd "C-c C-c") 'compile)
   (local-set-key (kbd "<f5>") 'gud-gdb)
   (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
   (local-set-key [pause] 'toggle-window-dedicated)
