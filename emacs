@@ -174,7 +174,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
-	(setq compile-command (message "g++ -O0 -g -std=c++11 %s -o a.out" (buffer-file-name)))
+  (setq compile-command (message "g++ -O0 -g -std=c++11 %s -o a.out" (buffer-file-name)))
+  (setq tab-width 2)
   (local-set-key (kbd "C-c <RET>") 'compile)
   (local-set-key (kbd "C-b") 'compile)
   (local-set-key (kbd "C-q") 'compile)
