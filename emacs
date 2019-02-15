@@ -156,10 +156,12 @@
 
 ;;;;;;;;;;;;;;;;;;; Save desktops
 (define-key my-keys-minor-mode-map (kbd "C-M-p") 'desktop+-load)
+(define-key my-keys-minor-mode-map (kbd "C-c p") 'desktop+-load)
 (define-key my-keys-minor-mode-map (kbd "S-C-M-p") 'desktop+-create)
-
+(define-key my-keys-minor-mode-map (kbd "C-c C-p") 'desktop+-create)
 
 ;;;;;;;;;;;;;;;;;;; Other
+(global-set-key (kbd "C-c o") 'occur)
 (define-key my-keys-minor-mode-map (kbd "<f10> c")
   (lambda ()  (interactive)  (occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
 (define-key my-keys-minor-mode-map (kbd "<f10> p")
