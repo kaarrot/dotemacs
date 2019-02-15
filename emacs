@@ -90,8 +90,8 @@
 ;;;;;;;;;;;;;;;;;;; Cursor history
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
 (define-key my-keys-minor-mode-map (kbd "S-SPC") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "M-<left>") 'pop-global-mark)
-(define-key my-keys-minor-mode-map (kbd "M-<right>") 'unpop-global-mark)
+(define-key my-keys-minor-mode-map (kbd "M-<left>") 'go-ring-back)
+(define-key my-keys-minor-mode-map (kbd "M-<right>") 'go-ring-forward)
 
 ;;;;;;;;;;;;;;;;;;;; Multiple cursors
 (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)

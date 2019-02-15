@@ -29,13 +29,21 @@
   (message "%s" global-mark-ring)
   )
 
-(defun unpop-global-mark()
-  ;; Move cursor forward to the next mark sotred in the ring
+(defun go-ring-back()
+  (interactive)
+  ;; Does the standard pop-from-global-mark but also
+  ;; marks the current location in case we want to go forward.
+  (add-to-global-ring)
+  (pop-global-mark)  ;; pop current location
+  (pop-global-mark))  
+  
+(defun go-ring-forward()
+  ;; Reverse of pop-global-mark - Move cursor forward to the next mark sotred in the ring
   (interactive)
   (let (_buf
 	_pos
 	aaa)
-
+    
     ;; (message "%s" global-mark-ring)
     (setq _buf (marker-buffer (nth 0 (last global-mark-ring ))) )
     (setq _pos (marker-position (nth 0 (last global-mark-ring ))) )
