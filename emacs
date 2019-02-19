@@ -139,12 +139,12 @@
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "C-c C-c") 'set-mark-command)
+(define-key my-keys-minor-mode-map (kbd "C-z") 'set-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-c ;") 'comment-or-uncomment-this)
-(define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
+;(define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
 
@@ -156,9 +156,9 @@
 
 ;;;;;;;;;;;;;;;;;;; Save desktops
 (define-key my-keys-minor-mode-map (kbd "C-M-p") 'desktop+-load)
-(define-key my-keys-minor-mode-map (kbd "C-c p") 'desktop+-load)
+(define-key my-keys-minor-mode-map (kbd "C-x p") 'desktop+-load)
 (define-key my-keys-minor-mode-map (kbd "S-C-M-p") 'desktop+-create)
-(define-key my-keys-minor-mode-map (kbd "C-c C-p") 'desktop+-create)
+(define-key my-keys-minor-mode-map (kbd "C-x C-p") 'desktop+-create)
 
 ;;;;;;;;;;;;;;;;;;; Other
 (global-set-key (kbd "C-c o") 'occur)
@@ -167,7 +167,7 @@
 (define-key my-keys-minor-mode-map (kbd "<f10> p")
   (lambda ()  (interactive)  (occur-1 "def\\|class" 1 (list (current-buffer))) ))
 
-;;;;;;;;;;;;;;;;;;; 
+;;;;;;;;;;;;;;;;;;;
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
 t " my-keys" 'my-keys-minor-mode-map)
@@ -179,6 +179,7 @@ t " my-keys" 'my-keys-minor-mode-map)
   (setq compile-command (message "g++ -O0 -g -std=c++11 %s -o a.out" (buffer-file-name)))
   (setq tab-width 2)
   (local-set-key (kbd "C-c <RET>") 'compile)
+  (local-set-key (kbd "C-c C-c") 'compile)
   (local-set-key (kbd "C-b") 'compile)
   (local-set-key (kbd "C-q") 'compile)
   (local-set-key (kbd "<f5>") 'gud-gdb)
@@ -219,12 +220,12 @@ t " my-keys" 'my-keys-minor-mode-map)
   (python-shell-completion-native-turn-on)
   ;; Fallback option to mute the warning
   (setq python-shell-completion-native-disabled-interpreters '("python"))
-  
+
   )
- 
+
 (add-hook 'shell-mode-hook 'shell-mode-keys)
 (add-hook 'inferior-python-mode-hook 'shell-mode-keys)
-          
+
 ;;;;;;;;;;;;;;;;;;;; Dired
 (eval-after-load 'dired '(progn (require 'single-dired)))
 (defun dired-mode-keys()
@@ -250,6 +251,3 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;cmd = emacs --eval \"(ediff-files \\\"$LOCAL\\\" \\\"$REMOTE\\\")\"
 ;;# git difftool --tool=ediff --diff-filter=M tagname subdir
 (add-hook 'ediff-prepare-buffer-hook (lambda () (whitespace-mode 1) ) t)
-
-
-
