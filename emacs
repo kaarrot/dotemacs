@@ -125,6 +125,8 @@
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
 ;;;;;;;;;;;;;;;;;;; Common
+(define-key my-keys-minor-mode-map (kbd "<f1>") 'toggle-themes)
+(define-key my-keys-minor-mode-map (kbd "C-c 1") 'toggle-themes)
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
@@ -254,3 +256,4 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;cmd = emacs --eval \"(ediff-files \\\"$LOCAL\\\" \\\"$REMOTE\\\")\"
 ;;# git difftool --tool=ediff --diff-filter=M tagname subdir
 (add-hook 'ediff-prepare-buffer-hook (lambda () (whitespace-mode 1) ) t)
+

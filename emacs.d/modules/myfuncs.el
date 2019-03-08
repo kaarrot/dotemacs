@@ -1,3 +1,9 @@
+(defun toggle-themes()
+  (interactive)
+   (if (string= (car custom-enabled-themes) 'tango-dark)
+       (disable-theme 'tango-dark)
+     (enable-theme 'tango-dark))
+   )
 
 (defun comment-or-uncomment-this (&optional lines)
   (interactive "P")
@@ -217,7 +223,6 @@
   "Input Space separated list of include directories.
 In order to avoid interfference form project denoters we set them off. To restore defaults just feed in empty input."
   (interactive "MSpecify include paths: ")
-  (message "_%s_" include-path)
   (if (string= include-path "")  ;;restore project-denoters
       (setq dumb-jump-project-denoters (".dumbjump" ".projectile" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".svn" "Makefile" "PkgInfo" "-pkg.el"))
     (progn  ;;Disable project denoters
