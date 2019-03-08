@@ -24,7 +24,11 @@
 (setq tab-width 2)
 
 (recentf-mode 1)
-(show-paren-mode 1)
+
+(if (not (search "arm" system-configuration))      
+      (show-paren-mode 1)  ;; Disable on Arm as it slow things down significantly.
+)
+
 (setq x-select-enable-clipboard t)
 (global-visual-line-mode t)
 (setq use-file-dialog nil)
@@ -246,7 +250,7 @@ t " my-keys" 'my-keys-minor-mode-map)
             (org-indent-mode t)
             (flyspell-prog-mode)
             (setq org-src-fontify-natively t)
-            ;;(my-keys-minor-mode 0) ;; disable my keys
+            (my-keys-minor-mode 0) ;; disable my keys
             )
           t)
 
