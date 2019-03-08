@@ -212,3 +212,21 @@
   "Find any non-ascii characters in the current buffer."
   (interactive)
   (occur "[^[:ascii:]]"))
+
+(defun dumb-jump-set-include-paths (include-path)
+  "Input Space separated list of include directories.
+In order to avoid interfference form project denoters we set them off. To restore defaults just feed in empty input."
+  (interactive "MSpecify include paths: ")
+  (message "_%s_" include-path)
+  (if (string= include-path "")  ;;restore project-denoters
+      (setq dumb-jump-project-denoters (".dumbjump" ".projectile" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".svn" "Makefile" "PkgInfo" "-pkg.el"))
+    (progn  ;;Disable project denoters
+      (setq dumb-jump-project-denoters '())
+      (setq dumb-jump-project include-path)
+      (setq dumb-jump-grep-prefix "") ;; this was failing grep
+      ;; In case things go wrong
+      ;;(setq dumb-jump-debug 1)   if need to see the output of the command
+      ;; dumb-jump-run-command  -> (message "_____%s " cmd)
+      )
+    )
+  )
