@@ -77,10 +77,8 @@
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
 ;;;;;;;;;;;;;;;;;;;; Tabbar
-(define-key my-keys-minor-mode-map (kbd "S-C-M-<left>") 'tabbar-backward-tab)
-(define-key my-keys-minor-mode-map (kbd "S-C-M-<right>") 'tabbar-forward-tab)
-(define-key my-keys-minor-mode-map (kbd "C-c <") 'tabbar-backward-tab)
-(define-key my-keys-minor-mode-map (kbd "C-c >") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-S-c C-<left>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-S-c C-<right>") 'tabbar-forward-tab)
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
@@ -104,8 +102,6 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-<SPC>") 'mc/mark-all-in-region)
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
-
-
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
@@ -115,19 +111,18 @@
 (define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'bm-previous) ; <
 
 ;;;;;;;;;;;;;;;;;;;; Move between windows
-(define-key my-keys-minor-mode-map (kbd "C-x <left>") 'windmove-left) ;work also in terminal
-(define-key my-keys-minor-mode-map (kbd "C-x C-<left>") 'windmove-left) ;work also in terminal
+(define-key my-keys-minor-mode-map (kbd "C-c <left>") 'windmove-left) ;work also in terminal
+(define-key my-keys-minor-mode-map (kbd "C-c C-<left>") 'windmove-left) ;work also in terminal
 (define-key my-keys-minor-mode-map (kbd "s-<left>") 'windmove-left) ;work also in terminal
-(define-key my-keys-minor-mode-map (kbd "C-x <right>") 'windmove-right)
-(define-key my-keys-minor-mode-map (kbd "C-x C-<right>") 'windmove-right)
+(define-key my-keys-minor-mode-map (kbd "C-c <right>") 'windmove-right)
+(define-key my-keys-minor-mode-map (kbd "C-c C-<right>") 'windmove-right)
 (define-key my-keys-minor-mode-map (kbd "s-<right>") 'windmove-right)
-(define-key my-keys-minor-mode-map (kbd "C-x <up>") 'windmove-up)
-(define-key my-keys-minor-mode-map (kbd "C-x C-<up>") 'windmove-up)
+(define-key my-keys-minor-mode-map (kbd "C-c <up>") 'windmove-up)
+(define-key my-keys-minor-mode-map (kbd "C-c C-<up>") 'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "s-<up>") 'windmove-up)
-(define-key my-keys-minor-mode-map (kbd "C-x <down>") 'windmove-down)
-(define-key my-keys-minor-mode-map (kbd "C-x C-<down>") 'windmove-down)
+(define-key my-keys-minor-mode-map (kbd "C-c <down>") 'windmove-down)
+(define-key my-keys-minor-mode-map (kbd "C-c C-<down>") 'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
-
 
 ;;;;;;;;;;;;;;;;;;; Common
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
