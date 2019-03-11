@@ -222,7 +222,8 @@
 (defun dumb-jump-set-include-paths (include-path)
   "Input Space separated list of include directories.
 In order to avoid interfference form project denoters we set them off. To restore defaults just feed in empty input."
-  (interactive "MSpecify include paths: ")
+  (interactive "GSpecify include paths: ")
+  ;; (message "%s" include-path)
   (if (string= include-path "")  ;;restore project-denoters
       (setq dumb-jump-project-denoters (".dumbjump" ".projectile" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".svn" "Makefile" "PkgInfo" "-pkg.el"))
     (progn  ;;Disable project denoters
