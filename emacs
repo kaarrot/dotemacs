@@ -29,6 +29,9 @@
       (show-paren-mode 1)  ;; Disable on Arm as it slow things down significantly.
 )
 
+;; Disable blinking cursor
+(blink-cursor-mode 0)
+
 (setq x-select-enable-clipboard t)
 (global-visual-line-mode t)
 (setq use-file-dialog nil)
@@ -247,7 +250,7 @@ t " my-keys" 'my-keys-minor-mode-map)
             (org-indent-mode t)
             (flyspell-prog-mode)
             (setq org-src-fontify-natively t)
-            (my-keys-minor-mode 0) ;; disable my keys
+            ;;(my-keys-minor-mode 0) ;; disable my keys
             )
           t)
 
