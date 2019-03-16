@@ -236,3 +236,20 @@ In order to avoid interfference form project denoters we set them off. To restor
       )
     )
   )
+
+(defun dropbox-send (file-path)
+  (interactive "bSpecify buffer name: ")
+  (setq rclone-send (message "rclone copy %s dropbox:" file-path))
+  (message "%s" rclone-send)
+  (save-buffer)
+  (shell-command rclone-send)
+  )
+
+
+(defun dropbox-get (file-path)
+  (interactive "bSpecify buffer name: ")
+  (setq rclone-receive (message "rclone copy dropbox:%s ." file-path))
+  (message "%s" rclone-receive)
+  (shell-command rclone-receive)
+  (revert-buffer nil t)
+  )
