@@ -13,9 +13,12 @@
 (require 'bm)
 (require 'markdown-mode)
 (require 'desktop+)
+(require 'yasnippet)
+
 
 (dumb-jump-mode t)
 (tabbar-mode)
+(yas-global-mode 1)
 
 ;;;;;;;;;;;;;;;;;;; Configuration
 
