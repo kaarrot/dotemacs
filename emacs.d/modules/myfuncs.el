@@ -253,3 +253,10 @@ In order to avoid interfference form project denoters we set them off. To restor
   (shell-command rclone-receive)
   (revert-buffer nil t)
   )
+
+
+(defun show-methods (include-path)
+  (interactive "Mcpp") 
+   ;; command regex: \([a-zA-Z_]\)\([a-zA-Z0-9_]*\)\([ ]+\)\([a-zA-Z_][a-zA-Z0-9_:]*\)(
+   (occur "\\([a-zA-Z_]\\)\\([a-zA-Z0-9_]*\\)\\([ ]+\\)\\([a-zA-Z_][a-zA-Z0-9_:]*\\)(")
+)   
