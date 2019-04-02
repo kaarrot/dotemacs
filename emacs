@@ -9,6 +9,7 @@
 (add-to-list 'load-path "~/.emacs.d/modules/multiple-cursors")
 (add-to-list 'load-path "~/.emacs.d/modules/auto-complete")
 (add-to-list 'load-path "~/.emacs.d/modules/company-mode")
+(add-to-list 'load-path "~/.emacs.d/modules/cquery")
 
 (load "~/.emacs.d/modules/myfuncs.el")
 (require 'dumb-jump)
@@ -26,6 +27,10 @@
 (dumb-jump-mode t)
 (tabbar-mode)
 (yas-global-mode 1)
+
+(when (require 'cquery nil 'noerror)
+  (setq cquery-executable "~/bin/cquery")
+)
 
 ;;;;;;;;;;;;;;;;;;; Configuration
 
