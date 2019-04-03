@@ -28,10 +28,6 @@
 (tabbar-mode)
 (yas-global-mode 1)
 
-(when (require 'cquery nil 'noerror)
-  (setq cquery-executable "~/bin/cquery")
-)
-
 ;;;;;;;;;;;;;;;;;;; Configuration
 
 (setq inhibit-splash-screen t)
@@ -210,6 +206,14 @@ t " my-keys" 'my-keys-minor-mode-map)
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
   (set-default 'truncate-lines nil)
+
+  (when (require 'lsp-mode nil 'noerror)
+      (require 'cquery)
+      (setq cquery-executable "~/bin/cquery")
+      (setq cquery-cache-dir "/tmp/.cquery_cached_index")
+      (lsp)
+      )
+
   )
 
 ;; Changing styl of comments in CC-mode

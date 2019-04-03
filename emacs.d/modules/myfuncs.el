@@ -254,9 +254,30 @@ In order to avoid interfference form project denoters we set them off. To restor
   (revert-buffer nil t)
   )
 
+(defun find-methods (search-phrase)
+  (interactive "Msearch phrase (empty will list methods):")
 
-(defun show-methods (include-path)
-  (interactive "Mcpp") 
-   ;; command regex: \([a-zA-Z_]\)\([a-zA-Z0-9_]*\)\([ ]+\)\([a-zA-Z_][a-zA-Z0-9_:]*\)(
-   (occur "\\([a-zA-Z_]\\)\\([a-zA-Z0-9_]*\\)\\([ ]+\\)\\([a-zA-Z_][a-zA-Z0-9_:]*\\)(")
-)   
+  ;; If no phrease was specified the search will list all functions in the file
+  (if (string= search-phrase "")
+      (progn
+        ;; Extract extension of the current buffer
+        (let ((extension (pop (cdr (s-split "\\." (message "%s" (current-buffer))))) ))
+          (message "---%s---" extension)
+          (when (member extension '("c" "cpp" "cc" "cxx" "h" "hh"))
+            (message "searchin cpp")
+            ;; command regex: \([a-zA-Z_]\)\([a-zA-Z0-9_]*\)\([ ]+\)\([a-zA-Z_][a-zA-Z0-9_:]*\)(
+            (occur "\\([a-zA-Z_]\\)\\([a-zA-Z0-9_]*\\)\\([ ]+\\)\\([a-zA-Z_][a-zA-Z0-9_:]*\\)(")
+            )
+          (when (member extension '("py"))
+            (message "searchin python")
+            (occur "def")
+            )
+          )
+        )
+      (progn
+        ;;Equivalent to  "^\* .*cmake" in plain occur
+        (message "%s" "search top level in org-mode")
+        (occur (message "^\\* .*%s" search-phrase))
+      )
+    )
+)
