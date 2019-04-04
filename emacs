@@ -23,6 +23,7 @@
 (require 'desktop+)
 (require 'yasnippet)
 (require 'cmake-mode)
+(when (require 'scramble-mode nil 'noerror))
 
 (dumb-jump-mode t)
 (tabbar-mode)
@@ -211,7 +212,7 @@ t " my-keys" 'my-keys-minor-mode-map)
       (require 'cquery)
       (setq cquery-executable "~/bin/cquery")
       (setq cquery-cache-dir "/tmp/.cquery_cached_index")
-      (lsp)
+      ;;(lsp)  ;; Not sure if this is worth it - when restoring bookmarks for each cpp file lsp will ask for root location
       )
 
   )
