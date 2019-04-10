@@ -47,6 +47,7 @@
 (global-visual-line-mode t)
 (setq use-file-dialog nil)
 (setq make-backup-files nil)
+(setq auto-save-default nil)
 (setq mouse-buffer-menu-mode-mult 10)
 (global-auto-revert-mode t)
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
@@ -270,7 +271,12 @@ t " my-keys" 'my-keys-minor-mode-map)
             (flyspell-prog-mode)
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
-            )
+	    (define-key my-keys-minor-mode-map (kbd "M-<up>") 'org-table-move-row-up)
+	    (define-key my-keys-minor-mode-map (kbd "M-<down>") 'org-table-move-row-down)
+	    (global-set-key (kbd "C-M-<double-mouse-3>") 'ffap-other-window)
+	    (global-set-key (kbd "C-M-<RET>>") 'ffap-other-window)
+	    (global-set-key (kbd "C-M-<double-mouse-1>") 'ffap)
+)
           t)
 
 ;;;;;;;;;;;;;;;;;;;; Ediff with git
