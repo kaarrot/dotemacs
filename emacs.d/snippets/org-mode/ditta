@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: ditta
+# key: ditta
+# --
+#+BEGIN_SRC ditaa :file images/hello-world.png
+#+END_SRC

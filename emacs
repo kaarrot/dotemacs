@@ -273,11 +273,32 @@ t " my-keys" 'my-keys-minor-mode-map)
             ;;(my-keys-minor-mode 0) ;; disable my keys
 	    (define-key my-keys-minor-mode-map (kbd "M-<up>") 'org-table-move-row-up)
 	    (define-key my-keys-minor-mode-map (kbd "M-<down>") 'org-table-move-row-down)
-	    (global-set-key (kbd "C-M-<double-mouse-3>") 'ffap-other-window)
-	    (global-set-key (kbd "C-M-<RET>>") 'ffap-other-window)
-	    (global-set-key (kbd "C-M-<double-mouse-1>") 'ffap)
+
+	    (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
+	    (org-babel-do-load-languages
+	     'org-babel-load-languages
+	     '((ditaa . t)))
+
+	    ;; artist-mode + org-ditta
+	    ;; C-c C-a y    paste  
+	    ;; C-c C-a M-w  copy
+	    ;; C-c C-a r    rectangle
+	    ;; C-c C-a l    line
+	    ;; S-mouse3     rectangle erase    
+	    ;; C-c C-c : executes the code
+	    ;; C-c ' : edits region
+
 )
           t)
+;;;;;;;;;;;;;;;;;;;; Ediff
+
+;; don't start another frame
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+;; put windows side by side
+(setq ediff-split-window-function (quote split-window-horizontally))
+;;revert windows on exit - needs winner mode
+(winner-mode)
+(add-hook 'ediff-after-quit-hook-internal 'winner-undo)
 
 ;;;;;;;;;;;;;;;;;;;; Ediff with git
 ;;[difftool "ediff"]
