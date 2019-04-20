@@ -254,7 +254,7 @@ In order to avoid interfference form project denoters we set them off. To restor
   (revert-buffer nil t)
   )
 
-(defun find-methods (search-phrase)
+(defun occur-methods (search-phrase)
   (interactive "Msearch phrase (empty will list methods):")
 
   ;; If no phrease was specified the search will list all functions in the file
@@ -265,8 +265,8 @@ In order to avoid interfference form project denoters we set them off. To restor
           (message "---%s---" extension)
           (when (member extension '("c" "cpp" "cc" "cxx" "h" "hh"))
             (message "searchin cpp")
-            ;; command regex: \([a-zA-Z_]\)\([a-zA-Z0-9_]*\)\([ ]+\)\([a-zA-Z_][a-zA-Z0-9_:]*\)(
-            (occur "\\([a-zA-Z_]\\)\\([a-zA-Z0-9_]*\\)\\([ ]+\\)\\([a-zA-Z_][a-zA-Z0-9_:]*\\)(")
+            ;; command regex: ^[ ]*\([a-zA-Z_]\)\([a-zA-Z0-9_]*\)\([ ]+\)\([a-zA-Z_][a-zA-Z0-9_:]*\)(
+            (occur "^[ ]*\\([a-zA-Z_]\\)\\([a-zA-Z0-9_]*\\)\\([ ]+\\)\\([a-zA-Z_][a-zA-Z0-9_:]*\\)(")
             )
           (when (member extension '("py"))
             (message "searchin python")
