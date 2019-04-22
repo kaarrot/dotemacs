@@ -225,6 +225,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;;;;;;;;;;;;;;;;;; Gdb
 (defun gdb-mode-keys()
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
+  (setq gdb-many-windows t)
   )
 (add-hook 'gdb-mode-hook 'gdb-mode-keys)
 
