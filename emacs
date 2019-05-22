@@ -144,6 +144,11 @@
 (define-key my-keys-minor-mode-map (kbd "C-c 1") 'toggle-themes)
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
+(define-key my-keys-minor-mode-map (kbd "C-c <f2>") (lambda (search-phrase) (interactive "Msearch file:")
+    (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
+(define-key my-keys-minor-mode-map (kbd "C-c C-c 2") (lambda (search-phrase) (interactive "Msearch file:")
+    (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
+
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
 (define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
