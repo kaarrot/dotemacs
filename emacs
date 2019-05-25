@@ -312,3 +312,76 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;# git difftool --tool=ediff --diff-filter=M tagname subdir
 (add-hook 'ediff-prepare-buffer-hook (lambda () (whitespace-mode 1) ) t)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Extend the find-file to handle line/columns when open from Emacs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Open files and go places like we see from error messages, i e: path:line:col
+;; (to-do "make `find-file-line-number' work for emacsclient as well")
+;; (to-do "make `find-file-line-number' check if the file exists")
+(defadvice find-file (around find-file-line-number
+(path &optional wildcards)
+activate)
+"Turn files like file.js:14:10 into file.js and going to line 14, col 10."
+(save-match-data
+(let* ((match (string-match "^\\(.*?\\):\\([0-9]+\\):?\\([0-9]*\\)$" path))
+(line-no (and match
+(match-string 2 path)
+(string-to-number (match-string 2 path))))
+(col-no (and match
+(match-string 3 path)
+(string-to-number (match-string 3 path))))
+(path (if match (match-string 1 path) path)))
+ad-do-it
+(when line-no
+;; goto-line is for interactive use
+(goto-char (point-min))
+(forward-line (1- line-no))
+(when (> col-no 0)
+(forward-char (1- col-no)))))))
+
+;; in order to override it we need to require it first
+(require 'ffap)
+(defun ffap-prompter (&optional guess)
+;; Does guess and prompt step for find-file-at-point.
+;; Extra complication for the temporary highlighting.
+(unwind-protect
+;; This catch will let ffap-alist entries do their own prompting
+;; and then maybe skip over this prompt (ff-paths, for example).
+(catch 'ffap-prompter
+(ffap-read-file-or-url
+(if ffap-url-regexp "Find file or URL: " "Find file: ")
+(prog1
+(let ((mark-active nil)
+(currentline (ffap-string-at-point))
+(path_guess (ffap-guesser)))
+;; Don't use the region here, since it can be something
+;; completely unwieldy. If the user wants that, she could
+;; use M-w before and then C-y. --Stef
+
+;; Check beginning of the line for the line number (pylint mode)
+(if (string-match "^[0-9]+" currentline)
+(progn ; pylit case path\n\nline_number:
+;; store the line number and traverse up to extract a file
+(save-excursion
+(previous-line)
+(while (not (ffap-guesser))
+(previous-line)
+)
+(let ((line_number))
+;; To match pylint result remember to go to line beginning
+;; Extract the first match which should be the line number
+(setq line_number (match-string 0 currentline))
+(setq path_guess (concat (ffap-guesser) ":" line_number))
+)
+)
+)
+(progn ;; else - regular case path:line_number
+(setq path_guess (ffap-string-at-point))
+)
+)
+
+(setq guess (or guess path_guess ))) ; using ffap-alist here
+(and guess (ffap-highlight))
+)))
+(ffap-highlight t)))
+
