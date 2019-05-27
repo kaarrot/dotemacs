@@ -312,6 +312,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;# git difftool --tool=ediff --diff-filter=M tagname subdir
 (add-hook 'ediff-prepare-buffer-hook (lambda () (whitespace-mode 1) ) t)
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Extend the find-file to handle line/columns when open from Emacs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -353,35 +354,39 @@ ad-do-it
 (prog1
 (let ((mark-active nil)
 (currentline (ffap-string-at-point))
-(path_guess (ffap-guesser)))
+(path_guess (ffap-guesser))
+(match_data))
 ;; Don't use the region here, since it can be something
 ;; completely unwieldy. If the user wants that, she could
 ;; use M-w before and then C-y. --Stef
 
+
 ;; Check beginning of the line for the line number (pylint mode)
-(if (string-match "^[0-9]+" currentline)
+;; (save-match-data (and (setq match_data (string-match "\\([0-9]+\\)" currentline))
+(message "%s" currentline)
+(if (string-match "\\([0-9]+\\)" currentline)
 (progn ; pylit case path\n\nline_number:
 ;; store the line number and traverse up to extract a file
+(let ((line_number))
+;; To match pylint result remember to go to line beginning
+;; Extract the first match which should be the line number
+(setq line_number (match-string 1 currentline))
+
 (save-excursion
 (previous-line)
 (while (not (ffap-guesser))
 (previous-line)
 )
-(let ((line_number))
-;; To match pylint result remember to go to line beginning
-;; Extract the first match which should be the line number
-(setq line_number (match-string 0 currentline))
 (setq path_guess (concat (ffap-guesser) ":" line_number))
-)
-)
-)
+) ; excursion end
+) 
+) ; progn end
 (progn ;; else - regular case path:line_number
 (setq path_guess (ffap-string-at-point))
 )
-)
+) 
 
 (setq guess (or guess path_guess ))) ; using ffap-alist here
 (and guess (ffap-highlight))
 )))
 (ffap-highlight t)))
-
