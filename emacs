@@ -364,7 +364,7 @@ ad-do-it
 ;; Check beginning of the line for the line number (pylint mode)
 ;; (save-match-data (and (setq match_data (string-match "\\([0-9]+\\)" currentline))
 (message "%s" currentline)
-(if (string-match "\\([0-9]+\\)" currentline)
+(if (string-match "^\\([0-9]+\\)" currentline)
 (progn ; pylit case path\n\nline_number:
 ;; store the line number and traverse up to extract a file
 (let ((line_number))
