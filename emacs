@@ -32,7 +32,7 @@
 
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")
-(setq tab-width 2)
+(setq tab-width 4)
 
 (recentf-mode 1)
 
@@ -157,6 +157,7 @@
   (lambda () (interactive) (if indent-tabs-mode (progn (setq indent-tabs-mode nil) (message "spaces")) (progn (setq indent-tabs-mode t) (message "tabs")) )))
 (global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
 (global-set-key (kbd "C-c 8") 'ispell-word)
+(global-set-key  [M-backspace] 'lazy-backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (interactive) (setq tab-width 4)))
@@ -202,7 +203,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
   (setq compile-command (message "g++ -O0 -g -std=c++11 %s -o a.out" (buffer-file-name)))
-  (setq tab-width 2)
+  (setq tab-width 4)
   (local-set-key (kbd "C-c <RET>") 'compile)
   (local-set-key (kbd "C-c C-c") 'compile)
   (local-set-key (kbd "C-b") 'compile)
@@ -241,7 +242,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
-  (setq tab-width 2)
+  (setq tab-width 4)
   )
 
 (add-hook 'python-mode-hook 'python-mode-keys)
