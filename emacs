@@ -92,8 +92,12 @@
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
 ;;;;;;;;;;;;;;;;;;;; Tabbar
-(define-key my-keys-minor-mode-map (kbd "C-S-c C-<left>") 'tabbar-backward-tab)
-(define-key my-keys-minor-mode-map (kbd "C-S-c C-<right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c <left>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c <right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-S-M-<left>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-S-M-<right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c M-<right>") 'tabbar-move-current-tab-one-place-right)
+(define-key my-keys-minor-mode-map (kbd "M-c M-<left>") 'tabbar-move-current-tab-one-place-left)
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
