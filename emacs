@@ -30,6 +30,8 @@
 
 ;;;;;;;;;;;;;;;;;;; Configuration
 
+
+(setq python-shell-interpreter "python3")
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")
 (setq tab-width 4)
@@ -124,9 +126,9 @@
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
-(define-key my-keys-minor-mode-map (kbd "C-c .") 'bm-next) ; >
+(define-key my-keys-minor-mode-map (kbd "C-c C-.") 'bm-next) ; >
 (define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next) ; >
-(define-key my-keys-minor-mode-map (kbd "C-c ,") 'bm-previous) ;   <
+(define-key my-keys-minor-mode-map (kbd "C-c C-,") 'bm-previous) ;   <
 (define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'bm-previous) ; <
 
 ;;;;;;;;;;;;;;;;;;;; Move between windows
@@ -150,7 +152,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c <f2>") (lambda (search-phrase) (interactive "Msearch file:")
     (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
-(define-key my-keys-minor-mode-map (kbd "C-c C-c 2") (lambda (search-phrase) (interactive "Msearch file:")
+(define-key my-keys-minor-mode-map (kbd "M-c 2") (lambda (search-phrase) (interactive "Msearch file:")
     (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
 
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
@@ -246,6 +248,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
+  (local-set-key (kbd "C-c C-c") 'python-shell-send-buffer)
   (setq tab-width 4)
   )
 
@@ -282,8 +285,8 @@ t " my-keys" 'my-keys-minor-mode-map)
             (flyspell-prog-mode)
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
-	    (define-key my-keys-minor-mode-map (kbd "M-<up>") 'org-table-move-row-up)
-	    (define-key my-keys-minor-mode-map (kbd "M-<down>") 'org-table-move-row-down)
+	    (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
+	    (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
 
 	    (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
 	    (org-babel-do-load-languages
