@@ -254,6 +254,12 @@ In order to avoid interfference form project denoters we set them off. To restor
   (revert-buffer nil t)
   )
 
+(defun dropbox-ls (total)
+  (interactive "nShow recently modified files: ")
+  (setq rclone-recent (message "rclone lsl --max-depth 1 dropbox: 2>&1 | grep -oP \"([0-9]{4}-[0-9]{2}-[0-9]{2}).*\" | sort | tail -%s" total ))
+  (shell-command rclone-recent)
+  )
+
 (defun occur-methods (search-phrase)
   (interactive "Msearch phrase (empty will list methods):")
 
