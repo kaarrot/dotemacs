@@ -199,6 +199,11 @@
 (define-key my-keys-minor-mode-map (kbd "<f10> p")
   (lambda ()  (interactive)  (occur-1 "def\\|class" 1 (list (current-buffer))) ))
 
+;; Unbind existing key sequence first
+(global-unset-key (kbd "M-c"))
+(global-set-key (kbd "M-c u") 'winner-undo)
+(global-set-key (kbd "M-c r") 'winner-redo)
+
 ;;;;;;;;;;;;;;;;;;;
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
