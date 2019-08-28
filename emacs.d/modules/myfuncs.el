@@ -276,7 +276,7 @@ In order to avoid interfference form project denoters we set them off. To restor
             )
           (when (member extension '("py"))
             (message "searchin python")
-            (occur "def")
+            (occur "\\(def\\|class\\)")
             )
           )
         )
