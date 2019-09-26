@@ -361,6 +361,18 @@ In order to avoid interfference form project denoters we set them off. To restor
     (tabbar-set-template bufset nil)
     (tabbar-display-update)))
 
+ (defun track-shell-directory/procfs ()
+    (shell-dirtrack-mode 0)
+    (add-hook 'comint-preoutput-filter-functions
+              (lambda (str)
+                (prog1 str
+                  (when (string-match comint-prompt-regexp str)
+                    (cd (file-symlink-p
+                         (format "/proc/%s/cwd" (process-id
+                                                 (get-buffer-process
+                                                  (current-buffer)))))))))
+              nil t))
+
 (defun lazy-backward-kill-word ()
   "Customize/Smart backward-kill-word."
   (interactive)

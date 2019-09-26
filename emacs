@@ -264,6 +264,9 @@ t " my-keys" 'my-keys-minor-mode-map)
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
   (local-set-key (kbd "C-S-<down>") 'comint-next-matching-input-from-input)
 
+  ;; fix cd when using aliased commands
+  (track-shell-directory/procfs)
+  
   (python-shell-completion-native-turn-on)
   ;; Fallback option to mute the warning
   (setq python-shell-completion-native-disabled-interpreters '("python"))
@@ -292,11 +295,13 @@ t " my-keys" 'my-keys-minor-mode-map)
             ;;(my-keys-minor-mode 0) ;; disable my keys
 	    (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
 	    (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
+	    (local-set-key (kbd "M-S-<up>") 'org-table-move-row-down )
+	    
 
 	    (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
 	    (org-babel-do-load-languages
 	     'org-babel-load-languages
-	     '((ditaa . t)))
+	     '((ditaa . t) (python . t) ))
 
 	    ;; artist-mode + org-ditta
 	    ;; C-c C-a y    paste  
@@ -309,6 +314,9 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 )
           t)
+
+
+
 ;;;;;;;;;;;;;;;;;;;; Ediff
 
 ;; don't start another frame
