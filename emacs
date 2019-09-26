@@ -159,8 +159,10 @@
 (define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
 (define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
-(define-key my-keys-minor-mode-map (kbd "<C-f6>")
+(define-key my-keys-minor-mode-map (kbd "<C-f7>")
   (lambda () (interactive) (if indent-tabs-mode (progn (setq indent-tabs-mode nil) (message "spaces")) (progn (setq indent-tabs-mode t) (message "tabs")) )))
+(define-key my-keys-minor-mode-map (kbd "<C-c 7>")
+  (lambda () (interactive) (if indent-tabs-mode (progn (setq indent-tabs-mode nil) (message "spaces")) (progn (setq indent-tabs-mode t) (message "tabs")) )))  
 (global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
 (global-set-key (kbd "C-c 8") 'ispell-word)
 (global-set-key  [M-backspace] 'lazy-backward-kill-word)
