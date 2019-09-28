@@ -204,6 +204,7 @@
 ;; Unbind existing key sequence first
 (global-unset-key (kbd "M-c"))
 (global-set-key (kbd "M-c u") 'winner-undo)
+(global-set-key (kbd "C-c 0") 'winner-undo)
 (global-set-key (kbd "M-c r") 'winner-redo)
 
 ;;;;;;;;;;;;;;;;;;;
@@ -216,6 +217,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
   (setq compile-command (message "g++ -O0 -g -std=c++11 %s -o a.out" (buffer-file-name)))
+  (setq-default indent-tabs-mode nil)
+  (c-set-style "user")  ; this seems to control indentations
   (setq tab-width 4)
   (local-set-key (kbd "C-c <RET>") 'compile)
   (local-set-key (kbd "C-c C-c") 'compile)
@@ -227,12 +230,12 @@ t " my-keys" 'my-keys-minor-mode-map)
   (setq comment-start "//" comment-end "")
   (set-default 'truncate-lines nil)
 
-  (when (require 'lsp-mode nil 'noerror)
-      (require 'cquery)
-      (setq cquery-executable "~/bin/cquery")
-      (setq cquery-cache-dir "/tmp/.cquery_cached_index")
-      (lsp)
-      )
+  ; (when (require 'lsp-mode nil 'noerror)
+  ;     (require 'cquery)
+  ;     (setq cquery-executable "~/bin/cquery")
+  ;     (setq cquery-cache-dir "/tmp/.cquery_cached_index")
+  ;     (lsp)
+  ;    )
 
   )
 
@@ -343,73 +346,73 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;; (to-do "make `find-file-line-number' work for emacsclient as well")
 ;; (to-do "make `find-file-line-number' check if the file exists")
 (defadvice find-file (around find-file-line-number
-(path &optional wildcards)
-activate)
-"Turn files like file.js:14:10 into file.js and going to line 14, col 10."
-(save-match-data
-(let* ((match (string-match "^\\(.*?\\):\\([0-9]+\\):?\\([0-9]*\\)$" path))
-(line-no (and match
-(match-string 2 path)
-(string-to-number (match-string 2 path))))
-(col-no (and match
-(match-string 3 path)
-(string-to-number (match-string 3 path))))
-(path (if match (match-string 1 path) path)))
-ad-do-it
-(when line-no
-;; goto-line is for interactive use
-(goto-char (point-min))
-(forward-line (1- line-no))
-(when (> col-no 0)
-(forward-char (1- col-no)))))))
+                             (path &optional wildcards)
+                             activate)
+  "Turn files like file.js:14:10 into file.js and going to line 14, col 10."
+  (save-match-data
+    (let* ((match (string-match "^\\(.*?\\):\\([0-9]+\\):?\\([0-9]*\\)$" path))
+           (line-no (and match
+                         (match-string 2 path)
+                         (string-to-number (match-string 2 path))))
+           (col-no (and match
+                        (match-string 3 path)
+                        (string-to-number (match-string 3 path))))
+           (path (if match (match-string 1 path) path)))
+      ad-do-it
+      (when line-no
+        ;; goto-line is for interactive use
+        (goto-char (point-min))
+        (forward-line (1- line-no))
+        (when (> col-no 0)
+          (forward-char (1- col-no)))))))
 
 ;; in order to override it we need to require it first
 (require 'ffap)
 (defun ffap-prompter (&optional guess)
-;; Does guess and prompt step for find-file-at-point.
-;; Extra complication for the temporary highlighting.
-(unwind-protect
-;; This catch will let ffap-alist entries do their own prompting
-;; and then maybe skip over this prompt (ff-paths, for example).
-(catch 'ffap-prompter
-(ffap-read-file-or-url
-(if ffap-url-regexp "Find file or URL: " "Find file: ")
-(prog1
-(let ((mark-active nil)
-(currentline (ffap-string-at-point))
-(path_guess (ffap-guesser))
-(match_data))
-;; Don't use the region here, since it can be something
-;; completely unwieldy. If the user wants that, she could
-;; use M-w before and then C-y. --Stef
-
-
-;; Check beginning of the line for the line number (pylint mode)
-;; (save-match-data (and (setq match_data (string-match "\\([0-9]+\\)" currentline))
-(message "%s" currentline)
-(if (string-match "^\\([0-9]+\\)" currentline)
-(progn ; pylit case path\n\nline_number:
-;; store the line number and traverse up to extract a file
-(let ((line_number))
-;; To match pylint result remember to go to line beginning
-;; Extract the first match which should be the line number
-(setq line_number (match-string 1 currentline))
-
-(save-excursion
-(previous-line)
-(while (not (ffap-guesser))
-(previous-line)
-)
-(setq path_guess (concat (ffap-guesser) ":" line_number))
-) ; excursion end
-) 
-) ; progn end
-(progn ;; else - regular case path:line_number
-(setq path_guess (ffap-string-at-point))
-)
-) 
-
-(setq guess (or guess path_guess ))) ; using ffap-alist here
-(and guess (ffap-highlight))
-)))
-(ffap-highlight t)))
+  ;; Does guess and prompt step for find-file-at-point.
+  ;; Extra complication for the temporary highlighting.
+  (unwind-protect
+      ;; This catch will let ffap-alist entries do their own prompting
+      ;; and then maybe skip over this prompt (ff-paths, for example).
+      (catch 'ffap-prompter
+        (ffap-read-file-or-url
+         (if ffap-url-regexp "Find file or URL: " "Find file: ")
+         (prog1
+             (let ((mark-active nil)
+                   (currentline (ffap-string-at-point))
+                   (path_guess (ffap-guesser))
+                   (match_data))
+               ;; Don't use the region here, since it can be something
+               ;; completely unwieldy. If the user wants that, she could
+               ;; use M-w before and then C-y. --Stef
+               
+               
+               ;; Check beginning of the line for the line number (pylint mode)
+               ;; (save-match-data (and (setq match_data (string-match "\\([0-9]+\\)" currentline))
+               (message "%s" currentline)
+               (if (string-match "^\\([0-9]+\\)" currentline)
+                   (progn ; pylit case path\n\nline_number:
+                     ;; store the line number and traverse up to extract a file
+                     (let ((line_number))
+                       ;; To match pylint result remember to go to line beginning
+                       ;; Extract the first match which should be the line number
+                       (setq line_number (match-string 1 currentline))
+                       
+                       (save-excursion
+                         (previous-line)
+                         (while (not (ffap-guesser))
+                           (previous-line)
+                           )
+                         (setq path_guess (concat (ffap-guesser) ":" line_number))
+                         ) ; excursion end
+                       ) 
+                     ) ; progn end
+                 (progn ;; else - regular case path:line_number
+                   (setq path_guess (ffap-string-at-point))
+                   )
+                 ) 
+               
+               (setq guess (or guess path_guess ))) ; using ffap-alist here
+           (and guess (ffap-highlight))
+           )))
+    (ffap-highlight t)))
