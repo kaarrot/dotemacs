@@ -103,7 +103,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "C-d") 'ace-jump-char-mode)
+(define-key my-keys-minor-mode-map (kbd "M-c SPC") 'ace-jump-char-mode)
 
 ;;;;;;;;;;;;;;;;;;; Dumb Jump
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
