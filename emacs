@@ -124,7 +124,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
-(define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
+(define-key my-keys-minor-mode-map (kbd "C-c C-l") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c C-.") 'bm-next) ; >
 (define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next) ; >
@@ -233,7 +233,7 @@ t " my-keys" 'my-keys-minor-mode-map)
                                 ))
   (local-set-key (kbd "C-c 5") (lambda () (interactive)
                                     (require 'cquery)
-                                    (setq cquery-executable "~/SRC_jetson/cquery-kuba/build/debug/bin/cquery")
+                                    (setq cquery-executable "~/bin/cquery")
                                     (setq cquery-extra-args  '("--log-all-to-stderr") )
                                     (setq cquery-cache-dir "/tmp/.cquery_cached_index")
                                     (lsp)
@@ -242,8 +242,6 @@ t " my-keys" 'my-keys-minor-mode-map)
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
   (set-default 'truncate-lines nil)
-
-
 
   )
 
