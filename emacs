@@ -30,9 +30,11 @@
 
 ;;;;;;;;;;;;;;;;;;; Configuration
 
+
+(setq python-shell-interpreter "python3")
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")
-(setq tab-width 2)
+(setq tab-width 4)
 
 (recentf-mode 1)
 
@@ -92,12 +94,21 @@
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
 ;;;;;;;;;;;;;;;;;;;; Tabbar
-(define-key my-keys-minor-mode-map (kbd "C-S-c C-<left>") 'tabbar-backward-tab)
-(define-key my-keys-minor-mode-map (kbd "C-S-c C-<right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c <left>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c <right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-S-M-<left>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-S-M-<right>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c M-<right>") 'tabbar-move-current-tab-one-place-right)
+(define-key my-keys-minor-mode-map (kbd "M-c M-<left>") 'tabbar-move-current-tab-one-place-left)
+; Moving tabs with Page-Up/Down
+(define-key my-keys-minor-mode-map (kbd "C-<prior>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-<next>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "<C-M-prior>") 'tabbar-move-current-tab-one-place-left)  ; C-S-M-Page Up
+(define-key my-keys-minor-mode-map (kbd "C-M-<next>") 'tabbar-move-current-tab-one-place-right) ; C-S-M-Page Down
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "C-d") 'ace-jump-char-mode)
+(define-key my-keys-minor-mode-map (kbd "M-c SPC") 'ace-jump-char-mode)
 
 ;;;;;;;;;;;;;;;;;;; Dumb Jump
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
@@ -118,11 +129,11 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
-(define-key my-keys-minor-mode-map (kbd "C-c l") 'bm-toggle)
+(define-key my-keys-minor-mode-map (kbd "C-c C-l") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
-(define-key my-keys-minor-mode-map (kbd "C-c .") 'bm-next) ; >
+(define-key my-keys-minor-mode-map (kbd "C-c C-.") 'bm-next) ; >
 (define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next) ; >
-(define-key my-keys-minor-mode-map (kbd "C-c ,") 'bm-previous) ;   <
+(define-key my-keys-minor-mode-map (kbd "C-c C-,") 'bm-previous) ;   <
 (define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'bm-previous) ; <
 
 ;;;;;;;;;;;;;;;;;;;; Move between windows
@@ -146,17 +157,20 @@
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c <f2>") (lambda (search-phrase) (interactive "Msearch file:")
     (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
-(define-key my-keys-minor-mode-map (kbd "C-c C-c 2") (lambda (search-phrase) (interactive "Msearch file:")
+(define-key my-keys-minor-mode-map (kbd "M-c 2") (lambda (search-phrase) (interactive "Msearch file:")
     (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
 
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
 (define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
-(define-key my-keys-minor-mode-map (kbd "<C-f6>")
+(define-key my-keys-minor-mode-map (kbd "<C-f7>")
   (lambda () (interactive) (if indent-tabs-mode (progn (setq indent-tabs-mode nil) (message "spaces")) (progn (setq indent-tabs-mode t) (message "tabs")) )))
+(define-key my-keys-minor-mode-map (kbd "<C-c 7>")
+  (lambda () (interactive) (if indent-tabs-mode (progn (setq indent-tabs-mode nil) (message "spaces")) (progn (setq indent-tabs-mode t) (message "tabs")) )))  
 (global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
 (global-set-key (kbd "C-c 8") 'ispell-word)
+(global-set-key  [M-backspace] 'lazy-backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (interactive) (setq tab-width 4)))
@@ -192,6 +206,12 @@
 (define-key my-keys-minor-mode-map (kbd "<f10> p")
   (lambda ()  (interactive)  (occur-1 "def\\|class" 1 (list (current-buffer))) ))
 
+;; Unbind existing key sequence first
+(global-unset-key (kbd "M-c"))
+(global-set-key (kbd "M-c u") 'winner-undo)
+(global-set-key (kbd "C-c 0") 'winner-undo)
+(global-set-key (kbd "M-c r") 'winner-redo)
+
 ;;;;;;;;;;;;;;;;;;;
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
@@ -202,23 +222,31 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
   (setq compile-command (message "g++ -O0 -g -std=c++11 %s -o a.out" (buffer-file-name)))
-  (setq tab-width 2)
+  (setq-default indent-tabs-mode nil)
+  (c-set-style "user")  ; this seems to control indentations
+  (setq tab-width 4)
   (local-set-key (kbd "C-c <RET>") 'compile)
   (local-set-key (kbd "C-c C-c") 'compile)
   (local-set-key (kbd "C-b") 'compile)
   (local-set-key (kbd "C-q") 'compile)
-  (local-set-key (kbd "<f5>") 'gud-gdb)
+  ;(local-set-key (kbd "<f5>") 'gud-gdb)
+  ; compile_flags.txt (in root) - specify -I/path_to_include
+  (local-set-key (kbd "C-x 5") (lambda () (interactive)
+                                (setq lsp-clients-clangd-executable "~/bin/clangd")
+                                (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))       
+                                (lsp)   
+                                ))
+  (local-set-key (kbd "C-c 5") (lambda () (interactive)
+                                    (require 'cquery)
+                                    (setq cquery-executable "~/bin/cquery")
+                                    (setq cquery-extra-args  '("--log-all-to-stderr") )
+                                    (setq cquery-cache-dir "/tmp/.cquery_cached_index")
+                                    (lsp)
+                                    ))  
   (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
   (set-default 'truncate-lines nil)
-
-  (when (require 'lsp-mode nil 'noerror)
-      (require 'cquery)
-      (setq cquery-executable "~/bin/cquery")
-      (setq cquery-cache-dir "/tmp/.cquery_cached_index")
-      (lsp)
-      )
 
   )
 
@@ -230,6 +258,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;;;;;;;;;;;;;;;;;; Gdb
 (defun gdb-mode-keys()
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
+  (setq gdb-many-windows t)
   )
 (add-hook 'gdb-mode-hook 'gdb-mode-keys)
 
@@ -240,7 +269,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
-  (setq tab-width 2)
+  (local-set-key (kbd "C-c C-c") 'python-shell-send-buffer)
+  (setq tab-width 4)
   )
 
 (add-hook 'python-mode-hook 'python-mode-keys)
@@ -250,6 +280,9 @@ t " my-keys" 'my-keys-minor-mode-map)
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
   (local-set-key (kbd "C-S-<down>") 'comint-next-matching-input-from-input)
 
+  ;; fix cd when using aliased commands
+  (track-shell-directory/procfs)
+  
   (python-shell-completion-native-turn-on)
   ;; Fallback option to mute the warning
   (setq python-shell-completion-native-disabled-interpreters '("python"))
@@ -276,13 +309,15 @@ t " my-keys" 'my-keys-minor-mode-map)
             (flyspell-prog-mode)
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
-	    (define-key my-keys-minor-mode-map (kbd "M-<up>") 'org-table-move-row-up)
-	    (define-key my-keys-minor-mode-map (kbd "M-<down>") 'org-table-move-row-down)
+	    (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
+	    (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
+	    (local-set-key (kbd "M-S-<up>") 'org-table-move-row-down )
+	    
 
 	    (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
 	    (org-babel-do-load-languages
 	     'org-babel-load-languages
-	     '((ditaa . t)))
+	     '((ditaa . t) (python . t) ))
 
 	    ;; artist-mode + org-ditta
 	    ;; C-c C-a y    paste  
@@ -295,6 +330,9 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 )
           t)
+
+
+
 ;;;;;;;;;;;;;;;;;;;; Ediff
 
 ;; don't start another frame
@@ -311,3 +349,81 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;# git difftool --tool=ediff --diff-filter=M tagname subdir
 (add-hook 'ediff-prepare-buffer-hook (lambda () (whitespace-mode 1) ) t)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Extend the find-file to handle line/columns when open from Emacs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Open files and go places like we see from error messages, i e: path:line:col
+;; (to-do "make `find-file-line-number' work for emacsclient as well")
+;; (to-do "make `find-file-line-number' check if the file exists")
+(defadvice find-file (around find-file-line-number
+                             (path &optional wildcards)
+                             activate)
+  "Turn files like file.js:14:10 into file.js and going to line 14, col 10."
+  (save-match-data
+    (let* ((match (string-match "^\\(.*?\\):\\([0-9]+\\):?\\([0-9]*\\)$" path))
+           (line-no (and match
+                         (match-string 2 path)
+                         (string-to-number (match-string 2 path))))
+           (col-no (and match
+                        (match-string 3 path)
+                        (string-to-number (match-string 3 path))))
+           (path (if match (match-string 1 path) path)))
+      ad-do-it
+      (when line-no
+        ;; goto-line is for interactive use
+        (goto-char (point-min))
+        (forward-line (1- line-no))
+        (when (> col-no 0)
+          (forward-char (1- col-no)))))))
+
+;; in order to override it we need to require it first
+(require 'ffap)
+(defun ffap-prompter (&optional guess)
+  ;; Does guess and prompt step for find-file-at-point.
+  ;; Extra complication for the temporary highlighting.
+  (unwind-protect
+      ;; This catch will let ffap-alist entries do their own prompting
+      ;; and then maybe skip over this prompt (ff-paths, for example).
+      (catch 'ffap-prompter
+        (ffap-read-file-or-url
+         (if ffap-url-regexp "Find file or URL: " "Find file: ")
+         (prog1
+             (let ((mark-active nil)
+                   (currentline (ffap-string-at-point))
+                   (path_guess (ffap-guesser))
+                   (match_data))
+               ;; Don't use the region here, since it can be something
+               ;; completely unwieldy. If the user wants that, she could
+               ;; use M-w before and then C-y. --Stef
+               
+               
+               ;; Check beginning of the line for the line number (pylint mode)
+               ;; (save-match-data (and (setq match_data (string-match "\\([0-9]+\\)" currentline))
+               (message "%s" currentline)
+               (if (string-match "^\\([0-9]+\\)" currentline)
+                   (progn ; pylit case path\n\nline_number:
+                     ;; store the line number and traverse up to extract a file
+                     (let ((line_number))
+                       ;; To match pylint result remember to go to line beginning
+                       ;; Extract the first match which should be the line number
+                       (setq line_number (match-string 1 currentline))
+                       
+                       (save-excursion
+                         (previous-line)
+                         (while (not (ffap-guesser))
+                           (previous-line)
+                           )
+                         (setq path_guess (concat (ffap-guesser) ":" line_number))
+                         ) ; excursion end
+                       ) 
+                     ) ; progn end
+                 (progn ;; else - regular case path:line_number
+                   (setq path_guess (ffap-string-at-point))
+                   )
+                 ) 
+               
+               (setq guess (or guess path_guess ))) ; using ffap-alist here
+           (and guess (ffap-highlight))
+           )))
+    (ffap-highlight t)))
