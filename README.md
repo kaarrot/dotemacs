@@ -30,8 +30,65 @@ These are located in `emacs.d/modules/myfuncs.el` and are mostly add-hock experi
 - `sort-buffers`
 - `tabbar-move-current-tab-one-place-right` (and `left`)
 
-### Some useful features (WIP)
-- display and copy the current file path into the clipboard.
-![](images/copy_current_file_path.gif)
-- sync current file with dropbox (using rclone)
-![](images/rclone_dropbox.gif)
+### General purpose features
+- Modified ffap to jump directly to a line number if the path contains it.
+  For instance `/tmp/aaa.c:123`
+  
+  ![](images/ffap.gif)
+
+- Rename files using multiple cursors
+
+  ![](images/wdired.gif)
+
+- Ediff mode with whitespace
+
+  Split buffers vertically (using the same window) with white-space mode enabled.
+  Once diffing completes undo split and go back to the original buffer layout.
+  
+  ![](images/ediff.gif)
+
+- Save/load current desktop
+
+  ![](images/save-desktop.gif)
+
+- Send code snippets within the boundary of two bookmarks to Python session.
+
+  ![](images/python-send-snippets.gif)
+
+- Display and copy the current file path into the clipboard.
+
+  ![](images/copy_current_file_path.gif)
+
+- Go back to the previous window layout
+
+  For instance allows to temporarily display buffer in full window and return to previous layout.
+  
+  ![](images/winner_undo.gif)
+
+- Sync current file with dropbox (external dependency: rclone)
+
+  ![](images/rclone_dropbox.gif)
+
+### Navigation
+- Cursor history
+
+  Push cursor location into a ring. While moving back/forth retain the order of locations in the ring.
+  
+  ![](images/cursor_history.gif)
+
+- Lists functions in a buffer
+
+  This method piggy-backs on occur
+  
+  ![](images/occur_methods.gif)
+
+- Lightweight jump to definition (non C++)
+
+  ![](images/dumbjump_specify_include_path.gif)
+
+- Enable lsp/cquery in current buffer (external dependency: cquery/llvm)
+
+  Requires building cquery (and have llvm7.0.0 dependency).
+
+  ![](images/cquery.gif)
+
