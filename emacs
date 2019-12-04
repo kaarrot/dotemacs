@@ -187,8 +187,6 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
 
-(define-key my-keys-minor-mode-map (kbd "C-c <RET>") 'selectback-exec)
-(define-key my-keys-minor-mode-map (kbd "S-C-c <RET>") 'selectback)
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
 (define-key my-keys-minor-mode-map (kbd "C-c C-i") 'iimage-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c C-r") 'refresh-iimages)
@@ -221,14 +219,10 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()
-  (setq compile-command (message "g++ -O0 -g -std=c++11 %s -o a.out" (buffer-file-name)))
   (setq-default indent-tabs-mode nil)
   (c-set-style "user")  ; this seems to control indentations
   (setq tab-width 4)
-  (local-set-key (kbd "C-c <RET>") 'compile)
   (local-set-key (kbd "C-c C-c") 'compile)
-  (local-set-key (kbd "C-b") 'compile)
-  (local-set-key (kbd "C-q") 'compile)
   ;(local-set-key (kbd "<f5>") 'gud-gdb)
   ; compile_flags.txt (in root) - specify -I/path_to_include
   (local-set-key (kbd "C-x 5") (lambda () (interactive)
@@ -244,6 +238,10 @@ t " my-keys" 'my-keys-minor-mode-map)
                                     (lsp)
                                     ))  
   (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
+  (local-set-key (kbd "C-c <RET>") (lambda () (interactive)
+    (setq compile-command (message "g++ -O3 -g -std=c++11 -I. %s -o a.out" (buffer-file-name))) )) 
+
+    
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
   (set-default 'truncate-lines nil)
@@ -258,7 +256,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;;;;;;;;;;;;;;;;;; Gdb
 (defun gdb-mode-keys()
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
-  (setq gdb-many-windows t)
+  (setq gdb-display-io-nopopup t) 
+  ;; (setq gdb-many-windows t)
   )
 (add-hook 'gdb-mode-hook 'gdb-mode-keys)
 
@@ -270,6 +269,10 @@ t " my-keys" 'my-keys-minor-mode-map)
   (local-set-key (kbd "C->") 'python-indent-shift-right)
   (local-set-key (kbd "C-<") 'python-indent-shift-left)
   (local-set-key (kbd "C-c C-c") 'python-shell-send-buffer)
+
+  (local-set-key (kbd "C-c <RET>") 'selectback-exec)
+  (local-set-key (kbd "S-C-c <RET>") 'selectback)
+
   (setq tab-width 4)
   )
 
@@ -297,7 +300,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (defun dired-mode-keys()
   (local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
   (local-set-key (kbd "C-k") 'kill-dired-buffers)
-  (setq truncate-lines nil)
+  ;; (set-default 'truncate-lines nil)  
  )
 (add-hook 'dired-mode-hook 'dired-mode-keys)
 
