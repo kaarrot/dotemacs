@@ -243,6 +243,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
+  (setq compilation-scroll-output 'first-error) ;; scroll compilation buffer
   (set-default 'truncate-lines nil)
 
   )
