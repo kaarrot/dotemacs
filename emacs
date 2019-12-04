@@ -38,7 +38,7 @@
 
 (recentf-mode 1)
 
-(if (not (search "arm" system-configuration))      
+(if (not (search "arm" system-configuration))
       (show-paren-mode 1)  ;; Disable on Arm as it slow things down significantly.
 )
 
@@ -228,7 +228,7 @@ t " my-keys" 'my-keys-minor-mode-map)
   (local-set-key (kbd "C-x 5") (lambda () (interactive)
                                 (setq lsp-clients-clangd-executable "~/bin/clangd")
                                 (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))       
-                                (lsp)   
+                                (lsp)
                                 ))
   (local-set-key (kbd "C-c 5") (lambda () (interactive)
                                     (require 'cquery)
@@ -236,12 +236,11 @@ t " my-keys" 'my-keys-minor-mode-map)
                                     (setq cquery-extra-args  '("--log-all-to-stderr") )
                                     (setq cquery-cache-dir "/tmp/.cquery_cached_index")
                                     (lsp)
-                                    ))  
+                                    ))
   (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
   (local-set-key (kbd "C-c <RET>") (lambda () (interactive)
-    (setq compile-command (message "g++ -O3 -g -std=c++11 -I. %s -o a.out" (buffer-file-name))) )) 
+    (setq compile-command (message "g++ -O0 -g -std=c++11 -I. %s -o a.out" (buffer-file-name))) )) 
 
-    
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
   (set-default 'truncate-lines nil)
@@ -256,7 +255,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;;;;;;;;;;;;;;;;;; Gdb
 (defun gdb-mode-keys()
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
-  (setq gdb-display-io-nopopup t) 
+  (setq gdb-display-io-nopopup t)
   ;; (setq gdb-many-windows t)
   )
 (add-hook 'gdb-mode-hook 'gdb-mode-keys)
@@ -285,7 +284,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   ;; fix cd when using aliased commands
   (track-shell-directory/procfs)
-  
+
   (python-shell-completion-native-turn-on)
   ;; Fallback option to mute the warning
   (setq python-shell-completion-native-disabled-interpreters '("python"))
@@ -300,7 +299,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (defun dired-mode-keys()
   (local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
   (local-set-key (kbd "C-k") 'kill-dired-buffers)
-  ;; (set-default 'truncate-lines nil)  
+  ;; (set-default 'truncate-lines nil)
  )
 (add-hook 'dired-mode-hook 'dired-mode-keys)
 
@@ -312,24 +311,24 @@ t " my-keys" 'my-keys-minor-mode-map)
             (flyspell-prog-mode)
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
-	    (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
-	    (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
-	    (local-set-key (kbd "M-S-<up>") 'org-table-move-row-down )
-	    
+            (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
+            (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
+            (local-set-key (kbd "M-S-<up>") 'org-table-move-row-down )
 
-	    (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
-	    (org-babel-do-load-languages
-	     'org-babel-load-languages
-	     '((ditaa . t) (python . t) ))
 
-	    ;; artist-mode + org-ditta
-	    ;; C-c C-a y    paste  
-	    ;; C-c C-a M-w  copy
-	    ;; C-c C-a r    rectangle
-	    ;; C-c C-a l    line
-	    ;; S-mouse3     rectangle erase    
-	    ;; C-c C-c : executes the code
-	    ;; C-c ' : edits region
+            (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
+            (org-babel-do-load-languages
+             'org-babel-load-languages
+             '((ditaa . t) (python . t) ))
+
+            ;; artist-mode + org-ditta
+            ;; C-c C-a y    paste
+            ;; C-c C-a M-w  copy
+            ;; C-c C-a r    rectangle
+            ;; C-c C-a l    line
+            ;; S-mouse3     rectangle erase
+            ;; C-c C-c : executes the code
+            ;; C-c ' : edits region
 
 )
           t)
@@ -399,9 +398,8 @@ t " my-keys" 'my-keys-minor-mode-map)
                ;; Don't use the region here, since it can be something
                ;; completely unwieldy. If the user wants that, she could
                ;; use M-w before and then C-y. --Stef
-               
-               
-               ;; Check beginning of the line for the line number (pylint mode)
+
+;; Check beginning of the line for the line number (pylint mode)
                ;; (save-match-data (and (setq match_data (string-match "\\([0-9]+\\)" currentline))
                (message "%s" currentline)
                (if (string-match "^\\([0-9]+\\)" currentline)
@@ -411,7 +409,7 @@ t " my-keys" 'my-keys-minor-mode-map)
                        ;; To match pylint result remember to go to line beginning
                        ;; Extract the first match which should be the line number
                        (setq line_number (match-string 1 currentline))
-                       
+
                        (save-excursion
                          (previous-line)
                          (while (not (ffap-guesser))
@@ -419,13 +417,13 @@ t " my-keys" 'my-keys-minor-mode-map)
                            )
                          (setq path_guess (concat (ffap-guesser) ":" line_number))
                          ) ; excursion end
-                       ) 
+                       )
                      ) ; progn end
                  (progn ;; else - regular case path:line_number
                    (setq path_guess (ffap-string-at-point))
                    )
-                 ) 
-               
+                 )
+
                (setq guess (or guess path_guess ))) ; using ffap-alist here
            (and guess (ffap-highlight))
            )))
