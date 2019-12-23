@@ -34,7 +34,11 @@
 (setq python-shell-interpreter "python3")
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")
-(setq tab-width 4)
+
+;; Disable default tab-indentation
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
 
 (recentf-mode 1)
 

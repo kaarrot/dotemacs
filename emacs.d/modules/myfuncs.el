@@ -10,7 +10,7 @@
   (if mark-active
       (if (< (mark) (point))
 	  (comment-or-uncomment-region (mark) (point))
-	(comment-or-uncomment-region (point) (mark)))
+    (comment-or-uncomment-region (point) (mark)))
     (comment-or-uncomment-region
      (line-beginning-position)
      (line-end-position lines))))
@@ -25,10 +25,33 @@
         (message "using spaces")
         (setq indent-tabs-mode nil))
     (when (> tab-count space-count)
-	(message "using tabs")
-	(setq indent-tabs-mode t))
+  (message "using tabs")
+  (setq indent-tabs-mode t))
   ))
 
+(defun reindent-buffer (_from _to)
+  (interactive "nFrom width:\nnTo width:" )
+  (let (endpos)
+    (save-excursion (end-of-buffer)
+                    (setq endpos (point)))
+
+    (setq tab-width _from)
+    (setq indent-tabs-mode t)
+    (tabify 0 endpos)
+    (setq tab-width _to)
+
+    ;(setq-default indent-tabs-mode nil)
+    ;(setq indent-line-function 'insert-tab)
+    ;(indent-region 0 endpos)
+
+    (save-excursion (end-of-buffer)
+                    (setq endpos (point)))
+
+    (untabify 0 endpos)
+    (setq tab-width _to)
+    (setq indent-tabs-mode nil)
+    )
+  )
 
 (defun g-ring()
   (interactive)
@@ -41,15 +64,15 @@
   ;; marks the current location in case we want to go forward.
   (add-to-global-ring)
   (pop-global-mark)  ;; pop current location
-  (pop-global-mark))  
-  
+  (pop-global-mark))
+
 (defun go-ring-forward()
   ;; Reverse of pop-global-mark - Move cursor forward to the next mark sotred in the ring
   (interactive)
   (let (_buf
-	_pos
-	aaa)
-    
+        _pos
+        aaa)
+
     ;; (message "%s" global-mark-ring)
     (setq _buf (marker-buffer (nth 0 (last global-mark-ring ))) )
     (setq _pos (marker-position (nth 0 (last global-mark-ring ))) )
@@ -95,8 +118,8 @@
   (interactive)
   (message
    (if (let (window (get-buffer-window (current-buffer)))
-	 (set-window-dedicated-p window
-	      (not (window-dedicated-p window))))
+   (set-window-dedicated-p window
+       (not (window-dedicated-p window))))
        "Window '%s' is dedicated"
      "Window '%s' is normal")
    (current-buffer)))
