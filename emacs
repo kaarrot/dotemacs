@@ -106,9 +106,13 @@
 (define-key my-keys-minor-mode-map (kbd "M-c M-<left>") 'tabbar-move-current-tab-one-place-left)
 ; Moving tabs with Page-Up/Down
 (define-key my-keys-minor-mode-map (kbd "C-<prior>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-c ,") 'tabbar-backward-tab)
 (define-key my-keys-minor-mode-map (kbd "C-<next>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "C-c .") 'tabbar-forward-tab)
 (define-key my-keys-minor-mode-map (kbd "<C-M-prior>") 'tabbar-move-current-tab-one-place-left)  ; C-S-M-Page Up
+(define-key my-keys-minor-mode-map (kbd "M-c ,") 'tabbar-move-current-tab-one-place-left)
 (define-key my-keys-minor-mode-map (kbd "C-M-<next>") 'tabbar-move-current-tab-one-place-right) ; C-S-M-Page Down
+(define-key my-keys-minor-mode-map (kbd "M-c .") 'tabbar-move-current-tab-one-place-right)
 
 ;;;;;;;;;;;;;;;;;;;; ACE Jump
 (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
@@ -182,12 +186,11 @@
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "C-z") 'set-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-c ;") 'comment-or-uncomment-this)
-;(define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
+(define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
 
