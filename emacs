@@ -28,6 +28,11 @@
 (tabbar-mode)
 (yas-global-mode 1)
 
+;;;;;;;;;;;;;;;;;;; gpg
+(require 'epa-file)
+(epa-file-enable)
+(setf epa-pinentry-mode 'loopback)
+
 ;;;;;;;;;;;;;;;;;;; Configuration
 
 
