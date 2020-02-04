@@ -31,7 +31,8 @@
 ;;;;;;;;;;;;;;;;;;; gpg
 (require 'epa-file)
 (epa-file-enable)
-(setf epa-pinentry-mode 'loopback)
+(setf epa-pinentry-mode 'loopback)  ;; enable command line password entry
+(setq epa-file-cache-passphrase-for-symmetric-encryption t)  ;; no need to retype passphrase after each save
 
 ;;;;;;;;;;;;;;;;;;; Configuration
 
