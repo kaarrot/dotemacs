@@ -237,6 +237,10 @@ t " my-keys" 'my-keys-minor-mode-map)
   (setq tab-width 4)
   (local-set-key (kbd "C-c C-c") 'compile)
   ;(local-set-key (kbd "<f5>") 'gud-gdb)
+  ;; toggle between .h and .cpp
+  (local-set-key (kbd "C-c 4") 'ff-find-other-file)
+  (local-set-key (kbd "<f4>") 'ff-find-other-file)
+
   ; compile_flags.txt (in root) - specify -I/path_to_include
   (local-set-key (kbd "C-x 5") (lambda () (interactive)
                                 (setq lsp-clients-clangd-executable "~/bin/clangd")

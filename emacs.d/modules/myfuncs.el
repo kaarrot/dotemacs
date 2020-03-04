@@ -293,9 +293,15 @@ In order to avoid interfference form project denoters we set them off. To restor
         (let ((extension (pop (cdr (s-split "\\." (message "%s" (current-buffer))))) ))
           (message "---%s---" extension)
           (when (member extension '("c" "cpp" "cc" "cxx" "h" "hh"))
-            (message "searchin cpp")
-            ;; command regex: ^[ ]*\([a-zA-Z_]\)\([a-zA-Z0-9_]*\)\([ ]+\)\([a-zA-Z_][a-zA-Z0-9_:]*\)(
-            (occur "^[ ]*\\([a-zA-Z_]\\)\\([a-zA-Z0-9_]*\\)\\([ ]+\\)\\([a-zA-Z_][a-zA-Z0-9_:]*\\)(")
+            (message "searching cpp")
+            ;; command regex: \([a-zA-Z_]\)\([a-zA-Z0-9_]*\)\([ ]+\)\([a-zA-Z_][a-zA-Z0-9_:]*\)(
+            ;;(occur "\\([a-zA-Z_]\\)\\([a-zA-Z0-9_]*\\)\\([ ]+\\)\\([a-zA-Z_][a-zA-Z0-9_:]*\\)(") # previous version
+            ;; perl (^ *(?!for|if|throw)\b([A-Za-z_ ][A-Za-z0-9_]*+\b|::)*+) *(\() # with negative lookahead
+            ;; emacs does not support that - no way to exlude words
+            ;; for now it is better to list more, so also includes if|while|for etc
+            ;; command: \(^\( \)*\b\([A-Z_a-z ][0-9A-Z_a-z_]*+\b\|::\)*+\) *\((\)
+            ;; elisp expression:
+            (occur "\\(^\\( \\)*\\b\\([A-Z_a-z ][0-9A-Z_a-z_]*+\\b\\|::\\)*+\\) *\\((\\)")
             )
           (when (member extension '("py"))
             (message "searchin python")
