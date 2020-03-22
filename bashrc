@@ -21,7 +21,7 @@ export PS1="[\A]\u@\h \w\\n$ "
 alias u='cd ..; ls'
 alias ee='emacs -nw'
 
-# source ~/git-completion.bash
+source ~/git-completions.bash
 
 #git
 alias g-l='git log --pretty=oneline --abbrev-commit'
