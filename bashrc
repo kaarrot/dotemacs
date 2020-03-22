@@ -32,11 +32,26 @@ alias g-d='git diff --name-only'
 alias g-r='git for-each-ref --sort=committerdate refs/heads/'
 alias g-prev='git reset --hard `git log -n 1 --skip 1 --format="%H"`'
 
-alias julia-svn='/home/kuba/SRC/julia-svn/usr/bin/julia'
-alias julia3='/home/kuba/julia3.11/bin/julia'
-alias ijulia='ipython notebook --prefile=julia'
+env_gcc650 (){
+   export CC=$HOME/toolchains/gcc650/bin/gcc;
+   export CPP=$HOME/toolchains/gcc650/bin/cpp;
+   export CXX=$HOME/toolchains/gcc650/bin/g++;
+   export CCC=$HOME/toolchains/gcc650/bin/gcc;
+   export LD=$HOME/toolchains/gcc650/bin/gcc;
 
-alias clion='/home/kuba/SRC/clion/bin/clion.sh'
+   alias gcc=$HOME/toolchains/gcc650/bin/gcc;
+   alias cpp=$HOME/toolchains/gcc650/bin/cpp;
+   alias g++=$HOME/toolchains/gcc650/bin/g++;
+   alias ld=$HOME/toolchains/gcc650/bin/gcc;
+   alias cc=$HOME/toolchains/gcc650/bin/gcc;
+
+   export LD_LIBRARY_PATH=$HOME/toolchains/gcc650/lib64:$HOME/toolchains/gcc650/lib
+}
+
+env_qt512 (){
+  export LD_LIBRARY_PATH=$HOME/toolchains/qt512/lib:$LD_LIBRARY_PATH
+  export PATH=$HOME/toolchains/qt512/bin:$PATH
+}
 
 
 function title {
