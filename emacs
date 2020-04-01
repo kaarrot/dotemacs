@@ -23,6 +23,7 @@
 (require 'desktop+)
 (require 'yasnippet)
 (require 'cmake-mode)
+(require 'clang-format) ;; assumes clang-format is on the PATH
 
 (dumb-jump-mode t)
 (tabbar-mode)
@@ -249,7 +250,7 @@ t " my-keys" 'my-keys-minor-mode-map)
                                 ))
   (local-set-key (kbd "C-c 5") (lambda () (interactive)
                                     (require 'cquery)
-                                    (setq cquery-executable "~/bin/cquery")
+                                    (setq cquery-executable "~/bin/cquery_dir/bin/cquery")
                                     (setq cquery-extra-args  '("--log-all-to-stderr") )
                                     (setq cquery-cache-dir "~/tmp/.cquery_cached_index")
                                     (lsp)
