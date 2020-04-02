@@ -113,9 +113,9 @@
 (define-key my-keys-minor-mode-map (kbd "M-c M-<left>") 'tabbar-move-current-tab-one-place-left)
 ; Moving tabs with Page-Up/Down
 (define-key my-keys-minor-mode-map (kbd "C-<prior>") 'tabbar-backward-tab)
-(define-key my-keys-minor-mode-map (kbd "C-c ,") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c M-,") 'tabbar-backward-tab)
 (define-key my-keys-minor-mode-map (kbd "C-<next>") 'tabbar-forward-tab)
-(define-key my-keys-minor-mode-map (kbd "C-c .") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c M-.") 'tabbar-forward-tab)
 (define-key my-keys-minor-mode-map (kbd "<C-M-prior>") 'tabbar-move-current-tab-one-place-left)  ; C-S-M-Page Up
 (define-key my-keys-minor-mode-map (kbd "M-c ,") 'tabbar-move-current-tab-one-place-left)
 (define-key my-keys-minor-mode-map (kbd "C-M-<next>") 'tabbar-move-current-tab-one-place-right) ; C-S-M-Page Down
