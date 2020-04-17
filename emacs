@@ -213,6 +213,7 @@
 
 ;;;;;;;;;;;;;;;;;;; Other
 (global-set-key (kbd "C-c o") 'occur)
+(global-set-key (kbd "C-!") 'async-shell-command)
 (define-key my-keys-minor-mode-map (kbd "<f10> c")
   (lambda ()  (interactive)  (occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
 (define-key my-keys-minor-mode-map (kbd "<f10> p")
