@@ -292,7 +292,7 @@ In order to avoid interfference form project denoters we set them off. To restor
         ;; Extract extension of the current buffer
         (let ((extension (pop (cdr (s-split "\\." (message "%s" (current-buffer))))) ))
           (message "---%s---" extension)
-          (when (member extension '("c" "cpp" "cc" "cxx" "h" "hh"))
+          (when (member extension '("C" "c" "cpp" "cc" "cxx" "h" "hh" "hpp"))
             (message "searching cpp")
             ;; command regex: \([a-zA-Z_]\)\([a-zA-Z0-9_]*\)\([ ]+\)\([a-zA-Z_][a-zA-Z0-9_:]*\)(
             ;;(occur "\\([a-zA-Z_]\\)\\([a-zA-Z0-9_]*\\)\\([ ]+\\)\\([a-zA-Z_][a-zA-Z0-9_:]*\\)(") # previous version

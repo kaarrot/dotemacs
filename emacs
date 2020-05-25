@@ -1,4 +1,5 @@
-
+;; (setq-default shell-file-name "/bin/bash")
+;;
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
@@ -251,7 +252,7 @@ t " my-keys" 'my-keys-minor-mode-map)
                                 ))
   (local-set-key (kbd "C-c 5") (lambda () (interactive)
                                     (require 'cquery)
-                                    (setq cquery-executable "~/bin/cquery")
+                                    (setq cquery-executable "~/bin/cquery_install/bin/cquery")
                                     ;(setq cquery-extra-args  '("--log-all-to-stderr") )
                                     (setq cquery-cache-dir "~/tmp/.cquery_cached_index")
                                     (lsp)
