@@ -134,6 +134,16 @@ if [[ $BASH_VERSION > "2.05a" ]]; then
   bind -x "\"\C-w\":cd_func -- ;"
 fi
 
+function env_usd() {
+    export LD_LIBRARY_PATH=$HOME/toolchains/usd_boost_1_71_1/lib/:$LD_LIBRARY_PATH
+    export PYTHONPATH=$HOME/toolchains/usd_boost_1_71_1/lib/python:$PYTHONPATH
+}
+
+function env_gcc930(){
+    export CC=$HOME/toolchains/gcc930/bin/gcc
+    export CXX=$HOME/toolchains/gcc930/bin/g++
+}
+
 # added by Anaconda
 env_anaconda(){
     export PATH=/home/kuba/anaconda2/bin:$PATH
