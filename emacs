@@ -335,7 +335,7 @@ t " my-keys" 'my-keys-minor-mode-map)
             (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
             (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
             (local-set-key (kbd "M-S-<up>") 'org-table-move-row-down )
-
+            (local-set-key (kbd "C-c l") 'org-insert-link )
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
             (org-babel-do-load-languages
