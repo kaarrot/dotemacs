@@ -220,6 +220,7 @@
   (lambda ()  (interactive)  (occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
 (define-key my-keys-minor-mode-map (kbd "<f10> p")
   (lambda ()  (interactive)  (occur-1 "def\\|class" 1 (list (current-buffer))) ))
+(global-set-key "\C-x\C-b" 'buffer-menu)
 
 ;; Unbind existing key sequence first
 (global-unset-key (kbd "M-c"))
