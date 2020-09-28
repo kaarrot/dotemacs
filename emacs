@@ -226,7 +226,7 @@
 (global-unset-key (kbd "M-c"))
 (global-set-key (kbd "M-c u") 'winner-undo)
 (global-set-key (kbd "C-c 0") 'winner-undo)
-(global-set-key (kbd "M-c r") 'winner-redo)
+(global-set-key (kbd "M-c 0") 'winner-redo)
 
 ;;;;;;;;;;;;;;;;;;;
 (define-minor-mode my-keys-minor-mode
