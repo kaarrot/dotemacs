@@ -4,13 +4,56 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
+
+;; Requires Emacs 26.1 or higher
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+
+;(setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs helm-lsp
+;    projectile hydra flycheck company avy which-key helm-xref dap-mode))
+
+(setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs 
+   flycheck company avy dap-mode multiple-cursors))
+
+(when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages))
+
+;; sample `helm' configuration use https://github.com/emacs-helm/helm/ for details
+;(helm-mode)
+;(require 'helm-xref)
+;(define-key global-map [remap find-file] #'helm-find-files)
+;(define-key global-map [remap execute-extended-command] #'helm-M-x)
+;(define-key global-map [remap switch-to-buffer] #'helm-mini)
+
+;(which-key-mode)
+;(add-hook 'c-mode-hook 'lsp)
+;(add-hook 'cpp-mode-hook 'lsp)
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-idle-delay 0.0
+      company-minimum-prefix-length 1
+      lsp-idle-delay 0.1 ;; clangd is fast
+      ;; be more ide-ish
+      lsp-headerline-breadcrumb-enable t)
+
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (require 'dap-cpptools)
+  (yas-global-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;
 (package-initialize)
 
 (add-to-list 'load-path "~/.emacs.d/modules")
-(add-to-list 'load-path "~/.emacs.d/modules/multiple-cursors")
-(add-to-list 'load-path "~/.emacs.d/modules/auto-complete")
-(add-to-list 'load-path "~/.emacs.d/modules/company-mode")
-(add-to-list 'load-path "~/.emacs.d/modules/cquery")
+;;(add-to-list 'load-path "~/.emacs.d/modules/multiple-cursors")
+;;(add-to-list 'load-path "~/.emacs.d/modules/auto-complete")
+;;(add-to-list 'load-path "~/.emacs.d/modules/company-mode")
+;;(add-to-list 'load-path "~/.emacs.d/modules/cquery")
 
 (load "~/.emacs.d/modules/myfuncs.el")
 (require 'dumb-jump)
@@ -18,7 +61,7 @@
 (require 'ace-jump-mode)
 (require 'tabbar)
 (require 'dumb-jump)
-(require 'company)
+;;(require 'company)
 (require 'bm)
 (require 'markdown-mode)
 (require 'desktop+)
@@ -98,7 +141,7 @@
 (savehist-mode t)
 
 ;;;;;;;;;;;;;;;;;; Company mode
-(add-hook 'after-init-hook 'global-company-mode)
+;;(add-hook 'after-init-hook 'global-company-mode)
 
 ;;;;;;;;;;;;;;;;;; Autocomplete
 ;(ac-config-default)
