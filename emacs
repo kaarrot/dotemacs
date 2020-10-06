@@ -14,7 +14,7 @@
 ;    projectile hydra flycheck company avy which-key helm-xref dap-mode))
 
 (setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs 
-   flycheck company avy dap-mode multiple-cursors))
+   flycheck company avy dap-mode which-key multiple-cursors))
 
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
@@ -27,9 +27,9 @@
 ;(define-key global-map [remap execute-extended-command] #'helm-M-x)
 ;(define-key global-map [remap switch-to-buffer] #'helm-mini)
 
-;(which-key-mode)
-;(add-hook 'c-mode-hook 'lsp)
-;(add-hook 'cpp-mode-hook 'lsp)
+(which-key-mode)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'cpp-mode-hook 'lsp)
 
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
@@ -141,7 +141,7 @@
 (savehist-mode t)
 
 ;;;;;;;;;;;;;;;;;; Company mode
-;;(add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;;;;;;;;;;;;;;;;;; Autocomplete
 ;(ac-config-default)
@@ -291,7 +291,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   ; compile_flags.txt (in root) - specify -I/path_to_include
   (local-set-key (kbd "C-x 5") (lambda () (interactive)
-                                (setq lsp-clients-clangd-executable "~/bin/clangd")
+                                (setq lsp-clients-clangd-executable "clangd-9")
                                 (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))       
                                 (lsp)
                                 ))
