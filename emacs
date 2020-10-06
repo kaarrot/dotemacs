@@ -487,3 +487,35 @@ t " my-keys" 'my-keys-minor-mode-map)
            (and guess (ffap-highlight))
            )))
     (ffap-highlight t)))
+
+
+;; for newer version override order of sorted file timestamps
+(if (version< "26.2" emacs-version )
+    (progn
+
+    ;;; Override order of desktop+ listed desktop - based on most recently modified in stead alphabetical
+(defun desktop+-load (name)
+  (interactive
+   (list
+    (completing-read "Desktop name: "
+    ;; List desktops in the order of modification time
+    ;; Build custom completion-table with display-sort-function property
+         (lambda (string pred action)
+           (if (eq action 'metadata)
+         '(metadata (display-sort-function . identity))
+       (complete-with-action
+        action
+        ;; Build list of directory entries sorted by time stamp
+        (remove "." (remove ".." (mapcar #'car
+                                         (sort (directory-files-and-attributes desktop+-base-dir)
+                                               ;; x y inverted in 27.1 - return chenged in time-less-p
+                                               #'(lambda (y x) (time-less-p (nth 6 x) (nth 6 y)))
+                                          )
+                 )))
+        string pred ))))))
+
+
+  (desktop-change-dir (desktop+--dirname name))
+  (desktop+--set-frame-title)
+  (desktop-save-mode 1))
+))
