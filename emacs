@@ -1,35 +1,25 @@
-;; (setq-default shell-file-name "/bin/bash")
-;;
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-
-;; Requires Emacs 26.1 or higher
+;; Requires Emacs 26.2 or higher
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
-;(setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs helm-lsp
-;    projectile hydra flycheck company avy which-key helm-xref dap-mode))
+(setq package-selected-packages '(lsp-mode
+				  flycheck
+				  company
+				  multiple-cursors
+				  dumb-jump
+				  yasnippet
+				  lsp-treemacs 
+				  avy
+				  dap-mode
+				  which-key
+				  )
+      )
 
-(setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs 
-   flycheck company avy dap-mode which-key multiple-cursors))
-
+;; Auto install required packages
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
   (package-refresh-contents)
   (mapc #'package-install package-selected-packages))
-
-;; sample `helm' configuration use https://github.com/emacs-helm/helm/ for details
-;(helm-mode)
-;(require 'helm-xref)
-;(define-key global-map [remap find-file] #'helm-find-files)
-;(define-key global-map [remap execute-extended-command] #'helm-M-x)
-;(define-key global-map [remap switch-to-buffer] #'helm-mini)
-
-(which-key-mode)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'cpp-mode-hook 'lsp)
 
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
@@ -38,35 +28,39 @@
       company-minimum-prefix-length 1
       lsp-idle-delay 0.1 ;; clangd is fast
       ;; be more ide-ish
-      lsp-headerline-breadcrumb-enable t)
-
-(with-eval-after-load 'lsp-mode
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (require 'dap-cpptools)
-  (yas-global-mode))
+      lsp-headerline-breadcrumb-enable nil)   ;; disable breadcrumbs by default
 
 
 ;;;;;;;;;;;;;;;;;;;;;;
-(package-initialize)
 
 (add-to-list 'load-path "~/.emacs.d/modules")
-;;(add-to-list 'load-path "~/.emacs.d/modules/multiple-cursors")
-;;(add-to-list 'load-path "~/.emacs.d/modules/auto-complete")
-;;(add-to-list 'load-path "~/.emacs.d/modules/company-mode")
-;;(add-to-list 'load-path "~/.emacs.d/modules/cquery")
+
+;; Use local version of company-mode, multiple-cursors, cquery and dumbjump
+;; The company mode completion is lacking in older versions.
+(if (version< emacs-version "26.2")
+    (progn 
+      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/multiple-cursors")
+      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/company-mode")
+      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/cquery")
+      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/")
+      (require 'company)
+      (require 'ace-jump-mode)
+      )
+  )
 
 (load "~/.emacs.d/modules/myfuncs.el")
-(require 'dumb-jump)
-(require 'multiple-cursors)
-(require 'ace-jump-mode)
-(require 'tabbar)
-(require 'dumb-jump)
-;;(require 'company)
+
 (require 'bm)
+(require 'desktop+)  ;; custom tweaks to list in recent order
+;; essential
+(require 'multiple-cursors)
+(require 'dumb-jump)
+(require 'tabbar)
+
+;; good to have
 (require 'markdown-mode)
-(require 'desktop+)
-(require 'yasnippet)
 (require 'cmake-mode)
+(require 'yasnippet)
 (require 'clang-format) ;; assumes clang-format is on the PATH
 
 (dumb-jump-mode t)
@@ -83,8 +77,9 @@
 
 
 (setq python-shell-interpreter "python3")
+(setq-default shell-file-name "/bin/bash")
 (setq inhibit-splash-screen t)
-(setq tramp-default-method "ssh")
+(setq tramp-default-method "ssh")  ;; tramp
 
 ;; Disable default tab-indentation
 (setq-default indent-tabs-mode nil)
@@ -113,7 +108,7 @@
   (tool-bar-mode -1)
 )
 
-;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
+;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm   (needs to be loade first)
 ;;(when (display-graphic-p)
   (setq bm-repository-file "~/.emacs.d/bm-repository")
   (setq bm-restore-repository-on-load t)
@@ -142,9 +137,6 @@
 
 ;;;;;;;;;;;;;;;;;; Company mode
 (add-hook 'after-init-hook 'global-company-mode)
-
-;;;;;;;;;;;;;;;;;; Autocomplete
-;(ac-config-default)
 
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
@@ -265,13 +257,14 @@
   (lambda ()  (interactive)  (occur-1 "def\\|class" 1 (list (current-buffer))) ))
 (global-set-key "\C-x\C-b" (lambda ()  (interactive) (buffer-menu) (toggle-truncate-lines 1)))
 
+;;;;;;;;;;;;;;;;;;; Winner mode
 ;; Unbind existing key sequence first
 (global-unset-key (kbd "M-c"))
 (global-set-key (kbd "M-c u") 'winner-undo)
 (global-set-key (kbd "C-c 0") 'winner-undo)
 (global-set-key (kbd "M-c 0") 'winner-redo)
 
-;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;; End of Global bindings
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
 t " my-keys" 'my-keys-minor-mode-map)
