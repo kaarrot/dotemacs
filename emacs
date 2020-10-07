@@ -25,7 +25,7 @@
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
       company-idle-delay 0.0
-      company-minimum-prefix-length 1
+      company-minimum-prefix-length 3
       lsp-idle-delay 0.1 ;; clangd is fast
       ;; be more ide-ish
       lsp-headerline-breadcrumb-enable nil)   ;; disable breadcrumbs by default
