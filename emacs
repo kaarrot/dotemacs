@@ -157,9 +157,18 @@
 (define-key my-keys-minor-mode-map (kbd "C-M-<next>") 'tabbar-move-current-tab-one-place-right) ; C-S-M-Page Down
 (define-key my-keys-minor-mode-map (kbd "M-c .") 'tabbar-move-current-tab-one-place-right)
 
-;;;;;;;;;;;;;;;;;;;; ACE Jump
-(define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "M-c SPC") 'ace-jump-char-mode)
+(if (version< emacs-version "26.2")
+    (progn 
+    ;;;;;;;;;;;;;;;;;;;; ACE Jump
+    (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
+    (define-key my-keys-minor-mode-map (kbd "M-c SPC") 'ace-jump-char-mode)
+    )
+    (progn
+    ;;;;;;;;;;;;;;;;;;;; Avy
+    (define-key my-keys-minor-mode-map (kbd "ESC 1") 'avy-goto-char)
+    (define-key my-keys-minor-mode-map (kbd "M-SPC") 'avy-goto-char)
+    )
+)
 
 ;;;;;;;;;;;;;;;;;;; Dumb Jump
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
