@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+    # name: opengl
+    # key: opengl
+    # --
+project(a.out)
+
+cmake_minimum_required(VERSION 3.13)
+
+# Dependencies
+find_package(glfw3 REQUIRED)
+find_package(OpenGL REQUIRED) # when calling Opengl directly
+
+# Create target
+add_executable(a.out
+  main.cpp
+  )
+
+#target_link_directories(a.out BEFORE PUBLIC install_dir/lib)
+
+target_link_libraries(a.out assimp glfw GLEW OpenGL::GL)
