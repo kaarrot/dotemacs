@@ -12,6 +12,9 @@
 (add-to-list 'load-path "~/.emacs.d/modules/company-mode")
 (add-to-list 'load-path "~/.emacs.d/modules/cquery")
 
+(setq gc-cons-threshold most-positive-fixnum)
+(run-with-idle-timer 2 t (lambda () (garbage-collect)))
+
 (load "~/.emacs.d/modules/myfuncs.el")
 (require 'dumb-jump)
 (require 'multiple-cursors)
