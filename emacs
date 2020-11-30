@@ -1,40 +1,90 @@
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
+;; Requires Emacs 26.2 or higher
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
+(setq package-selected-packages '(lsp-mode
+				  flycheck
+				  company
+				  multiple-cursors
+				  dumb-jump
+				  yasnippet
+				  lsp-treemacs 
+				  avy
+				  dap-mode
+				  which-key
+				  )
+      )
+
+;; Auto install required packages
+(when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages))
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-idle-delay 0.0
+      company-minimum-prefix-length 3
+      lsp-idle-delay 0.1 ;; clangd is fast
+      ;; be more ide-ish
+      lsp-headerline-breadcrumb-enable nil)   ;; disable breadcrumbs by default
+
+
+;;;;;;;;;;;;;;;;;;;;;;
+
 (add-to-list 'load-path "~/.emacs.d/modules")
-(add-to-list 'load-path "~/.emacs.d/modules/multiple-cursors")
-(add-to-list 'load-path "~/.emacs.d/modules/auto-complete")
-(add-to-list 'load-path "~/.emacs.d/modules/company-mode")
-(add-to-list 'load-path "~/.emacs.d/modules/cquery")
+
+;; Use local version of company-mode, multiple-cursors, cquery and dumbjump
+;; The company mode completion is lacking in older versions.
+(if (version< emacs-version "26.2")
+    (progn 
+      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/multiple-cursors")
+      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/company-mode")
+      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/cquery")
+      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/")
+      (require 'company)
+      (require 'ace-jump-mode)
+      )
+  )
 
 (load "~/.emacs.d/modules/myfuncs.el")
-(require 'dumb-jump)
-(require 'multiple-cursors)
-(require 'ace-jump-mode)
-(require 'tabbar)
-(require 'dumb-jump)
-(require 'company)
+
 (require 'bm)
+(require 'desktop+)  ;; custom tweaks to list in recent order
+;; essential
+(require 'multiple-cursors)
+(require 'dumb-jump)
+(require 'tabbar)
+
+;; good to have
 (require 'markdown-mode)
-(require 'desktop+)
-(require 'yasnippet)
 (require 'cmake-mode)
+(require 'yasnippet)
+(require 'clang-format) ;; assumes clang-format is on the PATH
 
 (dumb-jump-mode t)
 (tabbar-mode)
 (yas-global-mode 1)
 
+;;;;;;;;;;;;;;;;;;; gpg
+(require 'epa-file)
+(epa-file-enable)
+(setf epa-pinentry-mode 'loopback)  ;; enable command line password entry
+(setq epa-file-cache-passphrase-for-symmetric-encryption t)  ;; no need to retype passphrase after each save
+
 ;;;;;;;;;;;;;;;;;;; Configuration
 
 
 (setq python-shell-interpreter "python3")
+(setq-default shell-file-name "/bin/bash")
 (setq inhibit-splash-screen t)
-(setq tramp-default-method "ssh")
-(setq tab-width 4)
+(setq tramp-default-method "ssh")  ;; tramp
+
+;; Disable default tab-indentation
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
 
 (recentf-mode 1)
 
@@ -58,7 +108,7 @@
   (tool-bar-mode -1)
 )
 
-;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
+;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm   (needs to be loade first)
 ;;(when (display-graphic-p)
   (setq bm-repository-file "~/.emacs.d/bm-repository")
   (setq bm-restore-repository-on-load t)
@@ -88,9 +138,6 @@
 ;;;;;;;;;;;;;;;;;; Company mode
 (add-hook 'after-init-hook 'global-company-mode)
 
-;;;;;;;;;;;;;;;;;; Autocomplete
-;(ac-config-default)
-
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
 ;;;;;;;;;;;;;;;;;;;; Tabbar
@@ -102,13 +149,26 @@
 (define-key my-keys-minor-mode-map (kbd "M-c M-<left>") 'tabbar-move-current-tab-one-place-left)
 ; Moving tabs with Page-Up/Down
 (define-key my-keys-minor-mode-map (kbd "C-<prior>") 'tabbar-backward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c M-,") 'tabbar-backward-tab)
 (define-key my-keys-minor-mode-map (kbd "C-<next>") 'tabbar-forward-tab)
+(define-key my-keys-minor-mode-map (kbd "M-c M-.") 'tabbar-forward-tab)
 (define-key my-keys-minor-mode-map (kbd "<C-M-prior>") 'tabbar-move-current-tab-one-place-left)  ; C-S-M-Page Up
+(define-key my-keys-minor-mode-map (kbd "M-c ,") 'tabbar-move-current-tab-one-place-left)
 (define-key my-keys-minor-mode-map (kbd "C-M-<next>") 'tabbar-move-current-tab-one-place-right) ; C-S-M-Page Down
+(define-key my-keys-minor-mode-map (kbd "M-c .") 'tabbar-move-current-tab-one-place-right)
 
-;;;;;;;;;;;;;;;;;;;; ACE Jump
-(define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
-(define-key my-keys-minor-mode-map (kbd "M-c SPC") 'ace-jump-char-mode)
+(if (version< emacs-version "26.2")
+    (progn 
+    ;;;;;;;;;;;;;;;;;;;; ACE Jump
+    (define-key my-keys-minor-mode-map (kbd "M-SPC") 'ace-jump-char-mode)
+    (define-key my-keys-minor-mode-map (kbd "M-c SPC") 'ace-jump-char-mode)
+    )
+    (progn
+    ;;;;;;;;;;;;;;;;;;;; Avy
+    (define-key my-keys-minor-mode-map (kbd "ESC 1") 'avy-goto-char)
+    (define-key my-keys-minor-mode-map (kbd "M-SPC") 'avy-goto-char)
+    )
+)
 
 ;;;;;;;;;;;;;;;;;;; Dumb Jump
 (define-key my-keys-minor-mode-map (kbd "C-M-<down>") 'dumb-jump-go-other-window)
@@ -173,17 +233,17 @@
 (global-set-key  [M-backspace] 'lazy-backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
+(define-key my-keys-minor-mode-map (kbd "C-c 0") electric-indent-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (interactive) (setq tab-width 4)))
 
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
-(define-key my-keys-minor-mode-map (kbd "C-z") 'set-mark-command)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-c ;") 'comment-or-uncomment-this)
-;(define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
+(define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
 
@@ -199,18 +259,21 @@
 
 ;;;;;;;;;;;;;;;;;;; Other
 (global-set-key (kbd "C-c o") 'occur)
+(global-set-key (kbd "C-!") 'async-shell-command)
 (define-key my-keys-minor-mode-map (kbd "<f10> c")
   (lambda ()  (interactive)  (occur-1 "{$\\|)$" 1 (list (current-buffer))) ) )
 (define-key my-keys-minor-mode-map (kbd "<f10> p")
   (lambda ()  (interactive)  (occur-1 "def\\|class" 1 (list (current-buffer))) ))
+(global-set-key "\C-x\C-b" (lambda ()  (interactive) (buffer-menu) (toggle-truncate-lines 1)))
 
+;;;;;;;;;;;;;;;;;;; Winner mode
 ;; Unbind existing key sequence first
 (global-unset-key (kbd "M-c"))
 (global-set-key (kbd "M-c u") 'winner-undo)
 (global-set-key (kbd "C-c 0") 'winner-undo)
-(global-set-key (kbd "M-c r") 'winner-redo)
+(global-set-key (kbd "M-c 0") 'winner-redo)
 
-;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;; End of Global bindings
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
 t " my-keys" 'my-keys-minor-mode-map)
@@ -224,22 +287,26 @@ t " my-keys" 'my-keys-minor-mode-map)
   (setq tab-width 4)
   (local-set-key (kbd "C-c C-c") 'compile)
   ;(local-set-key (kbd "<f5>") 'gud-gdb)
+  ;; toggle between .h and .cpp
+  (local-set-key (kbd "C-c 4") 'ff-find-other-file)
+  (local-set-key (kbd "<f4>") 'ff-find-other-file)
+
   ; compile_flags.txt (in root) - specify -I/path_to_include
   (local-set-key (kbd "C-x 5") (lambda () (interactive)
-                                (setq lsp-clients-clangd-executable "~/bin/clangd")
+                                (setq lsp-clients-clangd-executable "clangd-9")
                                 (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))       
                                 (lsp)
                                 ))
   (local-set-key (kbd "C-c 5") (lambda () (interactive)
                                     (require 'cquery)
                                     (setq cquery-executable "~/bin/cquery")
-                                    (setq cquery-extra-args  '("--log-all-to-stderr") )
-                                    (setq cquery-cache-dir "/tmp/.cquery_cached_index")
+                                    ;(setq cquery-extra-args  '("--log-all-to-stderr") )
+                                    (setq cquery-cache-dir "~/tmp/.cquery_cached_index")
                                     (lsp)
                                     ))
   (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
   (local-set-key (kbd "C-c <RET>") (lambda () (interactive)
-    (setq compile-command (message "g++ -O0 -g -std=c++11 -I. %s -o a.out" (buffer-file-name))) )) 
+    (setq compile-command (message "g++ -O0 -g -std=c++14 -I. %s -o a.out" (buffer-file-name))) )) 
 
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
@@ -315,7 +382,7 @@ t " my-keys" 'my-keys-minor-mode-map)
             (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
             (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
             (local-set-key (kbd "M-S-<up>") 'org-table-move-row-down )
-
+            (local-set-key (kbd "C-c l") 'org-insert-link )
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
             (org-babel-do-load-languages
@@ -429,3 +496,35 @@ t " my-keys" 'my-keys-minor-mode-map)
            (and guess (ffap-highlight))
            )))
     (ffap-highlight t)))
+
+
+;; for newer version override order of sorted file timestamps
+(if (version< "26.2" emacs-version )
+    (progn
+
+    ;;; Override order of desktop+ listed desktop - based on most recently modified in stead alphabetical
+(defun desktop+-load (name)
+  (interactive
+   (list
+    (completing-read "Desktop name: "
+    ;; List desktops in the order of modification time
+    ;; Build custom completion-table with display-sort-function property
+         (lambda (string pred action)
+           (if (eq action 'metadata)
+         '(metadata (display-sort-function . identity))
+       (complete-with-action
+        action
+        ;; Build list of directory entries sorted by time stamp
+        (remove "." (remove ".." (mapcar #'car
+                                         (sort (directory-files-and-attributes desktop+-base-dir)
+                                               ;; x y inverted in 27.1 - return chenged in time-less-p
+                                               #'(lambda (y x) (time-less-p (nth 6 x) (nth 6 y)))
+                                          )
+                 )))
+        string pred ))))))
+
+
+  (desktop-change-dir (desktop+--dirname name))
+  (desktop+--set-frame-title)
+  (desktop-save-mode 1))
+))
