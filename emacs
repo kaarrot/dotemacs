@@ -62,6 +62,7 @@
 (require 'tabbar)
 
 ;; good to have
+(require 'wgrep)
 (require 'markdown-mode)
 (require 'cmake-mode)
 (require 'yasnippet)
