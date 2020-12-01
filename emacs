@@ -23,6 +23,7 @@
 (require 'dumb-jump)
 (require 'company)
 (require 'bm)
+(require 'wgrep)
 (require 'markdown-mode)
 (require 'desktop+)
 (require 'yasnippet)
