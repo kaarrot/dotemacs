@@ -368,6 +368,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'inferior-python-mode-hook 'shell-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Dired
+(setq Buffer-menu-name-width 40)
 (eval-after-load 'dired '(progn (require 'single-dired)))
 (defun dired-mode-keys()
   (local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )

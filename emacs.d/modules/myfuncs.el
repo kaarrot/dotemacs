@@ -260,6 +260,7 @@ In order to avoid interfference form project denoters we set them off. To restor
     )
   )
 
+;;; Dropbox
 (defun dropbox-send (file-path)
   (interactive "bSpecify buffer name: ")
   (setq rclone-send (message "rclone copy %s dropbox:" file-path))
@@ -282,6 +283,33 @@ In order to avoid interfference form project denoters we set them off. To restor
   (setq rclone-recent (message "rclone lsl --max-depth 1 dropbox: 2>&1 | grep -oP \"([0-9]{4}-[0-9]{2}-[0-9]{2}).*\" | sort | tail -%s" total ))
   (shell-command rclone-recent)
   )
+
+;;; Google drive
+(defun google-send (file-path)
+  (interactive "bSpecify buffer name: ")
+  (setq rclone-send (message "rclone copy %s google:" file-path))
+  (message "%s" rclone-send)
+  (save-buffer)
+  (shell-command rclone-send)
+  )
+
+
+(defun google-get (file-path)
+  (interactive "bSpecify buffer name: ")
+  (setq rclone-receive (message "rclone copy google:%s ." file-path))
+  (message "%s" rclone-receive)
+  (shell-command rclone-receive)
+  (revert-buffer nil t)
+  )
+
+(defun google-ls (total)
+  (interactive "nShow recently modified files: ")
+  (setq rclone-recent (message "rclone lsl --max-depth 1 google: 2>&1 | grep -oP \"([0-9]{4}-[0-9]{2}-[0-9]{2}).*\" | sort | tail -%s" total ))
+  (shell-command rclone-recent)
+  )
+
+
+
 
 (defun occur-methods (search-phrase)
   (interactive "Msearch phrase (empty will list methods):")
