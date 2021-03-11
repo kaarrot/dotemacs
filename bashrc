@@ -32,6 +32,10 @@ alias g-d='git diff --name-only'
 alias g-r='git for-each-ref --sort=committerdate refs/heads/'
 alias g-prev='git reset --hard `git log -n 1 --skip 1 --format="%H"`'
 
+export GOPAT=$GOPATH:$HOME/go
+export GOBIN="$HOME/go/gobin"
+export PATH=$GOBIN:$PATH
+
 env_gcc650 (){
    export CC=$HOME/toolchains/gcc650/bin/gcc;
    export CPP=$HOME/toolchains/gcc650/bin/cpp;

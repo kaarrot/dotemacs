@@ -82,7 +82,7 @@
 
 
 (setq python-shell-interpreter "python3")
-(setq-default shell-file-name "/bin/bash")
+;;(setq-default shell-file-name "/bin/bash")
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")  ;; tramp
 
