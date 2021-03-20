@@ -17,6 +17,7 @@
 				  avy
 				  dap-mode
 				  which-key
+                  go-mode
 				  )
       )
 
