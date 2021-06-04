@@ -39,9 +39,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 
 (setq HOME (expand-file-name "~"))
-(if (eq system-type 'windows-nt)
-    (setq HOME (message "%s/AppData/Roaming" HOME))
-  )
 
 (add-to-list 'load-path "~/.emacs.d/modules")
 
@@ -57,18 +54,6 @@
       (require 'ace-jump-mode)
       )
   )
-
-(setq FIND_CMD "find")
-(setq XARGS_CMD "xargs")
-(setq ECHO_CMD "echo")
-(if (eq system-type 'windows-nt)
-    (progn
-      (setq FIND_CMD "C:\\cygwin64\\bin\\find.exe")
-      (setq XARGS_CMD "C:\\cygwin64\\bin\\xargs.exe")
-      (setq ECHO_CMD "C:\\cygwin64\\bin\\echo.exe")
-      (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nH --null  \"\{\}\" \";\"" . 58))
-      )
-)
 
 (load (message "%s/.emacs.d/modules/myfuncs.el" HOME ))
 
@@ -91,6 +76,18 @@
 (tabbar-mode)
 (yas-global-mode 1)
 
+(setq FIND_CMD "find")
+(setq XARGS_CMD "xargs")
+(setq ECHO_CMD "echo")
+(if (eq system-type 'windows-nt)
+    (progn
+      (setq FIND_CMD "C:\\cygwin64\\bin\\find.exe")
+      (setq XARGS_CMD "C:\\cygwin64\\bin\\xargs.exe")
+      (setq ECHO_CMD "C:\\cygwin64\\bin\\echo.exe")
+      (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nH --null  \"\{\}\" \";\"" . 58))      
+      )
+)
+
 ;;;;;;;;;;;;;;;;;;; gpg
 (require 'epa-file)
 (epa-file-enable)
@@ -105,7 +102,9 @@
     (setq python-shell-interpreter (message "%s/scoop/shims/python2.exe" HOME))
   )
 
-(setq-default shell-file-name "/bin/bash")
+(if (eq system-type 'linux)
+    (setq-default shell-file-name "/bin/bash")
+  )
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")  ;; tramp
 
