@@ -38,16 +38,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;
 
+(setq HOME (expand-file-name "~"))
+(if (eq system-type 'windows-nt)
+    (setq HOME (message "%s/AppData/Roaming" HOME))
+  )
+
 (add-to-list 'load-path "~/.emacs.d/modules")
 
 ;; Use local version of company-mode, multiple-cursors, cquery and dumbjump
 ;; The company mode completion is lacking in older versions.
 (if (version< emacs-version "26.2")
     (progn 
-      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/multiple-cursors")
-      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/company-mode")
-      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/cquery")
-      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/")
+      (add-to-list 'load-path (message "%s/.emacs.d/modules/legacy_emacs25/multiple-cursors" HOME))
+      (add-to-list 'load-path (message "%s/.emacs.d/modules/legacy_emacs25/company-mode" HOME))
+      (add-to-list 'load-path (message "%s/.emacs.d/modules/legacy_emacs25/cquery" HOME))
+      (add-to-list 'load-path (message "%s/.emacs.d/modules/legacy_emacs25/" HOME))
       (require 'company)
       (require 'ace-jump-mode)
       )
@@ -61,10 +66,11 @@
       (setq FIND_CMD "C:\\cygwin64\\bin\\find.exe")
       (setq XARGS_CMD "C:\\cygwin64\\bin\\xargs.exe")
       (setq ECHO_CMD "C:\\cygwin64\\bin\\echo.exe")
+      (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nH --null  \"\{\}\" \";\"" . 58))
       )
 )
 
-(load "~/.emacs.d/modules/myfuncs.el")
+(load (message "%s/.emacs.d/modules/myfuncs.el" HOME ))
 
 (require 'bm)
 (require 'desktop+)  ;; custom tweaks to list in recent order
@@ -95,6 +101,10 @@
 
 
 (setq python-shell-interpreter "python3")
+(if (eq system-type 'windows-nt)
+    (setq python-shell-interpreter (message "%s/scoop/shims/python2.exe" HOME))
+  )
+
 (setq-default shell-file-name "/bin/bash")
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")  ;; tramp
@@ -128,7 +138,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm   (needs to be loade first)
 ;;(when (display-graphic-p)
-  (setq bm-repository-file "~/.emacs.d/bm-repository")
+  (setq bm-repository-file (message "%s/.emacs.d/bm-repository" HOME ))
   (setq bm-restore-repository-on-load t)
   (setq-default bm-buffer-persistence t)
 
@@ -150,7 +160,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;; Save minibuffer commands accross sessions
 (setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file "~/.emacs.d/savehist")
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file (message "%s/.emacs.d/savehist" HOME ))
 (savehist-mode t)
 
 ;;;;;;;;;;;;;;;;;; Company mode
@@ -398,6 +408,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (setq Buffer-menu-name-width 40)
 (eval-after-load 'dired '(progn (require 'single-dired)))
 (defun dired-mode-keys()
+  (setq Buffer-menu-name-width 40)
   (local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
   (local-set-key (kbd "C-k") 'kill-dired-buffers)
   ;; (set-default 'truncate-lines nil)
