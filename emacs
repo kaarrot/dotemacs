@@ -53,6 +53,17 @@
       )
   )
 
+(setq FIND_CMD "find")
+(setq XARGS_CMD "xargs")
+(setq ECHO_CMD "echo")
+(if (eq system-type 'windows-nt)
+    (progn
+      (setq FIND_CMD "C:\\cygwin64\\bin\\find.exe")
+      (setq XARGS_CMD "C:\\cygwin64\\bin\\xargs.exe")
+      (setq ECHO_CMD "C:\\cygwin64\\bin\\echo.exe")
+      )
+)
+
 (load "~/.emacs.d/modules/myfuncs.el")
 
 (require 'bm)
@@ -223,9 +234,9 @@
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c <f2>") (lambda (search-phrase) (interactive "Msearch file:")
-    (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
+    (grep-find (message "%s . -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD search-phrase XARGS_CMD ECHO_CMD))))
 (define-key my-keys-minor-mode-map (kbd "M-c 2") (lambda (search-phrase) (interactive "Msearch file:")
-    (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
+  (grep-find (message "%s . -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD search-phrase XARGS_CMD ECHO_CMD))))
 
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
