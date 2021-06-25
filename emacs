@@ -416,15 +416,14 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; ORG
 
-(add-hook 'org-mode-hook
-          (lambda ()
+(defun org-mode-keys()
             (org-indent-mode t)
             (flyspell-prog-mode)
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
             (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
-            (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
-            (local-set-key (kbd "M-S-<up>") 'org-table-move-row-down )
+            (local-set-key (kbd "C-x C-<down>") 'org-move-subtree-down )
+            (local-set-key (kbd "C-x C-<up>") 'org-move-subtree-up )
             (local-set-key (kbd "C-c l") 'org-insert-link )
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
@@ -441,8 +440,9 @@ t " my-keys" 'my-keys-minor-mode-map)
             ;; C-c C-c : executes the code
             ;; C-c ' : edits region
 
-)
-          t)
+    )
+
+(add-hook 'org-mode-hook 'org-mode-keys)
 
 
 
@@ -578,7 +578,7 @@ t " my-keys" 'my-keys-minor-mode-map)
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key))))
+    (p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
