@@ -99,7 +99,10 @@
 
 (setq python-shell-interpreter "python3")
 (if (eq system-type 'windows-nt)
+    (progn
     (setq python-shell-interpreter (message "%s/scoop/shims/python2.exe" HOME))
+    (setq visible-bell 1) ;; disable bell sound on Windows
+    )
   )
 
 (if (eq system-type 'linux)
