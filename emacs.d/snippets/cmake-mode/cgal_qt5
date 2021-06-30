@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: cgalQt
-# key: cgalQt
+# name: cmake-cgal-qt
+# key: cmake-cgal-qt
 # --
 
 cmake_minimum_required(VERSION 3.1)

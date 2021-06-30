@@ -1,0 +1,70 @@
+# -*- mode: snippet -*-
+# name: cmake-libs-download
+# key: cmake-libs-download
+# --
+
+
+cmake_minimum_required(VERSION 3.12)
+project(aaa)
+add_executable(aaa main.cpp)
+
+### Download header only libraries
+
+# doctest
+file(DOWNLOAD
+  https://github.com/onqtam/doctest/blob/master/doctest/doctest.h
+  ${CMAKE_SOURCE_DIR}/external/doctest.h)
+
+# json
+file(DOWNLOAD
+  https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp
+  ${CMAKE_SOURCE_DIR}/external/json.h)
+
+# ImGui
+set(imgui_address https://github.com/ocornut/imgui/blob/master)
+set(imgui_files
+  imconfig.h
+  imgui.h
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_internal.h
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  imstb_rectpack.h
+  imstb_textedit.h
+  imstb_truetype.h
+  )
+
+foreach (X ${imgui_files})
+  message(STATUS "AAAA" ${imgui_address}/${X})
+  file(DOWNLOAD
+  ${imgui_address}/${X}  
+  ${CMAKE_SOURCE_DIR}/external/imgui/${X})
+endforeach()
+
+### Download full repo - downside - we dont want to dowload exampels
+
+# Option 1
+
+# include(ExternalProject)
+# ExternalProject_Add(googletest
+#   GIT_REPOSITORY    https://github.com/google/googletest.git
+#   GIT_TAG           master
+#   SOURCE_DIR        "${CMAKE_BINARY_DIR}/googletest-src"
+#   BINARY_DIR        "${CMAKE_BINARY_DIR}/googletest-build"
+#   CONFIGURE_COMMAND ""
+#   BUILD_COMMAND     ""
+#   INSTALL_COMMAND   ""
+#   TEST_COMMAND      ""
+#   )
+
+# Option 2
+
+# include(FetchContent)
+# FetchContent_Declare(
+#   imgui
+#   GIT_REPOSITORY     https://github.com/ocornut/imgui.git
+#   #GIT_TAG        703bd9caab50b139428cea1aaff9974ebee5742e
+#   )
+# FetchContent_MakeAvailable(imgui)

@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: cgal
-# key: cgal
+# name: cmake-cgal
+# key: cmake-cgal
 # --
 
 cmake_minimum_required(VERSION 3.1)
