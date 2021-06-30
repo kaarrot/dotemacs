@@ -3,7 +3,6 @@
 # key: cmake-libs-download
 # --
 
-
 cmake_minimum_required(VERSION 3.12)
 project(aaa)
 add_executable(aaa main.cpp)
@@ -15,7 +14,7 @@ set(filepath ${CMAKE_SOURCE_DIR}/external/doctest.h)
 if (NOT (EXISTS ${filepath}))
   message (STATUS "Downloading: " ${filepath})
   file(DOWNLOAD
-    https://github.com/onqtam/doctest/blob/master/doctest/doctest.h
+    https://raw.githubusercontent.com/onqtam/doctest/master/doctest/doctest.h
     ${filepath})
 endif()
 
@@ -24,12 +23,15 @@ set(filepath ${CMAKE_SOURCE_DIR}/external/json.h)
 if (NOT (EXISTS ${filepath}))
   message (STATUS "Downloading: " ${filepath})
   file(DOWNLOAD
-    https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp
+    https://raw.githubusercontent.com/nlohmann/json/develop/single_include/nlohmann/json.hpp
     ${filepath})
 endif()
 
 # ImGui
-set(imgui_address https://github.com/ocornut/imgui/blob/master)
+set(imgui_address
+  https://raw.githubusercontent.com/ocornut/imgui/master
+  )
+
 set(imgui_files
   imconfig.h
   imgui.h
