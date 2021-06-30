@@ -11,14 +11,22 @@ add_executable(aaa main.cpp)
 ### Download header only libraries
 
 # doctest
-file(DOWNLOAD
-  https://github.com/onqtam/doctest/blob/master/doctest/doctest.h
-  ${CMAKE_SOURCE_DIR}/external/doctest.h)
+set(filepath ${CMAKE_SOURCE_DIR}/external/doctest.h)
+if (NOT (EXISTS ${filepath}))
+  message (STATUS "Downloading: " ${filepath})
+  file(DOWNLOAD
+    https://github.com/onqtam/doctest/blob/master/doctest/doctest.h
+    ${filepath})
+endif()
 
 # json
-file(DOWNLOAD
-  https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp
-  ${CMAKE_SOURCE_DIR}/external/json.h)
+set(filepath ${CMAKE_SOURCE_DIR}/external/json.h)
+if (NOT (EXISTS ${filepath}))
+  message (STATUS "Downloading: " ${filepath})
+  file(DOWNLOAD
+    https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp
+    ${filepath})
+endif()
 
 # ImGui
 set(imgui_address https://github.com/ocornut/imgui/blob/master)
@@ -37,10 +45,13 @@ set(imgui_files
   )
 
 foreach (X ${imgui_files})
-  message(STATUS "AAAA" ${imgui_address}/${X})
-  file(DOWNLOAD
-  ${imgui_address}/${X}  
-  ${CMAKE_SOURCE_DIR}/external/imgui/${X})
+  set(filepath ${CMAKE_SOURCE_DIR}/external/imgui/${X})
+  if (NOT (EXISTS ${filepath}))
+    message (STATUS "Downloading: " ${filepath})
+    file(DOWNLOAD
+      ${imgui_address}/${X}  
+      ${filepath})
+  endif()
 endforeach()
 
 ### Download full repo - downside - we dont want to dowload exampels
@@ -68,3 +79,5 @@ endforeach()
 #   #GIT_TAG        703bd9caab50b139428cea1aaff9974ebee5742e
 #   )
 # FetchContent_MakeAvailable(imgui)
+
+target_include_directories(aaa BEFORE PRIVATE external)
