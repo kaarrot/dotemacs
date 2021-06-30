@@ -1,3 +1,4 @@
+
 # set speed of the yoda pointer
 # overall speed of the pointer
 
@@ -32,7 +33,7 @@ alias g-d='git diff --name-only'
 alias g-r='git for-each-ref --sort=committerdate refs/heads/'
 alias g-prev='git reset --hard `git log -n 1 --skip 1 --format="%H"`'
 
-export GOPAT=$GOPATH:$HOME/go
+export GOPATH=$HOME/go
 export GOBIN="$HOME/go/gobin"
 export PATH=$GOBIN:$PATH
 
@@ -153,3 +154,8 @@ env_anaconda(){
     export PATH=/home/kuba/anaconda2/bin:$PATH
     # export LD_LIBRARY_PATH=/home/kuba/anaconda2/lib:/home/kuba/anaconda2/lib64:/home/kuba/anaconda2/x86_64-conda_cos6-linux-gnu/sysroot/lib:$LD_LIBRARY_PATH
 }
+
+
+export GOPATH=$HOME/go
+export GOBIN="$HOME/go/gobin"
+export PATH=$GOBIN:$PATH
