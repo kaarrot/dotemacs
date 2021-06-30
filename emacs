@@ -38,22 +38,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;
 
+(setq HOME (expand-file-name "~"))
+
 (add-to-list 'load-path "~/.emacs.d/modules")
 
 ;; Use local version of company-mode, multiple-cursors, cquery and dumbjump
 ;; The company mode completion is lacking in older versions.
 (if (version< emacs-version "26.2")
     (progn 
-      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/multiple-cursors")
-      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/company-mode")
-      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/cquery")
-      (add-to-list 'load-path "~/.emacs.d/modules/legacy_emacs25/")
+      (add-to-list 'load-path (message "%s/.emacs.d/modules/legacy_emacs25/multiple-cursors" HOME))
+      (add-to-list 'load-path (message "%s/.emacs.d/modules/legacy_emacs25/company-mode" HOME))
+      (add-to-list 'load-path (message "%s/.emacs.d/modules/legacy_emacs25/cquery" HOME))
+      (add-to-list 'load-path (message "%s/.emacs.d/modules/legacy_emacs25/" HOME))
       (require 'company)
       (require 'ace-jump-mode)
       )
   )
 
-(load "~/.emacs.d/modules/myfuncs.el")
+(load (message "%s/.emacs.d/modules/myfuncs.el" HOME ))
 
 (require 'bm)
 (require 'desktop+)  ;; custom tweaks to list in recent order
@@ -74,6 +76,18 @@
 (tabbar-mode)
 (yas-global-mode 1)
 
+(setq FIND_CMD "find")
+(setq XARGS_CMD "xargs")
+(setq ECHO_CMD "echo")
+(if (eq system-type 'windows-nt)
+    (progn
+      (setq FIND_CMD "C:\\cygwin64\\bin\\find.exe")
+      (setq XARGS_CMD "C:\\cygwin64\\bin\\xargs.exe")
+      (setq ECHO_CMD "C:\\cygwin64\\bin\\echo.exe")
+      (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nH --null  \"\{\}\" \";\"" . 58))      
+      )
+)
+
 ;;;;;;;;;;;;;;;;;;; gpg
 (require 'epa-file)
 (epa-file-enable)
@@ -84,7 +98,17 @@
 
 
 (setq python-shell-interpreter "python3")
-;;(setq-default shell-file-name "/bin/bash")
+(if (eq system-type 'windows-nt)
+    (progn
+    (setq python-shell-interpreter (message "%s/scoop/shims/python2.exe" HOME))
+    (setq visible-bell 1) ;; disable bell sound on Windows
+    )
+  )
+
+(if (eq system-type 'linux)
+    (setq-default shell-file-name "/bin/bash")
+  )
+
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")  ;; tramp
 
@@ -117,7 +141,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm   (needs to be loade first)
 ;;(when (display-graphic-p)
-  (setq bm-repository-file "~/.emacs.d/bm-repository")
+  (setq bm-repository-file (message "%s/.emacs.d/bm-repository" HOME ))
   (setq bm-restore-repository-on-load t)
   (setq-default bm-buffer-persistence t)
 
@@ -139,7 +163,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;; Save minibuffer commands accross sessions
 (setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file "~/.emacs.d/savehist")
+(setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file (message "%s/.emacs.d/savehist" HOME ))
 (savehist-mode t)
 
 ;;;;;;;;;;;;;;;;;; Company mode
@@ -223,9 +247,9 @@
 (define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c <f2>") (lambda (search-phrase) (interactive "Msearch file:")
-    (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
+    (grep-find (message "%s . -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD search-phrase XARGS_CMD ECHO_CMD))))
 (define-key my-keys-minor-mode-map (kbd "M-c 2") (lambda (search-phrase) (interactive "Msearch file:")
-    (grep-find (message "find . -name \"%s\" -print | xargs -I %% echo %%:1:" search-phrase))))
+  (grep-find (message "%s . -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD search-phrase XARGS_CMD ECHO_CMD))))
 
 (define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
@@ -387,6 +411,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (setq Buffer-menu-name-width 40)
 (eval-after-load 'dired '(progn (require 'single-dired)))
 (defun dired-mode-keys()
+  (setq Buffer-menu-name-width 40)
   (local-set-key (kbd "C-w") 'wdired-change-to-wdired-mode )
   (local-set-key (kbd "C-k") 'kill-dired-buffers)
   ;; (set-default 'truncate-lines nil)
@@ -395,15 +420,14 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; ORG
 
-(add-hook 'org-mode-hook
-          (lambda ()
+(defun org-mode-keys()
             (org-indent-mode t)
             (flyspell-prog-mode)
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
             (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
-            (local-set-key (kbd "M-<down>") 'org-table-move-row-down )
-            (local-set-key (kbd "M-S-<up>") 'org-table-move-row-down )
+            (local-set-key (kbd "C-x C-<down>") 'org-move-subtree-down )
+            (local-set-key (kbd "C-x C-<up>") 'org-move-subtree-up )
             (local-set-key (kbd "C-c l") 'org-insert-link )
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
@@ -420,8 +444,9 @@ t " my-keys" 'my-keys-minor-mode-map)
             ;; C-c C-c : executes the code
             ;; C-c ' : edits region
 
-)
-          t)
+    )
+
+(add-hook 'org-mode-hook 'org-mode-keys)
 
 
 
@@ -557,7 +582,7 @@ t " my-keys" 'my-keys-minor-mode-map)
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key))))
+    (p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
