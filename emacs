@@ -297,6 +297,8 @@
   (lambda ()  (interactive)  (occur-1 "def\\|class" 1 (list (current-buffer))) ))
 (global-set-key "\C-x\C-b" (lambda ()  (interactive) (buffer-menu) (toggle-truncate-lines 1)))
 
+(global-set-key (kbd "C-x SPC") 'set-mark-command)
+
 ;;;;;;;;;;;;;;;;;;; Winner mode
 ;; Unbind existing key sequence first
 (global-unset-key (kbd "M-c"))
