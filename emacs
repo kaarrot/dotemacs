@@ -18,6 +18,7 @@
 				  dap-mode
 				  which-key
                   go-mode
+                  undo-fu
 				  )
       )
 
@@ -274,7 +275,8 @@
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-c ;") 'comment-or-uncomment-this)
-(define-key my-keys-minor-mode-map (kbd "C-z") 'undo)
+(define-key my-keys-minor-mode-map (kbd "C-z") 'undo-fu-only-undo)
+ (define-key my-keys-minor-mode-map (kbd "M-z") 'undo-fu-only-redo)
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
 

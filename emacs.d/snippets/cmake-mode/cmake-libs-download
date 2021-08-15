@@ -10,21 +10,29 @@ add_executable(aaa main.cpp)
 ### Download header only libraries
 
 # doctest
-set(filepath ${CMAKE_SOURCE_DIR}/external/doctest.h)
-if (NOT (EXISTS ${filepath}))
-  message (STATUS "Downloading: " ${filepath})
+set(filepath \${CMAKE_SOURCE_DIR}/external/doctest.h)
+if (NOT (EXISTS \${filepath}))
+  message (STATUS "Downloading: " \${filepath})
   file(DOWNLOAD
     https://raw.githubusercontent.com/onqtam/doctest/master/doctest/doctest.h
+<<<<<<< HEAD
     ${filepath})
+=======
+    \${filepath})
+>>>>>>> 2505646488fa3586321d4af6e9cddd6168b1f03c
 endif()
 
 # json
-set(filepath ${CMAKE_SOURCE_DIR}/external/json.h)
-if (NOT (EXISTS ${filepath}))
-  message (STATUS "Downloading: " ${filepath})
+set(filepath \${CMAKE_SOURCE_DIR}/external/json.h)
+if (NOT (EXISTS \${filepath}))
+  message (STATUS "Downloading: " \${filepath})
   file(DOWNLOAD
     https://raw.githubusercontent.com/nlohmann/json/develop/single_include/nlohmann/json.hpp
+<<<<<<< HEAD
     ${filepath})
+=======
+    \${filepath})
+>>>>>>> 2505646488fa3586321d4af6e9cddd6168b1f03c
 endif()
 
 # ImGui
@@ -46,13 +54,13 @@ set(imgui_files
   imstb_truetype.h
   )
 
-foreach (X ${imgui_files})
-  set(filepath ${CMAKE_SOURCE_DIR}/external/imgui/${X})
-  if (NOT (EXISTS ${filepath}))
-    message (STATUS "Downloading: " ${filepath})
+foreach (X \${imgui_files})
+  set(filepath \${CMAKE_SOURCE_DIR}/external/imgui/\${X})
+  if (NOT (EXISTS \${filepath}))
+    message (STATUS "Downloading: " \${filepath})
     file(DOWNLOAD
-      ${imgui_address}/${X}  
-      ${filepath})
+      \${imgui_address}/\${X}  
+      \${filepath})
   endif()
 endforeach()
 
@@ -64,8 +72,8 @@ endforeach()
 # ExternalProject_Add(googletest
 #   GIT_REPOSITORY    https://github.com/google/googletest.git
 #   GIT_TAG           master
-#   SOURCE_DIR        "${CMAKE_BINARY_DIR}/googletest-src"
-#   BINARY_DIR        "${CMAKE_BINARY_DIR}/googletest-build"
+#   SOURCE_DIR        "\${CMAKE_BINARY_DIR}/googletest-src"
+#   BINARY_DIR        "\${CMAKE_BINARY_DIR}/googletest-build"
 #   CONFIGURE_COMMAND ""
 #   BUILD_COMMAND     ""
 #   INSTALL_COMMAND   ""
