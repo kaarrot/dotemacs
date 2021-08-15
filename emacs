@@ -42,6 +42,8 @@
 (setq HOME (expand-file-name "~"))
 
 (add-to-list 'load-path "~/.emacs.d/modules")
+(add-to-list 'load-path "~/.emacs.d/anything")
+ 
 
 ;; Use local version of company-mode, multiple-cursors, cquery and dumbjump
 ;; The company mode completion is lacking in older versions.
@@ -64,6 +66,8 @@
 (require 'multiple-cursors)
 (require 'dumb-jump)
 (require 'tabbar)
+(require 'anything-match-plugin)
+(require 'anything-config)
 
 ;; good to have
 (require 'wgrep)
@@ -279,6 +283,8 @@
  (define-key my-keys-minor-mode-map (kbd "M-z") 'undo-fu-only-redo)
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
+(define-key my-keys-minor-mode-map (kbd "M-m") 'anything)
+
 
 (define-key my-keys-minor-mode-map (kbd "s-<SPC>") 'goto-previous-point)
 (define-key my-keys-minor-mode-map (kbd "C-c C-i") 'iimage-mode)
