@@ -311,8 +311,10 @@
 ;; Unbind existing key sequence first
 (global-unset-key (kbd "M-c"))
 (global-set-key (kbd "M-c u") 'winner-undo)
+(global-set-key (kbd "S-<left>") 'winner-undo)
 (global-set-key (kbd "C-c 0") 'winner-undo)
 (global-set-key (kbd "M-c 0") 'winner-redo)
+(global-set-key (kbd "S-<right>") 'winner-redo)
 
 ;;;;;;;;;;;;;;;;;;; End of Global bindings
 (define-minor-mode my-keys-minor-mode
