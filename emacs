@@ -253,11 +253,18 @@
 (define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
 (define-key my-keys-minor-mode-map (kbd "C-c <f2>") (lambda (search-phrase) (interactive "Msearch file:")
     (grep-find (message "%s . -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD search-phrase XARGS_CMD ECHO_CMD))))
-(define-key my-keys-minor-mode-map (kbd "M-c 2") (lambda (search-phrase) (interactive "Msearch file:")
+
+(define-key my-keys-minor-mode-map (kbd "ESC 2") 'grep-locations)
+
+(define-key my-keys-minor-mode-map (kbd "C-c 3") (lambda (search-phrase) (interactive "MSearch file:")
   (grep-find (message "%s . -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD search-phrase XARGS_CMD ECHO_CMD))))
 
-(define-key my-keys-minor-mode-map (kbd "<f3>") 'get-file-path)
-(define-key my-keys-minor-mode-map (kbd "C-c 3") 'get-file-path)
+(define-key my-keys-minor-mode-map (kbd "ESC 3") (lambda (search-phrase) (interactive "MSearch find:")
+    (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots "."))
+    (grep-find (message "%s %s -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD kuba-roots search-phrase XARGS_CMD ECHO_CMD))))
+
+(define-key my-keys-minor-mode-map (kbd "<f4>") 'get-file-path)
+(define-key my-keys-minor-mode-map (kbd "C-c 4") 'get-file-path)
 (define-key my-keys-minor-mode-map(kbd "<f6>") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c 6") 'whitespace-mode)
 (define-key my-keys-minor-mode-map (kbd "<f7>")

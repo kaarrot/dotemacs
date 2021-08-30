@@ -247,8 +247,8 @@
 In order to avoid interfference form project denoters we set them off. To restore defaults just feed in empty input."
   (interactive "GSpecify include paths: ")
   ;; (message "%s" include-path)
-  (if (string= include-path "")  ;;restore project-denoters
-      (setq dumb-jump-project-denoters (".dumbjump" ".projectile" ".git" ".hg" ".fslckout" ".bzr" "_darcs" ".svn" "Makefile" "PkgInfo" "-pkg.el"))
+  (if (string= include-path "") ;; set dumb-jump-project to nil so that grep will search current directory
+      (setq dumb-jump-project nil)
     (progn  ;;Disable project denoters
       (setq dumb-jump-project-denoters '())
       (setq dumb-jump-project include-path)
@@ -259,6 +259,37 @@ In order to avoid interfference form project denoters we set them off. To restor
       )
     )
   )
+
+(defun dumb-jump-append-include-path (include-path)
+  "Append path to the existing dumb-jump-project."
+  (interactive "GSpecify path to append to dumb-jump-project: ")
+  (if dumb-jump-project
+      (setq dumb-jump-project (message "%s %s" dumb-jump-project include-path))
+    (setq dumb-jump-project include-path))
+  )
+
+(defun grep-locations (command-args)
+  "Run grep via find, and search all locations specified in  dumb-jump-project
+More locations can be included into the search using:  dumb-jump-append-include-paths
+Setting empty dumb-jump-set-include-paths will reset search tree to the current directory"
+  (interactive
+   (progn
+     (grep-compute-defaults)
+     (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots "."))
+     (setq kuba-grep-string (message "find %s -type f -exec grep -nH --null  \"\{\}\" \";\"" kuba-roots))
+     ;; Don'tupdate grep-find-command as it is global. Instead pass kuba-grep-string directly
+     ;; (grep-apply-setting 'grep-find-command (cons kuba-grep-string (- (length kuba-grep-string) 8 )))
+     
+     (if grep-find-command
+	 (list (read-shell-command "Grep locations: "
+                                   (cons kuba-grep-string (- (length kuba-grep-string) 8 )) 'grep-find-history))
+       ;; No default was set
+       (read-string
+        "compile.el: No `grep-find-command' command available. Press RET.")
+       (list nil))))
+  (when command-args
+    (let ((null-device nil))		; see grep
+      (grep command-args))))
 
 ;;; Dropbox
 (defun dropbox-send (file-path)
