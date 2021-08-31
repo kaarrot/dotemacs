@@ -86,12 +86,14 @@
 (setq ECHO_CMD "echo")
 (if (eq system-type 'windows-nt)
     (progn
-      (setq FIND_CMD "C:\\cygwin64\\bin\\find.exe")
-      (setq XARGS_CMD "C:\\cygwin64\\bin\\xargs.exe")
-      (setq ECHO_CMD "C:\\cygwin64\\bin\\echo.exe")
+      (setq FIND_CMD "C:/cygwin64/bin/find.exe")
+      (setq XARGS_CMD "C:/cygwin64/bin/xargs.exe")
+      (setq ECHO_CMD "C:/cygwin64/bin/echo.exe")
+      ;; NOTE: grep is available already on the path
       (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nH --null  \"\{\}\" \";\"" . 58))      
       )
 )
+  
 
 ;;;;;;;;;;;;;;;;;;; gpg
 (require 'epa-file)
@@ -594,6 +596,36 @@ t " my-keys" 'my-keys-minor-mode-map)
   (desktop+--set-frame-title)
   (desktop-save-mode 1))
 ))
+
+(defun grep-locations (command-args)
+  "Run grep via find, and search all locations specified in  dumb-jump-project
+More locations can be included into the search using:  dumb-jump-append-include-paths
+Setting empty dumb-jump-set-include-paths will reset search tree to the current directory
+NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly register
+      and update the default FIND_CMD"
+  (interactive
+   (progn
+
+     (grep-compute-defaults)
+     (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots ".")
+     (setq kuba-grep-string (message "%s %s -type f -exec grep -nH --null  \"\{\}\" \";\"" FIND_CMD kuba-roots))
+
+     ;; Don'tupdate grep-find-command as it is global. Instead pass kuba-grep-string directly
+     ;; (grep-apply-setting 'grep-find-command (cons kuba-grep-string (- (length kuba-grep-string) 8 )))
+
+     (if grep-find-command
+  	 (list (read-shell-command "Grep locations: "
+                                   (cons kuba-grep-string (- (length kuba-grep-string) 8 )) 'grep-find-history))
+         ;; No default was set
+       (read-string
+        "compile.el: No `grep-find-command' command available. Press RET.")
+       (list nil)))))
+
+   (when command-args
+    (let ((null-device nil))
+      (grep command-args)))
+   )
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
