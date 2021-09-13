@@ -101,6 +101,19 @@
 (setf epa-pinentry-mode 'loopback)  ;; enable command line password entry
 (setq epa-file-cache-passphrase-for-symmetric-encryption t)  ;; no need to retype passphrase after each save
 
+
+;;;;;;;;;;;;;;;;;;; aspell termux
+;; build gospell in ~/bin and rename it to aspell, so that ispell can find it
+(if (search "termux" HOME)
+    (progn
+    ;; We need to setup aspell dictionary using origianl aspell binary or otherwise ispell setup will fail.
+    ;; Once we have that we switch to gospell
+    (require 'ispell)
+    (ispell-find-aspell-dictionaries)
+    (setq ispell-program-name (message "%s/bin/aspell" HOME))
+    )
+)
+
 ;;;;;;;;;;;;;;;;;;; Configuration
 
 
