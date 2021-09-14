@@ -616,11 +616,14 @@ More locations can be included into the search using:  dumb-jump-append-include-
 Setting empty dumb-jump-set-include-paths will reset search tree to the current directory
 NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly register
       and update the default FIND_CMD"
-  (interactive
+
+   (interactive
    (progn
 
      (grep-compute-defaults)
-     (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots ".")
+     (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots "."))
+
+     (let (kuba-grep-string)
      (setq kuba-grep-string (message "%s %s -type f -exec grep -nH --null  \"\{\}\" \";\"" FIND_CMD kuba-roots))
 
      ;; Don'tupdate grep-find-command as it is global. Instead pass kuba-grep-string directly
@@ -632,7 +635,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
          ;; No default was set
        (read-string
         "compile.el: No `grep-find-command' command available. Press RET.")
-       (list nil)))))
+       (list nil)) )) )
 
    (when command-args
     (let ((null-device nil))
