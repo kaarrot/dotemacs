@@ -292,6 +292,7 @@
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 0") electric-indent-mode)
+(define-key my-keys-minor-mode-map (kbd "<f12>") 'occur-methods)
 (define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (interactive) (setq tab-width 4)))
 
 (define-key minibuffer-local-map (kbd "<up>") 'previous-complete-history-element)
@@ -425,7 +426,9 @@ t " my-keys" 'my-keys-minor-mode-map)
   )
 
 (add-hook 'shell-mode-hook 'shell-mode-keys)
-(add-hook 'inferior-python-mode-hook 'shell-mode-keys)
+(if (eq system-type 'linux) ;; TODO: test (again) if this works on linux
+    (add-hook 'inferior-python-mode-hook 'shell-mode-keys)
+  )
 
 ;;;;;;;;;;;;;;;;;;;; Dired
 (defun my-go-mode-hook ()
