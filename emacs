@@ -120,7 +120,11 @@
 (setq python-shell-interpreter "python3")
 (if (eq system-type 'windows-nt)
     (progn
-    (setq python-shell-interpreter (message "%s/scoop/shims/python2.exe" HOME))
+    (setq hython_path "C:/Program Files/Side Effects Software/Houdini 18.5.675/bin/hython.exe")
+    (if (file-exists-p hython_path)
+        (setq python-shell-interpreter hython_path)
+        (setq python-shell-interpreter (expand-file-name (message "%s/../../scoop/shims/python3.exe" HOME)))
+      )
     (setq visible-bell 1) ;; disable bell sound on Windows
     )
   )
