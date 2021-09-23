@@ -303,6 +303,7 @@
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
+(define-key my-keys-minor-mode-map (kbd "` 1") 'set-mark-command)  ;; termux external keybard (esc 1)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-c ;") 'comment-or-uncomment-this)
