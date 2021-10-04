@@ -36,7 +36,8 @@ alias g-prev='git reset --hard `git log -n 1 --skip 1 --format="%H"`'
 export GOPATH=$HOME/go
 export GOBIN="$HOME/go/gobin"
 export PATH=$GOBIN:$PATH
-
+export PATH=$PATH:$HOME/go/src/github.com/cosmos72/gomacro
+    
 env_gcc650 (){
    export CC=$HOME/toolchains/gcc650/bin/gcc;
    export CPP=$HOME/toolchains/gcc650/bin/cpp;

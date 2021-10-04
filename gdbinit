@@ -1,6 +1,6 @@
 python
-import sys
-sys.path.insert(0, '/home/kuba/dotemacs/')
+import sys, os
+sys.path.insert(0, '{0}/dotemacs/'.format(os.environ['HOME']))
 from printers import register_libstdcxx_printers
 register_libstdcxx_printers(None)
 end

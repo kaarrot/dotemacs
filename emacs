@@ -656,8 +656,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key))))
+   '(gomacro-mode p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
