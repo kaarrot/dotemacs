@@ -171,17 +171,157 @@ class VectorPrinter:
 
     def display_hint(self):
         return 'array'
+class TemplateTypePrinter(object):
+    r"""
+    A type printer for class templates with default template arguments.
+
+    Recognizes specializations of class templates and prints them without
+    any template arguments that use a default template argument.
+    Type printers are recursively applied to the template arguments.
+
+    e.g. replace "std::vector<T, std::allocator<T> >" with "std::vector<T>".
+    """
+
+    def __init__(self, name, defargs):
+        self.name = name
+        self.defargs = defargs
+        self.enabled = True
+
+    class _recognizer(object):
+        "The recognizer class for TemplateTypePrinter."
+
+        def __init__(self, name, defargs):
+            self.name = name
+            self.defargs = defargs
+            # self.type_obj = None
+
+        def recognize(self, type_obj):
+            """
+            If type_obj is a specialization of self.name that uses all the
+            default template arguments for the class template, then return
+            a string representation of the type without default arguments.
+            Otherwise, return None.
+            """
+
+            if type_obj.tag is None:
+                return None
+
+            if not type_obj.tag.startswith(self.name):
+                return None
+
+            template_args = get_template_arg_list(type_obj)
+            displayed_args = []
+            require_defaulted = False
+            for n in range(len(template_args)):
+                # The actual template argument in the type:
+                targ = template_args[n]
+                # The default template argument for the class template:
+                defarg = self.defargs.get(n)
+                if defarg is not None:
+                    # Substitute other template arguments into the default:
+                    defarg = defarg.format(*template_args)
+                    # Fail to recognize the type (by returning None)
+                    # unless the actual argument is the same as the default.
+                    try:
+                        if targ != gdb.lookup_type(defarg):
+                            return None
+                    except gdb.error:
+                        # Type lookup failed, just use string comparison:
+                        if targ.tag != defarg:
+                            return None
+                    # All subsequent args must have defaults:
+                    require_defaulted = True
+                elif require_defaulted:
+                    return None
+                else:
+                    # Recursively apply recognizers to the template argument
+                    # and add it to the arguments that will be displayed:
+                    displayed_args.append(self._recognize_subtype(targ))
+
+            # This assumes no class templates in the nested-name-specifier:
+            template_name = type_obj.tag[0:type_obj.tag.find('<')]
+            template_name = strip_inline_namespaces(template_name)
+
+            return template_name + '<' + ', '.join(displayed_args) + '>'
+
+        def _recognize_subtype(self, type_obj):
+            """Convert a gdb.Type to a string by applying recognizers,
+            or if that fails then simply converting to a string."""
+
+            if type_obj.code == gdb.TYPE_CODE_PTR:
+                return self._recognize_subtype(type_obj.target()) + '*'
+            if type_obj.code == gdb.TYPE_CODE_ARRAY:
+                type_str = self._recognize_subtype(type_obj.target())
+                if str(type_obj.strip_typedefs()).endswith('[]'):
+                    return type_str + '[]' # array of unknown bound
+                return "%s[%d]" % (type_str, type_obj.range()[1] + 1)
+            if type_obj.code == gdb.TYPE_CODE_REF:
+                return self._recognize_subtype(type_obj.target()) + '&'
+            if hasattr(gdb, 'TYPE_CODE_RVALUE_REF'):
+                if type_obj.code == gdb.TYPE_CODE_RVALUE_REF:
+                    return self._recognize_subtype(type_obj.target()) + '&&'
+
+            type_str = gdb.types.apply_type_recognizers(
+                    gdb.types.get_type_recognizers(), type_obj)
+            if type_str:
+                return type_str
+            return str(type_obj)
+
+    def instantiate(self):
+        "Return a recognizer object for this type printer."
+        return self._recognizer(self.name, self.defargs)
+
+
+def add_one_template_type_printer(obj, name, defargs):
+    r"""
+    Add a type printer for a class template with default template arguments.
+
+    Args:
+        name (str): The template-name of the class template.
+        defargs (dict int:string) The default template arguments.
+
+    Types in defargs can refer to the Nth template-argument using {N}
+    (with zero-based indices).
+
+    e.g. 'unordered_map' has these defargs:
+    { 2: 'std::hash<{0}>',
+      3: 'std::equal_to<{0}>',
+      4: 'std::allocator<std::pair<const {0}, {1}> >' }
+
+    """
+    printer = TemplateTypePrinter('std::'+name, defargs)
+    gdb.types.register_type_printer(obj, printer)
+
+    # Add type printer for same type in debug namespace:
+    printer = TemplateTypePrinter('std::__debug::'+name, defargs)
+    gdb.types.register_type_printer(obj, printer)
+
+    if _versioned_namespace:
+        # Add second type printer for same type in versioned namespace:
+        ns = 'std::' + _versioned_namespace
+        # PR 86112 Cannot use dict comprehension here:
+        defargs = dict((n, d.replace('std::', ns)) for (n,d) in defargs.items())
+        printer = TemplateTypePrinter(ns+name, defargs)
+        gdb.types.register_type_printer(obj, printer)
+
     
 # regstration
 def my_fun(val):
     import pdb
+    # pdb.set_trace()
     #with open('/data/data/com.termux/files/home/temp/gdb_out.txt', 'a') as f:
     #    f.write("%s\n" % str(val.type))
     if str(val.type) == "std::__ndk1::string": # in gdb whatis 'variable'
         return  StringPrinter(val)
     elif "std::__ndk1::__vector_base" in str(val.type):
         return VectorPrinter(val.type.name, val)
+    #add_one_template_type_printer(obj, 'vector', { 1: 'std::allocator<{0}>'})
 
+#def register_libstdcxx_printers (obj):
+#    "Register libstdc++ pretty-printers with objfile Obj."
+#
+    
 gdb.pretty_printers.clear()
 gdb.pretty_printers.append(my_fun)
+#add_one_template_type_printer(obj, 'vector', { 1: 'std::allocator<{0}>'})
 

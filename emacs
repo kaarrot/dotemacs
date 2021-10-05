@@ -18,6 +18,7 @@
 				  dap-mode
 				  which-key
                   go-mode
+                  gomacro-mode
                   undo-fu
 				  )
       )
