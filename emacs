@@ -465,7 +465,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (defun org-mode-keys()
             (org-indent-mode t)
-            (flyspell-prog-mode)
+            (if (not (search "termux" HOME))
+               (flyspell-prog-mode))
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
             (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
