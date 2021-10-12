@@ -175,10 +175,10 @@
     )
   )
 
-;;;;; Python helper function
+;;;;; Select text region between two bookmarks (bm-toggle)
 (defun selectback ()
   (interactive)
-  
+  ;; Returns list of (start end) positions
   (let (start
 	end)
 
@@ -193,11 +193,9 @@
     (end-of-line)
     (setq end (+ 1 (point)))
 
-    (message "%s %s"start end)
+    ;(message "%s %s"start end)
 
-;;; this makes the selection python specific - not sure if useful
-    (python-shell-send-region start end)
-    (goto-char previous-point)
+    (list start end) 
     ))
 
 ;;;;; Python helper function

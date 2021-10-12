@@ -417,6 +417,31 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (add-hook 'python-mode-hook 'python-mode-keys)
 
+;;;;;;;;;;;;;;;;;;; Gomacro
+(defun gomacro-mode-keys()
+
+  (local-set-key (kbd "C-c C-c") 'gomacro-eval-region)
+
+  ;; Main binding to evaluate region
+  (local-set-key (kbd "C-c <RET>") (lambda () (interactive)
+    (destructuring-bind (start end)  ;; extract list entires returned from (selectback)
+      (selectback)
+      (gomacro-eval-region start end)
+      (keyboard-quit)
+    )
+  ))
+
+  (local-set-key (kbd "C-c p") 'gomacro-run)
+  (local-set-key (kbd "C-c C-p") 'gomacro-run)
+
+  (local-set-key (kbd "S-C-c <RET>") 'selectback)
+
+  (local-set-key (kbd "C-c l") 'bm-toggle) ;; since gomacro-mode overrides C-c C-l add new binding for bookmark toggle
+  )
+
+(add-hook 'gomacro-mode-hook 'gomacro-mode-keys)
+
+
 ;;;;;;;;;;;;;;;;;;;; Partial completion to shell and python-inferior mode
 (defun shell-mode-keys()
   (local-set-key (kbd "C-S-<up>") 'comint-previous-matching-input-from-input)
