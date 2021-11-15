@@ -87,9 +87,9 @@
 (setq ECHO_CMD "echo")
 (if (eq system-type 'windows-nt)
     (progn
-      (setq FIND_CMD "C:/cygwin64/bin/find.exe")
-      (setq XARGS_CMD "C:/cygwin64/bin/xargs.exe")
-      (setq ECHO_CMD "C:/cygwin64/bin/echo.exe")
+      (setq FIND_CMD "\"C:/cygwin64/bin/find.exe\"")
+      (setq XARGS_CMD "\"C:/cygwin64/bin/xargs.exe\"")
+      (setq ECHO_CMD "\"C:/cygwin64/bin/echo.exe\"")
       ;; NOTE: grep is available already on the path
       (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nH --null  \"\{\}\" \";\"" . 58))      
       )
