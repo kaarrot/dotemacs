@@ -136,6 +136,7 @@
 
 (setq inhibit-splash-screen t)
 (setq tramp-default-method "ssh")  ;; tramp
+(setq require-final-newline nil)   ;; disable inserting a new line at the end of the file
 
 ;; Disable default tab-indentation
 (setq-default indent-tabs-mode nil)
