@@ -13,13 +13,14 @@
 				  multiple-cursors
 				  dumb-jump
 				  yasnippet
-				  lsp-treemacs 
+				  ;;lsp-treemacs 
 				  avy
-				  dap-mode
+				  ;;dap-mode
 				  which-key
                   go-mode
                   gomacro-mode
                   undo-fu
+                  fzf
 				  )
       )
 
@@ -104,16 +105,17 @@
 
 
 ;;;;;;;;;;;;;;;;;;; aspell termux
+;; In latest Termux apspell version has no linking issues
 ;; build gospell in ~/bin and rename it to aspell, so that ispell can find it
-(if (search "termux" HOME)
-    (progn
-    ;; We need to setup aspell dictionary using origianl aspell binary or otherwise ispell setup will fail.
-    ;; Once we have that we switch to gospell
-    (require 'ispell)
-    (ispell-find-aspell-dictionaries)
-    (setq ispell-program-name (message "%s/bin/aspell" HOME))
-    )
-)
+;;(if (search "termux" HOME)
+;;    (progn
+;;    ;; We need to setup aspell dictionary using origianl aspell binary or otherwise ispell setup will fail.
+;;    ;; Once we have that we switch to gospell
+;;    (require 'ispell)
+;;    (ispell-find-aspell-dictionaries)
+;;    (setq ispell-program-name (message "%s/bin/aspell" HOME))
+;;    )
+;;)
 
 ;;;;;;;;;;;;;;;;;;; Configuration
 
