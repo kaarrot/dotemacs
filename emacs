@@ -92,7 +92,7 @@
       (setq XARGS_CMD "\"C:/cygwin64/bin/xargs.exe\"")
       (setq ECHO_CMD "\"C:/cygwin64/bin/echo.exe\"")
       ;; NOTE: grep is available already on the path
-      (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nH --null  \"\{\}\" \";\"" . 58))      
+      (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nIH --null  \"\{\}\" \";\"" . 58))      
       )
 )
   
@@ -662,7 +662,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
      (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots "."))
 
      (let (kuba-grep-string)
-     (setq kuba-grep-string (message "%s %s -type f -exec grep -nH --null  \"\{\}\" \";\"" FIND_CMD kuba-roots))
+     (setq kuba-grep-string (message "%s %s -type f -exec grep -nIH --null  \"\{\}\" \";\"" FIND_CMD kuba-roots))
 
      ;; Don'tupdate grep-find-command as it is global. Instead pass kuba-grep-string directly
      ;; (grep-apply-setting 'grep-find-command (cons kuba-grep-string (- (length kuba-grep-string) 8 )))
