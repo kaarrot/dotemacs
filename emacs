@@ -493,6 +493,9 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (defun org-mode-keys()
             (org-indent-mode t)
+            (add-to-list 'org-emphasis-alist
+             '("*" (:foreground "IndianRed")
+               ))
             (if (not (search "termux" HOME))
                (flyspell-prog-mode))
             (setq org-src-fontify-natively t)
