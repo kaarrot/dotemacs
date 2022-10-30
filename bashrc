@@ -37,7 +37,17 @@ export GOPATH=$HOME/go
 export GOBIN="$HOME/go/gobin"
 export PATH=$GOBIN:$PATH
 export PATH=$PATH:$HOME/go/src/github.com/cosmos72/gomacro
-    
+export PATH=$HOME/bin:$PATH
+
+
+env-houdini(){
+  # apt-get install -y '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
+  export HOUDINI_USE_HFS_OCL=0
+  pushd /opt/hfs19.0
+  source ./houdini_setup
+  popd
+}
+
 env_gcc650 (){
    export CC=$HOME/toolchains/gcc650/bin/gcc;
    export CPP=$HOME/toolchains/gcc650/bin/cpp;
@@ -140,23 +150,9 @@ if [[ $BASH_VERSION > "2.05a" ]]; then
   bind -x "\"\C-w\":cd_func -- ;"
 fi
 
-function env_usd() {
-    export LD_LIBRARY_PATH=$HOME/toolchains/usd_boost_1_71_1/lib/:$LD_LIBRARY_PATH
-    export PYTHONPATH=$HOME/toolchains/usd_boost_1_71_1/lib/python:$PYTHONPATH
-}
 
 function env_gcc930(){
     export CC=$HOME/toolchains/gcc930/bin/gcc
     export CXX=$HOME/toolchains/gcc930/bin/g++
 }
 
-# added by Anaconda
-env_anaconda(){
-    export PATH=/home/kuba/anaconda2/bin:$PATH
-    # export LD_LIBRARY_PATH=/home/kuba/anaconda2/lib:/home/kuba/anaconda2/lib64:/home/kuba/anaconda2/x86_64-conda_cos6-linux-gnu/sysroot/lib:$LD_LIBRARY_PATH
-}
-
-
-export GOPATH=$HOME/go
-export GOBIN="$HOME/go/gobin"
-export PATH=$GOBIN:$PATH

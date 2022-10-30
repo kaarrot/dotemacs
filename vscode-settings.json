@@ -1,0 +1,6 @@
+{
+    "security.workspace.trust.untrustedFiles": "open",
+    "window.enableMenuBarMnemonics": false,
+    "workbench.colorTheme": "tangotango",
+    "cmake.configureOnOpen": false,
+}
