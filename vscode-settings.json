@@ -3,4 +3,5 @@
     "window.enableMenuBarMnemonics": false,
     "workbench.colorTheme": "tangotango",
     "cmake.configureOnOpen": false,
+    "cmake.buildDirectory": "${workspaceFolder}/__build"
 }
