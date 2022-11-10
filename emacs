@@ -21,6 +21,7 @@
                   gomacro-mode
                   undo-fu
                   fzf
+                  org-download
 				  )
       )
 
@@ -491,8 +492,11 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; ORG
 
+(load (message "%s/.emacs.d/modules/base64image.el" HOME))  ;; support for base64 images
+
 (defun org-mode-keys()
             (org-indent-mode t)
+            (org-display-inline-images)
             (add-to-list 'org-emphasis-alist
              '("*" (:foreground "IndianRed")
                ))
