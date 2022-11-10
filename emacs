@@ -368,7 +368,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
   ; compile_flags.txt (in root) - specify -I/path_to_include
   (local-set-key (kbd "C-x 5") (lambda () (interactive)
-                                (setq lsp-clients-clangd-executable "clangd-9")
+                                (setq lsp-clients-clangd-executable "clangd")
                                 (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))       
                                 (lsp)
                                 ))
