@@ -124,6 +124,106 @@
      "Window '%s' is normal")
    (current-buffer)))
 
+
+; helper function to match-paren
+(defun move-until (direction start-char stop-char)
+
+  (let (index)
+
+    ;; if cursor is not on valid start-char
+    ;; set index to 0 and exit
+    (setq index 1)
+    (if (not (= (following-char) start-char))
+        (setq index 0))
+
+   (while (> index 0)
+      (if (= (point) 0) ; if we reach begin of buffer
+          (setq (index 0))
+        )
+      ;; chose which direction to move
+      (if (= direction -1)
+          (backward-char 1)
+        (forward-char 1))
+        
+      ;;(message "%s" (char-to-string (following-char)))
+      
+      ;; TODO check if one character before is not escape character (backslash)
+      ;; decrement
+      (if (= (following-char) stop-char )
+          (setq index (- index 1))
+          ;(message "stop-char, index %s" index)
+        )
+      ;; increment
+      (if (= (following-char) start-char )
+          (setq index (+ index 1))
+          ;(message "start-char, index %s" index)
+        )
+      ) ;; end of while
+   ) ;; end of let
+  )
+
+(defun match-paren (arg)
+  "Go to the matching paren if on a paren;"
+  (interactive "p")
+  (let (index
+        start-char
+        stop-char
+        completed
+        )
+
+    (setq completed nil)
+
+    ;; matching: ()
+    (cond ( (= (following-char) ?) ) 
+          ;; Move backward
+          (progn
+            (setq start-char ?) ) 
+          (setq stop-char ?( )
+          (move-until -1 start-char stop-char)
+          (setq completed t)
+          ) ;; end of progn
+    )) 
+  
+    ;; The previous opperation can not be avaulated (completed == nil)
+    ;; In order to this one to take place
+    (cond ( (and (eq completed nil) (= (following-char) ?( ) )
+          ;; Move forward
+          (progn
+            (setq start-char ?( ) 
+            (setq stop-char ?) )
+            (move-until 1 start-char stop-char)
+            (setq completed t)
+            )
+    ))
+
+    ;; matching: {}
+    (cond ( (and (eq completed nil) (= (following-char) ?} ) )
+          ;; Move backward
+          (progn
+            (setq start-char ?} ) 
+            (setq stop-char ?{ )
+            (move-until -1 start-char stop-char)
+            (setq completed t)
+          ) ;; end of progn
+    )) 
+  
+    ;; The previous opperation can not be avaulated (completed == nil)
+    ;; In order to this one to take place
+    (cond ( (and (eq completed nil) (= (following-char) ?{ ) )
+          ;; Move forward
+          (progn
+            (setq start-char ?{ ) 
+            (setq stop-char ?} )
+            (move-until 1 start-char stop-char)
+            (setq completed t)
+          )
+    ))
+          
+          
+   ) ;; end of let
+  ) ;;end of fun
+
+
 ; ^ ^ ^ ^ ^
 ; | | | | | 
 ; essentials 

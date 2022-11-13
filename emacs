@@ -22,6 +22,7 @@
                   undo-fu
                   fzf
                   org-download
+                  key-chord
 				  )
       )
 
@@ -69,8 +70,10 @@
 (require 'multiple-cursors)
 (require 'dumb-jump)
 (require 'tabbar)
-(require 'anything-match-plugin)
-(require 'anything-config)
+;;(require 'anything-match-plugin)
+;;(require 'anything-config)
+(require 'key-chord)
+    
 
 ;; good to have
 (require 'wgrep)
@@ -79,6 +82,7 @@
 (require 'yasnippet)
 (require 'clang-format) ;; assumes clang-format is on the PATH
 (require 'go-mode)
+(key-chord-mode 1)
 
 (dumb-jump-mode t)
 (tabbar-mode)
@@ -350,6 +354,33 @@
 (global-set-key (kbd "S-<right>") 'winner-redo)
 
 ;;;;;;;;;;;;;;;;;;; End of Global bindings
+
+
+;;;;;;;;;;;;;;;;;;; Key chords
+(key-chord-define-global "ll" 'end-of-line)
+(key-chord-define-global "aa" 'beginning-of-line)
+(key-chord-define-global "qq" 'avy-goto-char)
+(key-chord-define-global "qo" 'occur)
+(key-chord-define-global "xu" 'winner-undo)
+(key-chord-define-global "kk" 'kill-buffer)
+(key-chord-define-global "mm" 'match-paren)
+(key-chord-define-global "bb" (lambda ()  (interactive)
+(buffer-menu) (toggle-truncate-lines 1)))
+(key-chord-define-global "xp" 'desktop+-load)
+(key-chord-define-global "t1" 'tabbar-backward-tab)
+(key-chord-define-global "t2" 'tabbar-forward-tab)
+(key-chord-define-global "b1" 'previous-buffer)
+(key-chord-define-global "b2" 'next-buffer)
+
+;grep p2 'grep-find
+;find p3 'grep-locations
+;p4 'get-file-path
+;spell q8
+;truncate q9
+;desktp+-create x0
+;x1 'async-shell-command 
+
+    
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
 t " my-keys" 'my-keys-minor-mode-map)
@@ -505,8 +536,8 @@ t " my-keys" 'my-keys-minor-mode-map)
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
             (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
-            (local-set-key (kbd "C-x C-<down>") 'org-move-subtree-down )
-            (local-set-key (kbd "C-x C-<up>") 'org-move-subtree-up )
+            (local-set-key (kbd "C-c C-<down>") 'org-move-subtree-down )
+            (local-set-key (kbd "C-c C-<up>") 'org-move-subtree-up )
             (local-set-key (kbd "C-c l") 'org-insert-link )
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
@@ -523,7 +554,17 @@ t " my-keys" 'my-keys-minor-mode-map)
             ;; C-c C-c : executes the code
             ;; C-c ' : edits region
 
+; key-chords  for org mode: need to define a new key map first
+(with-eval-after-load "org"
+  (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle))
+
+(key-chord-define org-mode-map "gg" 'org-global-cycle )
+(key-chord-define org-mode-map "uu" 'org-move-subtree-up)
+(key-chord-define org-mode-map "dd" 'org-move-subtree-down)
+
+;org-redisplay-inline-images
     )
+
 
 (add-hook 'org-mode-hook 'org-mode-keys)
 
