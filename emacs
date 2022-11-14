@@ -357,7 +357,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;; Key chords
-(key-chord-define-global "ll" 'end-of-line)
+(key-chord-define-global "zz" 'end-of-line)
 (key-chord-define-global "aa" 'beginning-of-line)
 (key-chord-define-global "qq" 'avy-goto-char)
 (key-chord-define-global "qo" 'occur)
@@ -372,15 +372,13 @@
 (key-chord-define-global "b1" 'previous-buffer)
 (key-chord-define-global "b2" 'next-buffer)
 
-;grep p2 'grep-find
-;find p3 'grep-locations
-;p4 'get-file-path
-;spell q8
-;truncate q9
-;desktp+-create x0
-;x1 'async-shell-command 
+(key-chord-define-global "11" 'async-shell-command)
+(key-chord-define-global "22" 'grep-find)
+(key-chord-define-global "33" 'grep-locations)
+(key-chord-define-global "44" 'get-file-path)
+(key-chord-define-global "88" 'spell)
+(key-chord-define-global "99" 'truncate)
 
-    
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
 t " my-keys" 'my-keys-minor-mode-map)
@@ -528,6 +526,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (defun org-mode-keys()
             (org-indent-mode t)
             (org-display-inline-images)
+            (setq org-image-actual-width nil) ;; so that we could scale them down #+ATTR_ORG: :width 123
             (add-to-list 'org-emphasis-alist
              '("*" (:foreground "IndianRed")
                ))
@@ -554,16 +553,16 @@ t " my-keys" 'my-keys-minor-mode-map)
             ;; C-c C-c : executes the code
             ;; C-c ' : edits region
 
-; key-chords  for org mode: need to define a new key map first
-(with-eval-after-load "org"
-  (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle))
 
-(key-chord-define org-mode-map "gg" 'org-global-cycle )
-(key-chord-define org-mode-map "uu" 'org-move-subtree-up)
-(key-chord-define org-mode-map "dd" 'org-move-subtree-down)
+     ; key-chords  for org mode: need to define a new key map first
+     (with-eval-after-load "org"
+     (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle))
 
-;org-redisplay-inline-images
-    )
+     (key-chord-define org-mode-map "cc" 'org-global-cycle )
+     (key-chord-define org-mode-map "uu" 'org-move-subtree-up)
+     (key-chord-define org-mode-map "dd" 'org-move-subtree-down)
+     (key-chord-define org-mode-map "rr" 'org-redisplay-inline-images)
+     )
 
 
 (add-hook 'org-mode-hook 'org-mode-keys)
