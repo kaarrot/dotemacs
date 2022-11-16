@@ -360,7 +360,8 @@
 (key-chord-define-global "zz" 'end-of-line)
 (key-chord-define-global "aa" 'beginning-of-line)
 (key-chord-define-global "qq" 'avy-goto-char)
-(key-chord-define-global "qo" 'occur)
+(key-chord-define-global "xo" 'occur)
+(key-chord-define-global "ww" 'occur)
 (key-chord-define-global "xu" 'winner-undo)
 (key-chord-define-global "kk" 'kill-buffer)
 (key-chord-define-global "mm" 'match-paren)
@@ -372,12 +373,12 @@
 (key-chord-define-global "b1" 'previous-buffer)
 (key-chord-define-global "b2" 'next-buffer)
 
-(key-chord-define-global "11" 'async-shell-command)
+(key-chord-define-global "11" 'shell-command)
 (key-chord-define-global "22" 'grep-find)
 (key-chord-define-global "33" 'grep-locations)
 (key-chord-define-global "44" 'get-file-path)
-(key-chord-define-global "88" 'spell)
-(key-chord-define-global "99" 'truncate)
+(key-chord-define-global "88" 'ispell-word)
+(key-chord-define-global "99" 'toggle-truncate-lines)
 
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
@@ -558,10 +559,11 @@ t " my-keys" 'my-keys-minor-mode-map)
      (with-eval-after-load "org"
      (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle))
 
-     (key-chord-define org-mode-map "cc" 'org-global-cycle )
+     (key-chord-define org-mode-map "jj" 'org-global-cycle )
      (key-chord-define org-mode-map "uu" 'org-move-subtree-up)
      (key-chord-define org-mode-map "dd" 'org-move-subtree-down)
-     (key-chord-define org-mode-map "rr" 'org-redisplay-inline-images)
+     (key-chord-define org-mode-map "xr" 'org-redisplay-inline-images)
+     (key-chord-define org-mode-map "xi" 'iimage-mode)
      )
 
 
