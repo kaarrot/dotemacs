@@ -528,6 +528,15 @@ t " my-keys" 'my-keys-minor-mode-map)
             (org-indent-mode t)
             (org-display-inline-images)
             (setq org-image-actual-width nil) ;; so that we could scale them down #+ATTR_ORG: :width 123
+
+            ;; Enable persistent org-clock across emacs sessions - jumps to active clock
+            (org-clock-persistence-insinuate)
+            (setq org-clock-persist t
+                  org-clock-persist-query-resume nil
+                  org-clock-auto-clock-resolution 'when-no-clock-is-running
+                  org-clock-history-length 23
+                  org-clock-in-resume t)
+
             (add-to-list 'org-emphasis-alist
              '("*" (:foreground "IndianRed")
                ))
