@@ -224,6 +224,42 @@
   ) ;;end of fun
 
 
+;; This function works in combination with Occur mode and org timestamps
+;; If we filter out lines with timestamps from the org-mode buffer
+;; we an sort them (starting from the latest) in the Occur buffer and
+;; still jump to corresponding line.
+(defun occur-mode-sort-by-org-timestamp ()
+(interactive)
+   (if (get-buffer "*Occur*")
+       (save-excursion
+         (set-buffer (get-buffer "*Occur*"))
+         
+         (toggle-read-only 0)
+         ;;(inhibit-read-only t)
+         
+         (let (START END)
+           (progn
+             ;; make sure we dont wrap lines pr next-line still may be read only
+             (toggle-truncate-lines t)
+             ;; Skips first line in Occur buffer
+             ;; If you get read-only error and the Occur buffer is not sorted,
+             ;; the (Occur) buffer most likely wraps around multiple lines and needs to be unwrapped using by user
+             (beginning-of-buffer)
+             (next-line)
+             (setq START (point))
+             (end-of-buffer)
+             (setq END (point))
+             ;;(sort-regexp-fields t "TODO.*"  ".*" START  END)
+             ;; This take into account line numberso in occur mode but skips then while sorting
+             ;; It is still not perfect and jumping to exact line may not work
+             ;; <.*> should match any org-mode timestamp
+             (sort-regexp-fields t "[0-9]+.*"  "<.*>" START END) 
+             ) ; end of progn
+         ) ; end of let 
+       )
+     (message "There is no buffer named \"*Occur*\".")) )
+
+
 ; ^ ^ ^ ^ ^
 ; | | | | | 
 ; essentials 
