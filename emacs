@@ -451,6 +451,12 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (add-hook 'python-mode-hook 'python-mode-keys)
 
+
+;; Disable auto indent on new line in text-mode
+(setq default-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'paragraph-indent-minor-mode)
+
+
 ;;;;;;;;;;;;;;;;;;; Gomacro
 (defun gomacro-mode-keys()
 
