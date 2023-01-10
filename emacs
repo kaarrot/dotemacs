@@ -577,7 +577,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
      (key-chord-define org-mode-map "jj" 'org-global-cycle )
      (key-chord-define org-mode-map "uu" 'org-move-subtree-up)
-     (key-chord-define org-mode-map "dd" 'org-move-subtree-down)
+     (key-chord-define org-mode-map "ii" 'org-move-subtree-down)
      (key-chord-define org-mode-map "xr" 'org-redisplay-inline-images)
      (key-chord-define org-mode-map "xi" 'iimage-mode)
      )

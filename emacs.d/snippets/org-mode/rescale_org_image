@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: rescale_org_image
+# key: <A
+# --
+#+ATTR_ORG: :width 300
