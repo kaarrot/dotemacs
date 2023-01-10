@@ -23,6 +23,7 @@
                   fzf
                   org-download
                   key-chord
+                  eglot
 				  )
       )
 
