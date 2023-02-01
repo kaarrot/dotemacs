@@ -555,6 +555,7 @@ t " my-keys" 'my-keys-minor-mode-map)
             (local-set-key (kbd "C-c C-<down>") 'org-move-subtree-down )
             (local-set-key (kbd "C-c C-<up>") 'org-move-subtree-up )
             (local-set-key (kbd "C-c l") 'org-insert-link )
+            (local-set-key (kbd "C-c <tab>") 'org-babel-goto-src-block-head )
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
             (org-babel-do-load-languages
