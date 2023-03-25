@@ -604,3 +604,23 @@ In order to avoid interfference form project denoters we set them off. To restor
               (backward-kill-word 1))))
       (kill-region cp (- cp 1)))         ;; word is non-english word
     ))
+
+(setq show-dirs-substring "png")
+(defun show-dirs-without-substring(search_string)
+  "List directories from the current dired level which do not contain specific substring"
+  (interactive
+   (list (read-string (format "Search for substring [%s]: " show-dirs-substring) nil nil show-dirs-substring)))
+  
+  (let (my-lit)
+    (setq my-list (f-directories (expand-file-name default-directory)))
+    (while my-list
+      (setq this_dir (car my-list))
+      (setq my-list (cdr my-list))
+      (setq found (directory-files this_dir nil search_string))
+      (if (not found)
+          (message "%s" this_dir)
+        )
+      )
+    (message "-------")
+    )
+  )
