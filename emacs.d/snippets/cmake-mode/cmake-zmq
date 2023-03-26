@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: cmake-zmq
+# key: cmake-zmq
+# --
+
+cmake_minimum_required(VERSION 3.12)
+project(aaa)
+
+add_executable(aaa main.cpp)
+
+### find_package
+list(APPEND CMAKE_PREFIX_PATH $ENV{HOME}/install_prefix/lib/cmake/ZeroMQ)
+find_package(ZeroMQ)
+message(STATUS "ZMQ found: ${ZeroMQ_FOUND}")
+target_link_libraries(aaa zmq)
+
+    

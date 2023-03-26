@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: cmake-zmq-pkgconfig
+# key: cmake-zmq-pkgconfig
+# --
+
+cmake_minimum_required(VERSION 3.12)
+project(aaa)
+
+add_executable(aaa main.cpp)
+
+### pkg-config
+list(APPEND CMAKE_MODULE_PATH $ENV{HOME}/install_prefix/lib/pkgconfig)
+find_package(PkgConfig)  # import PkgConfig first
+pkg_check_modules(zmq REQUIRED libzmq)
+
+target_link_libraries(aaa zmq)
+    
