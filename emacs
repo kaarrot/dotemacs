@@ -584,6 +584,7 @@ t " my-keys" 'my-keys-minor-mode-map)
      (key-chord-define org-mode-map "ii" 'org-move-subtree-down)
      (key-chord-define org-mode-map "xr" 'org-redisplay-inline-images)
      (key-chord-define org-mode-map "xi" 'iimage-mode)
+     (key-chord-define org-mode-map "77" 'occur-timestamp-sort)
      )
 
 

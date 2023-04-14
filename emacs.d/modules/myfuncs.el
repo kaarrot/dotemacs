@@ -260,6 +260,21 @@
      (message "There is no buffer named \"*Occur*\".")) )
 
 
+(setq occur-timestamp-sort-substring "TODAY")
+(defun occur-timestamp-sort(search_string)
+  "A helper function to automate frequent 3 steps to sort search string starting from the latest.
+One requirement is follow the search string by Org timestamp: C-u C-c .
+"
+  (interactive
+   (list (read-string (format "Search and sort string [%s]: " occur-timestamp-sort-substring) nil nil occur-timestamp-sort-substring)))
+
+  (occur search_string)
+  (switch-to-buffer-other-window "*Occur*")
+  (occur-mode-sort-by-org-timestamp)
+  (next-error-follow-minor-mode 1) ;; disable if 0 or negative
+  )
+
+
 ; ^ ^ ^ ^ ^
 ; | | | | | 
 ; essentials 
@@ -611,7 +626,7 @@ In order to avoid interfference form project denoters we set them off. To restor
   (interactive
    (list (read-string (format "Search for substring [%s]: " show-dirs-substring) nil nil show-dirs-substring)))
   
-  (let (my-lit)
+  (let (my-list)
     (setq my-list (f-directories (expand-file-name default-directory)))
     (while my-list
       (setq this_dir (car my-list))
