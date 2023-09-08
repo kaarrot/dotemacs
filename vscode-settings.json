@@ -1,7 +1,16 @@
 {
-    "security.workspace.trust.untrustedFiles": "open",
     "window.enableMenuBarMnemonics": false,
     "workbench.colorTheme": "tangotango",
     "cmake.configureOnOpen": false,
-    "cmake.buildDirectory": "${workspaceFolder}/__build"
+    //"python.pythonPath": "/opt/hfs17.5.460/bin/hython-bin",
+    "extensions.ignoreRecommendations": true,
+    //"cmake.buildDirectory": "${workspaceFolder}/__build_vscode_${buildType}_${buildKit}",
+    // Not using buildKit as it may contain spaces and fail to resolve the path
+    "cmake.buildDirectory": "${workspaceFolder}/__build_vscode_${buildType}",
+    // In order to use /m flag on Windows, parallel job needs to = 1
+    // This will remove -j flag from cmake command and wont suppress /m
+    "cmake.parallelJobs": 1,
+    "security.workspace.trust.untrustedFiles": "open",
+    // This is windows specific and will oversubscribe but run in low priority and won't slow down UI
+    // "cmake.buildToolArgs": ["/m", "/lowPriority"],
 }
