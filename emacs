@@ -505,7 +505,7 @@ t " my-keys" 'my-keys-minor-mode-map)
     (add-hook 'inferior-python-mode-hook 'shell-mode-keys)
   )
 
-;;;;;;;;;;;;;;;;;;;; Dired
+;;;;;;;;;;;;;;;;;;;; Golang
 (defun my-go-mode-hook ()
   ; Customize compile command to run go build
   (if (not (string-match "go" compile-command))
@@ -520,6 +520,25 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;; Dired
+
+;; https://stackoverflow.com/a/2650987
+(defmacro disallow-cd-in-function (fun)
+  "Prevent FUN (or any function that FUN calls) from changing directory."
+  `(defadvice ,fun (around dissallow-cd activate)
+     (let ((old-dir default-directory) ; Save old directory
+           (new-buf ad-do-it)) ; Capture new buffer
+       ;; If FUN returns a buffer, operate in that buffer in addition
+       ;; to current one.
+       (when (bufferp new-buf)
+         (set-buffer new-buf)
+         (setq default-directory old-dir))
+       ;; Set default-directory in the current buffer
+       (setq default-directory old-dir))))
+
+(disallow-cd-in-function dired-find-file)
+(disallow-cd-in-function find-file-noselect-1)
+(disallow-cd-in-function set-visited-file-name)
+    
 (setq Buffer-menu-name-width 40)
 (eval-after-load 'dired '(progn (require 'single-dired)))
 (defun dired-mode-keys()
