@@ -413,7 +413,7 @@ t " my-keys" 'my-keys-minor-mode-map)
                                     ))
   (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
   (local-set-key (kbd "C-c <RET>") (lambda () (interactive)
-    (setq compile-command (message "g++ -O0 -g -std=c++14 -I. %s -o a.out" (buffer-file-name))) )) 
+    (setq compile-command (message "g++ -O0 -fsanitize=address -g -std=c++17 -I. %s -o a.out" (buffer-file-name))) )) 
 
   (local-set-key [pause] 'toggle-window-dedicated)
   (setq comment-start "//" comment-end "")
