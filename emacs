@@ -1,6 +1,8 @@
 ;; Requires Emacs 26.2 or higher
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+;; Disable melpa signiture check
+(setq package-check-signature nil)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 ;; run gc only when idle
