@@ -555,6 +555,9 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (load (message "%s/.emacs.d/modules/base64image.el" HOME))  ;; support for base64 images
 
+(org-babel-do-load-languages
+ 'org-babel-load-languages '((C . t)))
+    
 (defun org-mode-keys()
             (org-indent-mode t)
             (org-display-inline-images)
@@ -776,6 +779,8 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-babel-C++-compiler "g++ -v")
+ '(org-babel-load-languages '((ditaa . t) (python . t) (C . t)))
  '(package-selected-packages
    '(gomacro-mode p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key)))
 (custom-set-faces

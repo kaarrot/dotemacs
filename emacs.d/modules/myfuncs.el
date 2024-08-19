@@ -420,16 +420,17 @@ In order to avoid interfference form project denoters we set them off. To restor
 ;;; Dropbox
 (defun dropbox-send (file-path)
   (interactive "bSpecify buffer name: ")
-  (setq rclone-send (message "rclone copy %s dropbox:" file-path))
+  (setq rclone-send (message "rclone copy %s dropbox:" (buffer-file-name)))
   (message "%s" rclone-send)
   (save-buffer)
+  
   (shell-command rclone-send)
   )
 
 
 (defun dropbox-get (file-path)
   (interactive "bSpecify buffer name: ")
-  (setq rclone-receive (message "rclone copy dropbox:%s ." file-path))
+  (setq rclone-receive (message "rclone copy dropbox:%s ." (buffer-file-name)))
   (message "%s" rclone-receive)
   (shell-command rclone-receive)
   (revert-buffer nil t)
@@ -444,7 +445,7 @@ In order to avoid interfference form project denoters we set them off. To restor
 ;;; Google drive
 (defun google-send (file-path)
   (interactive "bSpecify buffer name: ")
-  (setq rclone-send (message "rclone copy %s google:" file-path))
+  (setq rclone-send (message "rclone copy %s google:" (buffer-file-name)))
   (message "%s" rclone-send)
   (save-buffer)
   (shell-command rclone-send)
@@ -453,7 +454,7 @@ In order to avoid interfference form project denoters we set them off. To restor
 
 (defun google-get (file-path)
   (interactive "bSpecify buffer name: ")
-  (setq rclone-receive (message "rclone copy google:%s ." file-path))
+  (setq rclone-receive (message "rclone copy google:%s ." (buffer-file-name)))
   (message "%s" rclone-receive)
   (shell-command rclone-receive)
   (revert-buffer nil t)
