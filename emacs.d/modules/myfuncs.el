@@ -432,7 +432,7 @@ In order to avoid interfference form project denoters we set them off. To restor
 (defun dropbox-get (file-path)
   (interactive "bSpecify buffer name: ")
   ;; buffer-name returns file name as we copy from dropbox: root level
-  (setq rclone-receive (message "rclone copy dropbox:%s ." (buffer-name) ))
+  (setq rclone-receive (message "rclone copy dropbox:%s %s" (buffer-name) (file-name-directory (buffer-file-name))))
   (message "%s" rclone-receive)
   (shell-command rclone-receive)
   (revert-buffer nil t)
@@ -456,7 +456,7 @@ In order to avoid interfference form project denoters we set them off. To restor
 
 (defun google-get (file-path)
   (interactive "bSpecify buffer name: ")
-  (setq rclone-receive (message "rclone copy google:%s ." (buffer-name)))
+  (setq rclone-receive (message "rclone copy google:%s %s" (buffer-name) (file-name-directory (buffer-file-name))))
   (message "%s" rclone-receive)
   (shell-command rclone-receive)
   (revert-buffer nil t)
