@@ -103,7 +103,9 @@
       (grep-apply-setting 'grep-find-command '("C:/cygwin64/bin/find.exe . -type f -exec grep -nIH --null  \"\{\}\" \";\"" . 58))      
       )
 )
-  
+
+; Use it in the grep and find commands
+(setq my-root-directory default-directory)
 
 ;;;;;;;;;;;;;;;;;;; gpg
 (require 'epa-file)
@@ -280,15 +282,17 @@
 ;;;;;;;;;;;;;;;;;;; Common
 (define-key my-keys-minor-mode-map (kbd "<f1>") 'toggle-themes)
 (define-key my-keys-minor-mode-map (kbd "C-c 1") 'toggle-themes)
-(define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-find)
-(define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
+(define-key my-keys-minor-mode-map (kbd "<f2>") 'grep-locations)
+;(define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-find)
+(define-key my-keys-minor-mode-map (kbd "C-c 2") 'grep-locations)
+
 (define-key my-keys-minor-mode-map (kbd "C-c <f2>") (lambda (search-phrase) (interactive "Msearch file:")
     (grep-find (message "%s . -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD search-phrase XARGS_CMD ECHO_CMD))))
 
 (define-key my-keys-minor-mode-map (kbd "ESC 2") 'grep-locations)
 
 (define-key my-keys-minor-mode-map (kbd "C-c 3") (lambda (search-phrase) (interactive "MSearch file:")
-  (grep-find (message "%s . -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD search-phrase XARGS_CMD ECHO_CMD))))
+  (grep-find (message "%s %s -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD my-root-directory search-phrase XARGS_CMD ECHO_CMD))))
 
 (define-key my-keys-minor-mode-map (kbd "ESC 3") (lambda (search-phrase) (interactive "MSearch find:")
     (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots "."))
@@ -537,9 +541,13 @@ t " my-keys" 'my-keys-minor-mode-map)
        ;; Set default-directory in the current buffer
        (setq default-directory old-dir))))
 
-(disallow-cd-in-function dired-find-file)
-(disallow-cd-in-function find-file-noselect-1)
-(disallow-cd-in-function set-visited-file-name)
+;; The purpose of this functions is maintain location emacs was opened as the root directory
+;; so that grep and find could scan entire project. This however impacts ergonomics when
+;; attempting to open a file within the same directory
+;; Let's disable it for now and pass project root location to grep/find
+;(disallow-cd-in-function dired-find-file)
+;(disallow-cd-in-function find-file-noselect-1)
+;(disallow-cd-in-function set-visited-file-name)
     
 (setq Buffer-menu-name-width 40)
 (eval-after-load 'dired '(progn (require 'single-dired)))
@@ -756,7 +764,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
      (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots "."))
 
      (let (kuba-grep-string)
-     (setq kuba-grep-string (message "%s %s -type f -exec grep -nIH --null  \"\{\}\" \";\"" FIND_CMD kuba-roots))
+     (setq kuba-grep-string (message "%s %s -type f -exec grep -nIH --null  \"\{\}\" \";\"" FIND_CMD my-root-directory))
 
      ;; Don'tupdate grep-find-command as it is global. Instead pass kuba-grep-string directly
      ;; (grep-apply-setting 'grep-find-command (cons kuba-grep-string (- (length kuba-grep-string) 8 )))
