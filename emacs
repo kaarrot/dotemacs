@@ -291,12 +291,13 @@
 
 (define-key my-keys-minor-mode-map (kbd "ESC 2") 'grep-locations)
 
-(define-key my-keys-minor-mode-map (kbd "C-c 3") (lambda (search-phrase) (interactive "MSearch file:")
-  (grep-find (message "%s %s -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD my-root-directory search-phrase XARGS_CMD ECHO_CMD))))
+(define-key my-keys-minor-mode-map (kbd "C-c 3") (lambda (search-file) (interactive "MSearch file:")
+    (find-locations search-file))
+)
 
-(define-key my-keys-minor-mode-map (kbd "ESC 3") (lambda (search-phrase) (interactive "MSearch find:")
-    (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots "."))
-    (grep-find (message "%s %s -name \"%s\" -print | %s -I %% %s %%:1:" FIND_CMD kuba-roots search-phrase XARGS_CMD ECHO_CMD))))
+(define-key my-keys-minor-mode-map (kbd "ESC 3") (lambda (search-file) (interactive "MSearch file:")
+    (find-locations search-file))
+)
 
 (define-key my-keys-minor-mode-map (kbd "<f4>") 'get-file-path)
 (define-key my-keys-minor-mode-map (kbd "C-c 4") 'get-file-path)
@@ -364,8 +365,8 @@
 
 
 ;;;;;;;;;;;;;;;;;;; Key chords
-(key-chord-define-global "zz" 'end-of-line)
-(key-chord-define-global "aa" 'beginning-of-line)
+(key-chord-define-global "xx" 'end-of-line)
+(key-chord-define-global "zz" 'beginning-of-line)
 (key-chord-define-global "qq" 'avy-goto-char)
 (key-chord-define-global "xo" 'occur)
 (key-chord-define-global "ww" 'occur)
@@ -382,7 +383,9 @@
 
 (key-chord-define-global "11" 'shell-command)
 (key-chord-define-global "22" 'grep-find)
-(key-chord-define-global "33" 'grep-locations)
+(key-chord-define-global "33" (lambda (search-file) (interactive "MSearch file:")
+    (find-locations search-file))
+    )
 (key-chord-define-global "44" 'get-file-path)
 (key-chord-define-global "88" 'ispell-word)
 (key-chord-define-global "99" 'toggle-truncate-lines)
@@ -425,6 +428,9 @@ t " my-keys" 'my-keys-minor-mode-map)
   (setq comment-start "//" comment-end "")
   (setq compilation-scroll-output 'first-error) ;; scroll compilation buffer
   (set-default 'truncate-lines nil)
+  ;; aligment on the curly braces on new line
+  (c-set-offset 'topmost-intro-cont 0)
+  (c-set-offset ' func-decl-cont 0)
 
   )
 
@@ -781,6 +787,10 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
     (let ((null-device nil))
       (grep command-args)))
    )
+
+(defun find-locations (search-phrase)
+    (grep-find (message "%s %s -name \"\*%s\*\" -print | %s -I %% %s %%:1:" FIND_CMD my-root-directory search-phrase XARGS_CMD ECHO_CMD)))
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
