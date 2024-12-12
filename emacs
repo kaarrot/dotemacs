@@ -429,9 +429,9 @@ t " my-keys" 'my-keys-minor-mode-map)
   (setq compilation-scroll-output 'first-error) ;; scroll compilation buffer
   (set-default 'truncate-lines nil)
   ;; aligment on the curly braces on new line
+  (c-set-offset 'inline-open '0)
   (c-set-offset 'topmost-intro-cont 0)
   (c-set-offset ' func-decl-cont 0)
-
   )
 
 ;; Changing styl of comments in CC-mode
@@ -797,10 +797,11 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files '("~/.notes"))
  '(org-babel-C++-compiler "g++ -v")
  '(org-babel-load-languages '((ditaa . t) (python . t) (C . t)))
  '(package-selected-packages
-   '(dockerfile-mode gomacro-mode p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key)))
+   '(rust-mode dockerfile-mode gomacro-mode p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
