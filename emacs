@@ -566,7 +566,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'dired-mode-hook 'dired-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; ORG
-
+(add-to-list 'auto-mode-alist '(".notes" . org-mode))
 (load (message "%s/.emacs.d/modules/base64image.el" HOME))  ;; support for base64 images
 
 (org-babel-do-load-languages
@@ -576,6 +576,8 @@ t " my-keys" 'my-keys-minor-mode-map)
             (org-indent-mode t)
             (org-display-inline-images)
             (setq org-image-actual-width nil) ;; so that we could scale them down #+ATTR_ORG: :width 123
+
+            (setq org-return-follows-link  t)
 
             ;; Enable persistent org-clock across emacs sessions - jumps to active clock
             (org-clock-persistence-insinuate)
