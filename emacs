@@ -327,6 +327,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-z") 'undo-fu-only-undo)
  (define-key my-keys-minor-mode-map (kbd "M-z") 'undo-fu-only-redo)
 (define-key my-keys-minor-mode-map (kbd "C-c C-a") 'mark-whole-buffer)
+(define-key my-keys-minor-mode-map (kbd "C-c a") 'org-agenda)
 (define-key my-keys-minor-mode-map "\C-l" 'goto-line)
 (define-key my-keys-minor-mode-map (kbd "M-m") 'anything)
 
