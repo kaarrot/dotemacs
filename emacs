@@ -575,6 +575,7 @@ t " my-keys" 'my-keys-minor-mode-map)
     
 (defun org-mode-keys()
             (org-indent-mode t)
+            (setq org-agenda-prefix-format "%t %s")
             (org-display-inline-images)
             (setq org-image-actual-width nil) ;; so that we could scale them down #+ATTR_ORG: :width 123
 
