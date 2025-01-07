@@ -596,6 +596,8 @@ t " my-keys" 'my-keys-minor-mode-map)
                (flyspell-prog-mode))
             (setq org-src-fontify-natively t)
             ;;(my-keys-minor-mode 0) ;; disable my keys
+            ;;Need to override iimge recenter which shadows C-l
+            (local-set-key (kbd "\C-l") 'goto-line )
             (local-set-key (kbd "M-<up>") 'org-table-move-row-up )
             (local-set-key (kbd "C-c C-<down>") 'org-move-subtree-down )
             (local-set-key (kbd "C-c C-<up>") 'org-move-subtree-up )
