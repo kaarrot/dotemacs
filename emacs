@@ -76,7 +76,8 @@
 ;;(require 'anything-match-plugin)
 ;;(require 'anything-config)
 (require 'key-chord)
-    
+
+
 
 ;; good to have
 (require 'wgrep)
@@ -85,6 +86,8 @@
 (require 'yasnippet)
 (require 'clang-format) ;; assumes clang-format is on the PATH
 (require 'go-mode)
+(require 'devil)
+    
 (key-chord-mode 1)
 
 (dumb-jump-mode t)
@@ -176,6 +179,10 @@
 (when (display-graphic-p)
   (tool-bar-mode -1)
 )
+
+;; Enable comma as ctrl
+(global-devil-mode)
+(global-set-key (kbd "C-,") 'global-devil-mode)
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm   (needs to be loade first)
 ;;(when (display-graphic-p)
@@ -589,6 +596,9 @@ t " my-keys" 'my-keys-minor-mode-map)
                   org-clock-history-length 23
                   org-clock-in-resume t)
 
+            (setq org-refile-use-outline-path 'file)
+            (setq org-refile-targets '((org-agenda-files :level . 1)))
+
             (add-to-list 'org-emphasis-alist
              '("*" (:foreground "IndianRed")
                ))
@@ -807,7 +817,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  '(org-babel-C++-compiler "g++ -v")
  '(org-babel-load-languages '((ditaa . t) (python . t) (C . t)))
  '(package-selected-packages
-   '(rust-mode dockerfile-mode gomacro-mode p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key)))
+   '(devil rust-mode dockerfile-mode gomacro-mode p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
