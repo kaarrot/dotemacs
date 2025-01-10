@@ -598,6 +598,12 @@ t " my-keys" 'my-keys-minor-mode-map)
 
             (setq org-refile-use-outline-path 'file)
             (setq org-refile-targets '((org-agenda-files :level . 1)))
+            ;; When refilling add new headings to the top so that Task is last in the file.
+            ;; This allows to have most recent Headings/Tasks added to task listed as the last in the agenda.
+            ;; This is a workaround until there is better way to sort agenda Tasks
+            ;; Reversing order put the first item at the bottom of the list, so it is more in line
+            ;; with the way how quick notes are ordered 
+            (setq org-reverse-note-order t)
 
             (add-to-list 'org-emphasis-alist
              '("*" (:foreground "IndianRed")
