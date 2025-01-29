@@ -360,6 +360,9 @@
 
 (global-set-key (kbd "C-x SPC") 'set-mark-command)
 
+
+(global-set-key (kbd "C-x x")  (lambda () (interactive) (switch-to-buffer nil)))
+
 ;;;;;;;;;;;;;;;;;;; Winner mode
 ;; Unbind existing key sequence first
 (global-unset-key (kbd "M-c"))
@@ -381,6 +384,7 @@
 (key-chord-define-global "xu" 'winner-undo)
 (key-chord-define-global "kk" 'kill-buffer)
 (key-chord-define-global "mm" 'match-paren)
+(key-chord-define-global "xx" (lambda () (interactive) (switch-to-buffer nil)))
 (key-chord-define-global "bb" (lambda ()  (interactive)
 (buffer-menu) (toggle-truncate-lines 1)))
 (key-chord-define-global "xp" 'desktop+-load)
