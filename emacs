@@ -376,24 +376,22 @@
 
 
 ;;;;;;;;;;;;;;;;;;; Key chords
-(key-chord-define-global "xx" 'end-of-line)
-(key-chord-define-global "zz" 'beginning-of-line)
 (key-chord-define-global "qq" 'avy-goto-char)
 (key-chord-define-global "xo" 'occur)
 (key-chord-define-global "ww" 'occur)
 (key-chord-define-global "xu" 'winner-undo)
 (key-chord-define-global "kk" 'kill-buffer)
-(key-chord-define-global "mm" 'match-paren)
+(key-chord-define-global "aa" 'match-paren)
 (key-chord-define-global "xx" (lambda () (interactive) (switch-to-buffer nil)))
-(key-chord-define-global "bb" (lambda ()  (interactive)
+(key-chord-define-global "vv" (lambda ()  (interactive)  ;; bb conflicted with moving back in devil mode
 (buffer-menu) (toggle-truncate-lines 1)))
-(key-chord-define-global "xp" 'desktop+-load)
+;;(key-chord-define-global "xp" 'desktop+-load)
 (key-chord-define-global "t1" 'tabbar-backward-tab)
 (key-chord-define-global "t2" 'tabbar-forward-tab)
 (key-chord-define-global "b1" 'previous-buffer)
 (key-chord-define-global "b2" 'next-buffer)
 
-(key-chord-define-global "11" 'shell-command)
+;;(key-chord-define-global "11" 'shell-command)
 (key-chord-define-global "22" 'grep-find)
 (key-chord-define-global "33" (lambda (search-file) (interactive "MSearch file:")
     (find-locations search-file))
