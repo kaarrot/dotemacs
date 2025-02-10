@@ -275,14 +275,18 @@
 ;;;;;;;;;;;;;;;;;;;; Move between windows
 (define-key my-keys-minor-mode-map (kbd "C-c <left>") 'windmove-left) ;work also in terminal
 (define-key my-keys-minor-mode-map (kbd "C-c C-<left>") 'windmove-left) ;work also in terminal
+(define-key my-keys-minor-mode-map (kbd "C-c C-b") 'windmove-left)    
 (define-key my-keys-minor-mode-map (kbd "s-<left>") 'windmove-left) ;work also in terminal
 (define-key my-keys-minor-mode-map (kbd "C-c <right>") 'windmove-right)
 (define-key my-keys-minor-mode-map (kbd "C-c C-<right>") 'windmove-right)
+(define-key my-keys-minor-mode-map (kbd "C-c C-f") 'windmove-right)
 (define-key my-keys-minor-mode-map (kbd "s-<right>") 'windmove-right)
 (define-key my-keys-minor-mode-map (kbd "C-c <up>") 'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "C-c C-<up>") 'windmove-up)
+(define-key my-keys-minor-mode-map (kbd "C-c C-p") 'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "s-<up>") 'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "C-c <down>") 'windmove-down)
+(define-key my-keys-minor-mode-map (kbd "C-c C-n") 'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "C-c C-<down>") 'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
