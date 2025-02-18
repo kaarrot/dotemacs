@@ -26,6 +26,7 @@
                   org-download
                   key-chord
                   eglot
+		  devil
 				  )
       )
 
