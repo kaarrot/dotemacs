@@ -646,6 +646,7 @@ t " my-keys" 'my-keys-minor-mode-map)
                                   (error (message "Copy Id"))) ;; Needed to silent error and execute next expression
                                 (org-id-copy))
                               ))
+            (local-set-key (kbd "C-c s") 'search-headlines)
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
             (org-babel-do-load-languages
@@ -843,7 +844,10 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
 (defun find-locations (search-phrase)
     (grep-find (message "%s %s -name \"\*%s\*\" -print | %s -I %% %s %%:1:" FIND_CMD my-root-directory search-phrase XARGS_CMD ECHO_CMD)))
 
-
+(defun search-headlines (search-phrase) (interactive "MSearch headlines:")
+    (org-occur (message "^\\*+ .*%s" search-phrase))
+)
+    
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
