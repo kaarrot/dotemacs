@@ -592,6 +592,7 @@ t " my-keys" 'my-keys-minor-mode-map)
             (setq org-agenda-prefix-format "%t %s")
             (org-display-inline-images)
             (setq org-image-actual-width nil) ;; so that we could scale them down #+ATTR_ORG: :width 123
+            (org-id-update-id-locations)
 
             (setq org-return-follows-link  t)
 
@@ -635,6 +636,16 @@ t " my-keys" 'my-keys-minor-mode-map)
                                (org-id-copy))
                              ))
 
+
+            ;; Create heading ID and copy into clipboard
+            (local-set-key (kbd "C-c i")
+                            (lambda () (interactive)
+                              (progn
+                                (condition-case nil            ;;
+                                    (org-id-get-create)
+                                  (error (message "Copy Id"))) ;; Needed to silent error and execute next expression
+                                (org-id-copy))
+                              ))
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
             (org-babel-do-load-languages
