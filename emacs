@@ -26,9 +26,8 @@
                   org-download
                   key-chord
                   eglot
-		  devil
-				  )
-      )
+		          devil
+	  ))
 
 ;; Auto install required packages
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
@@ -581,6 +580,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'dired-mode-hook 'dired-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; ORG
+        
 (add-to-list 'auto-mode-alist '(".notes" . org-mode))
 (load (message "%s/.emacs.d/modules/base64image.el" HOME))  ;; support for base64 images
 
@@ -627,6 +627,15 @@ t " my-keys" 'my-keys-minor-mode-map)
             (local-set-key (kbd "C-c l") 'org-insert-link )
             (local-set-key (kbd "C-c <tab>") 'org-babel-goto-src-block-head )
 
+            ;; Create heading ID and copy into clipboard
+            (local-set-key (kbd "C-c i")
+                           (lambda () (interactive)
+                             (progn 
+                               (org-id-get-create)
+                               (org-id-copy))
+                             ))
+
+
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
             (org-babel-do-load-languages
              'org-babel-load-languages
@@ -644,7 +653,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
      ; key-chords  for org mode: need to define a new key map first
      (with-eval-after-load "org"
-     (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle))
+        (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle))  
 
      (key-chord-define org-mode-map "jj" 'org-global-cycle )
      (key-chord-define org-mode-map "uu" 'org-move-subtree-up)
@@ -657,6 +666,9 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (add-hook 'org-mode-hook 'org-mode-keys)
 
+;; Search org files associated with the Agenda view
+(with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "S") #'org-occur-in-agenda-files))
 
 
 ;;;;;;;;;;;;;;;;;;;; Ediff
