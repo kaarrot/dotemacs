@@ -449,7 +449,7 @@ t " my-keys" 'my-keys-minor-mode-map)
   (c-set-offset ' func-decl-cont 0)
   )
 
-;; Changing styl of comments in CC-mode
+;; Changing style of comments in CC-mode
 (add-hook 'c-mode-hook  (lambda () (setq comment-start "//" comment-end "") ))
 (add-hook 'c++-mode-hook 'c-mode-keys)
 (add-hook 'c-mode-hook 'c-mode-keys)
@@ -546,6 +546,18 @@ t " my-keys" 'my-keys-minor-mode-map)
 )
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
+
+;;;;;;;;;;;;;;;;;;;; Rust
+(defun my-rust-run ()
+    (interactive)  ;; Need to be interactive in order to assign  keybinding
+    (save-current-buffer)
+    (rust-run)
+    )
+
+(defun rust-mode-keys ()
+  (local-set-key (kbd "C-c C-c") #'my-rust-run))
+
+(add-hook 'rust-mode-hook 'rust-mode-keys)
 ;;;;;;;;;;;;;;;;;;;; Dired
 
 ;; https://stackoverflow.com/a/2650987
