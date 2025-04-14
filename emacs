@@ -549,8 +549,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; Rust
 (defun my-rust-run ()
-    (interactive)  ;; Need to be interactive in order to assign  keybinding
-    (save-current-buffer)
+  (interactive)  ;; Need to be interactive in order to assign  keybinding
+    (save-buffer)
     (rust-run)
     )
 
