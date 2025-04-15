@@ -70,6 +70,7 @@
 (require 'bm)
 (require 'desktop+)  ;; custom tweaks to list in recent order
 ;; essential
+(require 'ansi-color)
 (require 'multiple-cursors)
 (require 'dumb-jump)
 (require 'tabbar)
@@ -109,6 +110,14 @@
 
 ; Use it in the grep and find commands
 (setq my-root-directory default-directory)
+
+;;;;;;;;;;;;;;;;;;; escape color in eshell and compilation modes
+(defun my-colorize-compilation-buffer ()
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
+(add-hook 'compilation-filter-hook #'my-colorize-compilation-buffer)
+(add-hook 'eshell-preoutput-filter-functions #'ansi-color-apply)
 
 ;;;;;;;;;;;;;;;;;;; gpg
 (require 'epa-file)
