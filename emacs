@@ -178,7 +178,6 @@
 (blink-cursor-mode 0)
 
 (setq x-select-enable-clipboard t)
-(global-visual-line-mode t)
 (setq use-file-dialog nil)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -703,6 +702,16 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;; Search org files associated with the Agenda view
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "S") #'org-occur-in-agenda-files))
+
+;;;;;;;;;;;;;;;;;;;; Calendar
+(defun m0y-calendar-hook ()
+  "Turn line truncation on."
+    (progn
+      (visual-line-mode -1)
+      (toggle-truncate-lines 1)
+    ))
+
+(add-hook 'calendar-mode-hook #'my-calendar-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;; Ediff
