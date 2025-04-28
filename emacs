@@ -699,12 +699,34 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (add-hook 'org-mode-hook 'org-mode-keys)
 
+;;;;;;;;;;;;;;;;;;;; Org-agenda
+(setq org-tag-faces
+      '(("urgent" . (:foreground "red" :weight bold))
+        ("task" . (:foreground "orange"))))
+
+(defun my/org-agenda-color-lines ()
+  "Color entire Org Agenda lines based on tags."
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (let ((line (thing-at-point 'line t)))
+        (cond
+         ((and line (string-match ":urgent:" line))
+          (add-text-properties (line-beginning-position) (line-end-position)
+                               '(face (:foreground "white" :background "red" :weight bold))))
+         ((and line (string-match ":task:" line))
+          (add-text-properties (line-beginning-position) (line-end-position)
+                               '(face (:foreground "black" :background "lightblue"))))))
+      (forward-line 1))))
+
+(add-hook 'org-agenda-finalize-hook #'my/org-agenda-color-lines)
+
 ;; Search org files associated with the Agenda view
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "S") #'org-occur-in-agenda-files))
 
 ;;;;;;;;;;;;;;;;;;;; Calendar
-(defun m0y-calendar-hook ()
+(defun my-calendar-hook ()
   "Turn line truncation on."
     (progn
       (visual-line-mode -1)
