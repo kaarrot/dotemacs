@@ -700,6 +700,10 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'org-mode-hook 'org-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; Org-agenda
+
+;; Disable nested heading from inheriting tags and displaying the color of the parent
+(setq org-agenda-use-tag-inheritance nil)
+
 (setq org-tag-faces
       '(("urgent" . (:foreground "red" :weight bold))
         ("task" . (:foreground "orange"))))
