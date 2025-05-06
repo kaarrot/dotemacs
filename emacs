@@ -139,6 +139,10 @@
 ;;    )
 ;;)
 
+(if (search "termux" HOME)
+(setq ispell-alternate-dictionary (message "%s/temp/ispell_words" HOME))
+)
+
 ;;;;;;;;;;;;;;;;;;; Configuration
 
 
@@ -390,9 +394,8 @@
 
 ;;;;;;;;;;;;;;;;;;; Key chords
 (key-chord-define-global "qq" 'avy-goto-char)
-(key-chord-define-global "xo" 'occur)
 (key-chord-define-global "ww" 'occur)
-(key-chord-define-global "xu" 'winner-undo)
+(key-chord-define-global "uy" 'winner-undo)
 (key-chord-define-global "kk" 'kill-buffer)
 (key-chord-define-global "aa" 'match-paren)
 (key-chord-define-global "xx" (lambda () (interactive) (switch-to-buffer nil)))
@@ -686,13 +689,15 @@ t " my-keys" 'my-keys-minor-mode-map)
 
      ; key-chords  for org mode: need to define a new key map first
      (with-eval-after-load "org"
-        (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle))  
+        (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle)
+        (define-key org-mode-map (kbd "C-u") #'org-move-subtree-up)
+        (define-key org-mode-map (kbd "C-i") #'org-move-subtree-down)
+        (define-key org-mode-map (kbd "C-c r") #'org-redisplay-inline-images)
+        (define-key org-mode-map (kbd "C-c e") #'iimage-mode)
+        (define-key org-mode-map (kbd "C-c t") #'occur-timestamp-sort)
+     )
 
      (key-chord-define org-mode-map "jj" 'org-global-cycle )
-     (key-chord-define org-mode-map "uu" 'org-move-subtree-up)
-     (key-chord-define org-mode-map "ii" 'org-move-subtree-down)
-     (key-chord-define org-mode-map "xr" 'org-redisplay-inline-images)
-     (key-chord-define org-mode-map "xi" 'iimage-mode)
      (key-chord-define org-mode-map "77" 'occur-timestamp-sort)
      )
 
