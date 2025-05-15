@@ -182,6 +182,7 @@
 (blink-cursor-mode 0)
 
 (setq x-select-enable-clipboard t)
+(global-visual-line-mode t)
 (setq use-file-dialog nil)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -690,8 +691,8 @@ t " my-keys" 'my-keys-minor-mode-map)
      ; key-chords  for org mode: need to define a new key map first
      (with-eval-after-load "org"
         (define-key org-mode-map (kbd "C-c C-j") #'org-global-cycle)
-        (define-key org-mode-map (kbd "C-u") #'org-move-subtree-up)
-        (define-key org-mode-map (kbd "C-i") #'org-move-subtree-down)
+        (define-key org-mode-map (kbd "M-u") #'org-move-subtree-up)
+        (define-key org-mode-map (kbd "M-i") #'org-move-subtree-down)
         (define-key org-mode-map (kbd "C-c r") #'org-redisplay-inline-images)
         (define-key org-mode-map (kbd "C-c e") #'iimage-mode)
         (define-key org-mode-map (kbd "C-c t") #'occur-timestamp-sort)
@@ -885,7 +886,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
      (if dumb-jump-project (setq kuba-roots dumb-jump-project) (setq kuba-roots "."))
 
      (let (kuba-grep-string)
-     (setq kuba-grep-string (message "%s %s -type f -exec grep -nIH --null  \"\{\}\" \";\"" FIND_CMD my-root-directory))
+     (setq kuba-grep-string (message "%s %s -type f -exec grep -nIH --null --exclude-dir={target,build*}  \"\{\}\" \";\"" FIND_CMD my-root-directory))
 
      ;; Don'tupdate grep-find-command as it is global. Instead pass kuba-grep-string directly
      ;; (grep-apply-setting 'grep-find-command (cons kuba-grep-string (- (length kuba-grep-string) 8 )))
