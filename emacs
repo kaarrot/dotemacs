@@ -921,7 +921,19 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
 (defun search-headlines (search-phrase) (interactive "MSearch headlines:")
     (org-occur (message "^\\*+ .*%s" search-phrase))
 )
-    
+
+
+(setq eglot-server-programs
+      (list
+       ;; Use clangd for C++
+       '((c++-mode c-mode) . ("clangd"))
+
+       ;; Use Ty for Python
+       (cons 'python-mode
+             (list (concat (getenv "HOME") "/bin/ty") "server"))))
+
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
