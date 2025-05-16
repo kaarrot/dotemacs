@@ -905,7 +905,13 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
    )
 
 (defun find-locations (search-phrase)
-    (grep-find (message "%s %s -name \"\*%s\*\" -print | %s -I %% %s %%:1:" FIND_CMD my-root-directory search-phrase XARGS_CMD ECHO_CMD)))
+ (let ((exclude-dirs (mapconcat 'identity '(
+    "-path target -prune -o"
+    "-path build* -prune -o"
+    "-path *.git* -prune -o"
+    ) " ")))
+    (grep-find (message "%s %s %s -name \"\*%s\*\" -print | %s -I %% %s %%:1:" FIND_CMD my-root-directory exclude-dirs search-phrase XARGS_CMD ECHO_CMD))
+))
 
 (defun search-headlines (search-phrase) (interactive "MSearch headlines:")
     (org-occur (message "^\\*+ .*%s" search-phrase))
