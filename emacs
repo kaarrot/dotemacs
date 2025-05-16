@@ -9,7 +9,8 @@
 (setq gc-cons-threshold (eval-when-compile (* 1024 1024 1024)))
 (run-with-idle-timer 2 t (lambda () (garbage-collect)))
 
-(setq package-selected-packages '(lsp-mode
+(setq package-selected-packages '(
+                  ;;lsp-mode
 				  flycheck
 				  company
 				  multiple-cursors
@@ -25,9 +26,12 @@
                   fzf
                   org-download
                   key-chord
-                  eglot
 		          devil
 	  ))
+
+(if (version< emacs-version "29.1")
+    (setq package-selected-packages (append package-selected-packages '(eglot)))
+)
 
 ;; Auto install required packages
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
@@ -39,9 +43,10 @@
       treemacs-space-between-root-nodes nil
       company-idle-delay 0.0
       company-minimum-prefix-length 3
-      lsp-idle-delay 0.1 ;; clangd is fast
+      ;;lsp-idle-delay 0.1 ;; clangd is fast
       ;; be more ide-ish
-      lsp-headerline-breadcrumb-enable nil)   ;; disable breadcrumbs by default
+      ;;lsp-headerline-breadcrumb-enable nil   ;; disable breadcrumbs by default
+    )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -926,7 +931,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  '(org-babel-C++-compiler "g++ -v")
  '(org-babel-load-languages '((ditaa . t) (python . t) (C . t)))
  '(package-selected-packages
-   '(devil rust-mode dockerfile-mode gomacro-mode p4 go-mode lsp-mode flycheck company multiple-cursors dumb-jump yasnippet lsp-treemacs avy dap-mode which-key)))
+   '(devil rust-mode dockerfile-mode gomacro-mode p4 go-mode flycheck company multiple-cursors dumb-jump yasnippet avy dap-mode which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
