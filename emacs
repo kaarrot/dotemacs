@@ -11,6 +11,7 @@
 
 (setq package-selected-packages '(
                   ;;lsp-mode
+                  f           ; required by desktop±
 				  flycheck
 				  company
 				  multiple-cursors
@@ -797,7 +798,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;; in order to override it we need to require it first
 (require 'ffap)
-(defun ffap-prompter (&optional guess)
+(defun ffap-prompter (&optional uess)
   ;; Does guess and prompt step for find-file-at-point.
   ;; Extra complication for the temporary highlighting.
   (unwind-protect
