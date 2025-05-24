@@ -10,14 +10,12 @@
 (run-with-idle-timer 2 t (lambda () (garbage-collect)))
 
 (setq package-selected-packages '(
-                  ;;lsp-mode
                   f           ; required by desktop±
 				  flycheck
 				  company
 				  multiple-cursors
 				  dumb-jump
 				  yasnippet
-				  ;;lsp-treemacs 
 				  avy
 				  ;;dap-mode
 				  which-key
@@ -28,6 +26,7 @@
                   org-download
                   key-chord
 		          devil
+                  rust-mode
 	  ))
 
 (if (version< emacs-version "29.1")
@@ -44,9 +43,6 @@
       treemacs-space-between-root-nodes nil
       company-idle-delay 0.0
       company-minimum-prefix-length 3
-      ;;lsp-idle-delay 0.1 ;; clangd is fast
-      ;; be more ide-ish
-      ;;lsp-headerline-breadcrumb-enable nil   ;; disable breadcrumbs by default
     )
 
 
@@ -287,10 +283,10 @@
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
 (define-key my-keys-minor-mode-map (kbd "C-c C-l") 'bm-toggle)
 (define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
-(define-key my-keys-minor-mode-map (kbd "C-c C-.") 'bm-next) ; >
-(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next) ; >
-(define-key my-keys-minor-mode-map (kbd "C-c C-,") 'bm-previous) ;   <
-(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'bm-previous) ; <
+(define-key my-keys-minor-mode-map (kbd "C-c C-.") 'bm-next)
+(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next)
+(define-key my-keys-minor-mode-map (kbd "C-c C-,") 'bm-previous)
+(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'bm-previous)
 
 ;;;;;;;;;;;;;;;;;;;; Move between windows
 (define-key my-keys-minor-mode-map (kbd "C-c <left>") 'windmove-left) ;work also in terminal
@@ -441,18 +437,7 @@ t " my-keys" 'my-keys-minor-mode-map)
   (local-set-key (kbd "<f4>") 'ff-find-other-file)
 
   ; compile_flags.txt (in root) - specify -I/path_to_include
-  (local-set-key (kbd "C-x 5") (lambda () (interactive)
-                                (setq lsp-clients-clangd-executable "clangd")
-                                (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))       
-                                (lsp)
-                                ))
-  (local-set-key (kbd "C-c 5") (lambda () (interactive)
-                                    (require 'cquery)
-                                    (setq cquery-executable "~/bin/cquery")
-                                    ;(setq cquery-extra-args  '("--log-all-to-stderr") )
-                                    (setq cquery-cache-dir "~/tmp/.cquery_cached_index")
-                                    (lsp)
-                                    ))
+
   (local-set-key (kbd "S-<f5>") 'toggle-window-dedicated)
   (local-set-key (kbd "C-c <RET>") (lambda () (interactive)
     (setq compile-command (message "g++ -O0 -fsanitize=address -g -std=c++17 -I. %s -o a.out" (buffer-file-name))) )) 
