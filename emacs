@@ -916,8 +916,10 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
 
        ;; Use Ty for Python
        (cons 'python-mode
-             (list (concat (getenv "HOME") "/bin/ty") "server"))))
+             (list (concat (getenv "HOME") "/bin/ty") "server"))
 
+       '(rust-mode . ("rust-analyzer"))
+    ))
 
 
 (custom-set-variables
