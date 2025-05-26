@@ -908,6 +908,10 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
     (org-occur (message "^\\*+ .*%s" search-phrase))
 )
 
+;; Required in rust-analyzer for large codebase
+(setq eglot-connect-timeout 60)
+(setq eglot-sync-connect nil)
+
 
 (setq eglot-server-programs
       (list
