@@ -347,7 +347,6 @@
 (define-key minibuffer-local-map (kbd "<down>") 'next-complete-history-element)
 (define-key my-keys-minor-mode-map (kbd "C-c <SPC>") 'add-to-global-ring)
 (define-key my-keys-minor-mode-map (kbd "C-<SPC>") 'set-mark-command)
-(define-key my-keys-minor-mode-map (kbd "` 1") 'set-mark-command)  ;; termux external keybard (esc 1)
 
 (define-key my-keys-minor-mode-map (kbd "C-;") 'comment-or-uncomment-this)
 (define-key my-keys-minor-mode-map (kbd "C-c ;") 'comment-or-uncomment-this)
@@ -922,7 +921,12 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
        (cons 'python-mode
              (list (concat (getenv "HOME") "/bin/ty") "server"))
 
-       '(rust-mode . ("rust-analyzer"))
+       '(rust-mode . ("rust-analyzer"
+        :initializationOptions
+        (:inlayHints (
+        :typeHints (:enable :json-false)
+        :parameterHints (:enable :json-false)
+        ))))
     ))
 
 
