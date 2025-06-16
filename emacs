@@ -464,6 +464,20 @@ t " my-keys" 'my-keys-minor-mode-map)
   )
 (add-hook 'gdb-mode-hook 'gdb-mode-keys)
 
+
+
+;;;;;;;;;;;;;;;;;;; Rust
+
+(defun my-rust-mode-keys()
+  (local-set-key (kbd "C-c <RET>") (lambda () (interactive)
+    (async-shell-command (format "rustc %s && ./%s"
+    (buffer-file-name)
+    (file-name-base (buffer-file-name))
+    ))
+    )))
+
+(add-hook 'rust-mode-hook #'my-rust-mode-keys)
+
 ;;;;;;;;;;;;;;;;;;; Python
 (defun python-mode-keys()
   (python-indent-guess-indent-offset)
