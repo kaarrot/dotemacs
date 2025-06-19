@@ -642,3 +642,43 @@ In order to avoid interfference form project denoters we set them off. To restor
     (message "-------")
     )
   )
+
+(defun install-eglot-from-github (version &optional base-dir)
+  "Download and install a specific VERSION of Eglot from GitHub.
+If the VERSION is already installed in BASE-DIR, skip downloading and extraction.
+The resulting directory is added to `load-path`."
+  (let* ((base-dir (or base-dir "~/.emacs.d/modules/"))
+         (target-dir (expand-file-name base-dir))
+         (extract-dir (expand-file-name (format "eglot-%s" version) target-dir))
+         (zip-file (expand-file-name (format "eglot-%s.zip" version) target-dir))
+         (download-url (format "https://github.com/joaotavora/eglot/archive/refs/tags/%s.zip" version))
+         (default-directory target-dir))
+
+    (if (file-directory-p extract-dir)
+        (message "Eglot %s already exists at %s — skipping download." version extract-dir)
+
+      (progn
+        ;; Create base directory if needed
+        (unless (file-directory-p target-dir)
+          (make-directory target-dir t))
+
+        ;; Download zip
+        (url-copy-file download-url zip-file t)
+        (message "Downloaded Eglot %s to %s" version zip-file)
+
+        ;; Unzip
+        (let ((unzip-exit-code
+               (call-process "unzip" nil "*EGLOT-UNZIP*" t "-o" zip-file "-d" target-dir)))
+          (unless (eq unzip-exit-code 0)
+            (error "Failed to unzip Eglot archive. See *EGLOT-UNZIP* buffer.")))
+
+        ;; Rename if necessary (GitHub zips to eglot-VERSION-VERSION)
+        (let ((extracted-subdir (expand-file-name (format "eglot-%s-%s" version version) target-dir)))
+          (when (and (file-directory-p extracted-subdir)
+                     (not (string= extracted-subdir extract-dir)))
+            (rename-file extracted-subdir extract-dir t)))
+        (message "Eglot %s extracted to %s" version extract-dir)))
+
+    ;; Add to load-path
+    (add-to-list 'load-path extract-dir)
+    (message "Added %s to load-path." extract-dir)))

@@ -9,6 +9,7 @@
 (setq gc-cons-threshold (eval-when-compile (* 1024 1024 1024)))
 (run-with-idle-timer 2 t (lambda () (garbage-collect)))
 
+
 (setq package-selected-packages '(
                   f           ; required by desktop±
 				  flycheck
@@ -29,9 +30,6 @@
                   rust-mode
 	  ))
 
-(if (version< emacs-version "29.1")
-    (setq package-selected-packages (append package-selected-packages '(eglot)))
-)
 
 ;; Auto install required packages
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
@@ -52,7 +50,20 @@
 
 (add-to-list 'load-path "~/.emacs.d/modules")
 (add-to-list 'load-path "~/.emacs.d/anything")
- 
+(load (message "%s/.emacs.d/modules/myfuncs.el" HOME ))
+
+(if (version< emacs-version "29.1")
+    (progn
+      (install-eglot-from-github "1.9" (message "%s/dotemacs/emacs.d/elpa/" HOME))
+
+      ;; Emulate project-root for Emacs 27.2 - requires by Eglot
+      (unless (fboundp 'project-root)
+        (defun project-root (project)
+          (car (project-roots project))))
+      (require 'eglot)
+    )
+)
+
 
 ;; Use local version of company-mode, multiple-cursors, cquery and dumbjump
 ;; The company mode completion is lacking in older versions.
@@ -67,7 +78,6 @@
       )
   )
 
-(load (message "%s/.emacs.d/modules/myfuncs.el" HOME ))
 
 (require 'bm)
 (require 'desktop+)  ;; custom tweaks to list in recent order
@@ -953,7 +963,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  '(org-babel-C++-compiler "g++ -v")
  '(org-babel-load-languages '((ditaa . t) (python . t) (C . t)))
  '(package-selected-packages
-   '(devil rust-mode dockerfile-mode gomacro-mode p4 go-mode flycheck company multiple-cursors dumb-jump yasnippet avy dap-mode which-key)))
+   '(eglot devil rust-mode dockerfile-mode gomacro-mode p4 go-mode flycheck company multiple-cursors dumb-jump yasnippet avy dap-mode which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
