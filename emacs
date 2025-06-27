@@ -552,7 +552,8 @@ t " my-keys" 'my-keys-minor-mode-map)
   ;; fix cd when using aliased commands
   (track-shell-directory/procfs)
 
-  (python-shell-completion-native-turn-on)
+  (when (fboundp 'python-shell-completion-native-turn-on)
+              (python-shell-completion-native-turn-on))
   ;; Fallback option to mute the warning
   (setq python-shell-completion-native-disabled-interpreters '("python"))
 
