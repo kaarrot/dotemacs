@@ -478,13 +478,18 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;; Rust
 
-(defun my-rust-mode-keys()
-  (local-set-key (kbd "C-c <RET>") (lambda () (interactive)
-    (async-shell-command (format "rustc %s && ./%s"
-    (buffer-file-name)
-    (file-name-base (buffer-file-name))
-    ))
-    )))
+(defun my-rust-mode-keys ()
+  (local-set-key
+   (kbd "C-c <RET>")
+   (lambda ()
+     (interactive)
+     (let* ((file (buffer-file-name))
+            (exe (file-name-base file))
+            (test-name (read-string "Test name (leave empty to run main): "))
+            (cmd (if (string-empty-p test-name)
+                     (format "rustc %s -o %s && ./%s" file exe exe)
+                     (format "rustc --test %s -o %s && ./%s %s --nocapture" file exe exe test-name))))
+       (async-shell-command cmd)))))
 
 (add-hook 'rust-mode-hook #'my-rust-mode-keys)
 
