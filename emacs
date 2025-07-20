@@ -99,7 +99,11 @@
 (require 'yasnippet)
 (require 'clang-format) ;; assumes clang-format is on the PATH
 (require 'go-mode)
-(require 'devil)
+
+;; Otherwise white-space required after placing comma gets in the way
+(if (search "termux" HOME)
+    (require 'devil)
+)
     
 (key-chord-mode 1)
 
@@ -489,7 +493,7 @@ t " my-keys" 'my-keys-minor-mode-map)
             (cmd (if (string-empty-p test-name)
                      (format "rustc %s -o %s && ./%s" file exe exe)
                      (format "rustc --test %s -o %s && ./%s %s --nocapture" file exe exe test-name))))
-       (async-shell-command cmd)))))
+       (shell-command cmd)))))
 
 (add-hook 'rust-mode-hook #'my-rust-mode-keys)
 
@@ -579,17 +583,6 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
 
-;;;;;;;;;;;;;;;;;;;; Rust
-(defun my-rust-run ()
-  (interactive)  ;; Need to be interactive in order to assign  keybinding
-    (save-buffer)
-    (rust-run)
-    )
-
-(defun rust-mode-keys ()
-  (local-set-key (kbd "C-c C-c") #'my-rust-run))
-
-(add-hook 'rust-mode-hook 'rust-mode-keys)
 ;;;;;;;;;;;;;;;;;;;; Dired
 
 ;; https://stackoverflow.com/a/2650987
