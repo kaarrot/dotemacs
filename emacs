@@ -805,7 +805,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;; in order to override it we need to require it first
 (require 'ffap)
-(defun ffap-prompter (&optional uess)
+(defun ffap-prompter (&optional guess)
   ;; Does guess and prompt step for find-file-at-point.
   ;; Extra complication for the temporary highlighting.
   (unwind-protect
