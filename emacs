@@ -26,7 +26,6 @@
                   fzf
                   org-download
                   key-chord
-		          devil
                   rust-mode
 	  ))
 
@@ -99,11 +98,6 @@
 (require 'yasnippet)
 (require 'clang-format) ;; assumes clang-format is on the PATH
 (require 'go-mode)
-
-;; Otherwise white-space required after placing comma gets in the way
-(if (search "termux" HOME)
-    (require 'devil)
-)
     
 (key-chord-mode 1)
 
@@ -210,9 +204,6 @@
   (tool-bar-mode -1)
 )
 
-;; Enable comma as ctrl
-(global-devil-mode)
-(global-set-key (kbd "C-,") 'global-devil-mode)
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm   (needs to be loade first)
 ;;(when (display-graphic-p)
@@ -415,7 +406,7 @@
 (key-chord-define-global "kk" 'kill-buffer)
 (key-chord-define-global "aa" 'match-paren)
 (key-chord-define-global "xx" (lambda () (interactive) (switch-to-buffer nil)))
-(key-chord-define-global "vv" (lambda ()  (interactive)  ;; bb conflicted with moving back in devil mode
+(key-chord-define-global "bb" (lambda ()  (interactive)
 (buffer-menu) (toggle-truncate-lines 1)))
 ;;(key-chord-define-global "xp" 'desktop+-load)
 (key-chord-define-global "t1" 'tabbar-backward-tab)
@@ -962,7 +953,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  '(org-babel-C++-compiler "g++ -v")
  '(org-babel-load-languages '((ditaa . t) (python . t) (C . t)))
  '(package-selected-packages
-   '(eglot devil rust-mode dockerfile-mode gomacro-mode p4 go-mode flycheck company multiple-cursors dumb-jump yasnippet avy dap-mode which-key)))
+   '(eglot rust-mode dockerfile-mode gomacro-mode p4 go-mode flycheck company multiple-cursors dumb-jump yasnippet avy dap-mode which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
