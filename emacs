@@ -50,6 +50,7 @@
 (add-to-list 'load-path "~/.emacs.d/modules")
 (add-to-list 'load-path "~/.emacs.d/anything")
 (load (message "%s/.emacs.d/modules/myfuncs.el" HOME ))
+(load (message "%s/.emacs.d/modules/myfuncs_ediff.el" HOME ))
 
 (if (version< emacs-version "29.1")
     (progn
