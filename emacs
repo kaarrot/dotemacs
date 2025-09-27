@@ -658,6 +658,9 @@ t " my-keys" 'my-keys-minor-mode-map)
             (local-set-key (kbd "C-c l") 'org-insert-link )
             (local-set-key (kbd "C-c <tab>") 'org-babel-goto-src-block-head )
 
+            (local-set-key (kbd "M-c M-n") 'org-next-visible-heading)
+            (local-set-key (kbd "M-c M-p") 'org-backward-heading-same-level)
+ 
             ;; Create heading ID and copy into clipboard
             (local-set-key (kbd "C-c i")
                            (lambda () (interactive)
