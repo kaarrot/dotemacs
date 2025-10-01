@@ -169,6 +169,9 @@
     )
   )
 
+;; Disable bell on Termux
+(setq ring-bell-function 'ignore)
+
 (if (eq system-type 'linux)
     (setq-default shell-file-name "/bin/bash")
   )
