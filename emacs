@@ -122,6 +122,9 @@
 ; Use it in the grep and find commands
 (setq my-root-directory default-directory)
 
+; Disable check if all files are saved before running grep/find
+(setq grep-save-buffers nil)
+
 ;;;;;;;;;;;;;;;;;;; escape color in eshell and compilation modes
 (defun my-colorize-compilation-buffer ()
   (let ((inhibit-read-only t))
