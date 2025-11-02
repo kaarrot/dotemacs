@@ -311,10 +311,8 @@
 (define-key my-keys-minor-mode-map (kbd "s-<right>") 'windmove-right)
 (define-key my-keys-minor-mode-map (kbd "C-c <up>") 'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "C-c C-<up>") 'windmove-up)
-(define-key my-keys-minor-mode-map (kbd "C-c C-p") 'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "s-<up>") 'windmove-up)
 (define-key my-keys-minor-mode-map (kbd "C-c <down>") 'windmove-down)
-(define-key my-keys-minor-mode-map (kbd "C-c C-n") 'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "C-c C-<down>") 'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "s-<down>") 'windmove-down)
 
