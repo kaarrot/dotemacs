@@ -582,6 +582,9 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;;;;;;;;;;;;;;;;;;;; Dired
 
+;; auto-hide details in dired
+(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+
 ;; https://stackoverflow.com/a/2650987
 (defmacro disallow-cd-in-function (fun)
   "Prevent FUN (or any function that FUN calls) from changing directory."
