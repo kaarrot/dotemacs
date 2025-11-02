@@ -188,6 +188,7 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
+(setq vc-follow-symlinks t)
 
 (recentf-mode 1)
 
@@ -620,6 +621,12 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (org-babel-do-load-languages
  'org-babel-load-languages '((C . t)))
+
+;; Expand all headings when jumped agenda view
+(setq org-fold-show-context-detail
+      '((agenda . tree)
+        (isearch . tree)
+        (default . ancestors)))    
     
 (defun org-mode-keys()
             (org-indent-mode t)
