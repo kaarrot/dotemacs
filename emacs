@@ -964,6 +964,11 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
         ))))
     ))
 
+;; Auto-start eglot for configured languages
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'rust-mode-hook 'eglot-ensure)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
