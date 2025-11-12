@@ -58,60 +58,86 @@
   (message "%s" global-mark-ring)
   )
 
+;; Track navigation state
+(defvar nav-ring-index 0 "Current position in navigation history")
+(defvar nav-last-direction nil "Last navigation direction: 'back or 'forward")
+
 (defun go-ring-back()
   (interactive)
-  ;; Does the standard pop-from-global-mark but also
-  ;; marks the current location in case we want to go forward.
-  (add-to-global-ring)
-  (pop-global-mark)  ;; pop current location
-  (pop-global-mark))
+  ;; Navigate backwards in the mark ring
+
+  ;; If this is the first navigation, save current position
+  (when (null nav-last-direction)
+    (when (< (length global-mark-ring) 1)
+      (error "No more marks to go back to"))
+    (add-to-global-ring)
+    (setq nav-ring-index 1))
+
+  ;; If continuing backward or switching from forward, just increment index
+  (when nav-last-direction
+    (when (< (length global-mark-ring) 1)
+      (error "No more marks to go back to"))
+    (setq nav-ring-index (1+ nav-ring-index)))
+
+  ;; Navigate to the mark at the current index
+  (when (>= nav-ring-index (length global-mark-ring))
+    (setq nav-ring-index (1- (length global-mark-ring)))
+    (error "Already at oldest mark"))
+
+  (let* ((marker (nth nav-ring-index global-mark-ring))
+         (buf (marker-buffer marker))
+         (pos (marker-position marker)))
+    (if (and buf pos)
+        (progn
+          (switch-to-buffer buf)
+          (goto-char pos)
+          (setq nav-last-direction 'back))
+      (error "Mark points to invalid location"))))
 
 (defun go-ring-forward()
-  ;; Reverse of pop-global-mark - Move cursor forward to the next mark sotred in the ring
+  ;; Navigate forwards in the mark ring
   (interactive)
-  (let (_buf
-        _pos
-        aaa)
 
-    ;; (message "%s" global-mark-ring)
-    (setq _buf (marker-buffer (nth 0 (last global-mark-ring ))) )
-    (setq _pos (marker-position (nth 0 (last global-mark-ring ))) )
-    ;; (message "buffer:%s pos %s" _buf _pos)
-    (setq m (point-marker))
+  ;; Can't go forward if we're not in navigation mode
+  (when (null nav-last-direction)
+    (error "No forward history available - start by going back first"))
 
-    (set-marker m _pos)
-    (switch-to-buffer _buf)
+  ;; Can't go forward if we're already at the newest position
+  (when (<= nav-ring-index 0)
+    (error "Already at newest mark"))
 
-    (goto-char _pos)
+  ;; Decrement index and navigate
+  (setq nav-ring-index (1- nav-ring-index))
 
-    (setq aaa global-mark-ring)
-    ;; (message "%s\n" aaa)
-    (setq _last (nth 0 (last aaa)))
-    ;; (setq _first (first aaa))
-    ;; (message "_first %s _last %s" _first _last)
-
-    ;; (setq aaa (delete _first aaa)) ---
-    (setq aaa (delete _last aaa))
-    ;; (message "%s\n" aaa)
-    (add-to-list 'aaa _last)
-    ;; (setq aaa (append aaa _first) )
-    ;; (message "%s\n----\n" aaa)
-    
-    (setq global-mark-ring aaa)
-    )
-  )
+  (let* ((marker (nth nav-ring-index global-mark-ring))
+         (buf (marker-buffer marker))
+         (pos (marker-position marker)))
+    (if (and buf pos)
+        (progn
+          (switch-to-buffer buf)
+          (goto-char pos)
+          (setq nav-last-direction 'forward))
+      (error "Mark points to invalid location"))))
 
 (defun add-to-global-ring()
   ;; Force push a mark into a global ring even if it already exists
   (interactive)
-  (let (_marker )
+  (let (_marker)
     ;; (activate-mark nil)
     (setq _marker (make-marker))
     (set-marker _marker (point))
-    (setq global-mark-ring (append (list _marker) global-mark-ring ) )
-    ;; (setq deactivate-mark nil) 
-    )
-  )
+
+    ;; If manually adding while in middle of history, truncate forward history
+    (when (and nav-last-direction (> nav-ring-index 0))
+      (setq global-mark-ring (nthcdr nav-ring-index global-mark-ring)))
+
+    (setq global-mark-ring (append (list _marker) global-mark-ring))
+
+    ;; Reset navigation state since we're at a new location
+    (setq nav-ring-index 0)
+    (setq nav-last-direction nil)
+    ;; (setq deactivate-mark nil)
+    ))
 
 (defun toggle-window-dedicated ()
   "Toggle whether the current active window is dedicated or not"
