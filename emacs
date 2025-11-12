@@ -515,9 +515,10 @@ t " my-keys" 'my-keys-minor-mode-map)
 (setq default-major-mode 'text-mode)
 (add-hook 'text-mode-hook 'paragraph-indent-minor-mode)
 
-;; Disable auto indent on new line in text-mode
-(setq default-major-mode 'text-mode)
-(add-hook 'text-mode-hook 'paragraph-indent-minor-mode)
+;; Disable auto indent on new line in fundamental-mode and new buffers
+(add-hook 'fundamental-mode-hook
+          (lambda ()
+            (electric-indent-local-mode -1)))
 
 
 ;;;;;;;;;;;;;;;;;;; Gomacro
