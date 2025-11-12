@@ -776,6 +776,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 (setq ediff-split-window-function (quote split-window-horizontally))
 ;;revert windows on exit - needs winner mode
 (winner-mode)
+;; Exclude Buffer List from winner-mode
+(add-to-list 'winner-boring-buffers "*Buffer List*")
 (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
 
 ;;;;;;;;;;;;;;;;;;;; Ediff with git

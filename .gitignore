@@ -2,5 +2,7 @@ emacs.d/auto-save-list
 emacs.d/bm-repository
 emacs.d/recentf
 emacs.d/savehist
-emacs.d/elpa    
-
+emacs.d/elpa
+emacs.d/.cache
+emacs.d/desktops
+printers/__pycache__
