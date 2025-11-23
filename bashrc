@@ -25,13 +25,31 @@ alias ee='emacs -nw'
 source ~/git-completions.bash
 
 #git
-alias g-l='git log --pretty=oneline --abbrev-commit'
+# alias g-l='git log --pretty=oneline --abbrev-commit'
 alias g-b='git branch -vv'
-alias g-c='git checkout'
-alias g-s='git status'
+# alias g-c='git checkout'
+# alias g-s='git status'
 alias g-d='git diff --name-only'
-alias g-r='git for-each-ref --sort=committerdate refs/heads/'
+# alias g-r='git for-each-ref --sort=committerdate refs/heads/'
 alias g-prev='git reset --hard `git log -n 1 --skip 1 --format="%H"`'
+
+g-r () {
+git for-each-ref --sort=committerdate refs/heads/
+}
+
+g-l(){
+  echo $1
+  git log --pretty=oneline --abbrev-commit -n $1
+}
+
+g-c (){
+  git checkout $*
+}
+
+g-s(){
+  git status
+}
+
 
 export GOPATH=$HOME/go
 export GOBIN="$HOME/go/gobin"
@@ -145,10 +163,10 @@ cd_func ()
 
 alias cd=cd_func
 
-if [[ $BASH_VERSION > "2.05a" ]]; then
-  # ctrl+w shows the menu
-  bind -x "\"\C-w\":cd_func -- ;"
-fi
+#if [[ $BASH_VERSION > "2.05a" ]]; #then
+#  # ctrl+w shows the menu
+#  bind -x "\"\C-w\":cd_func -- ;"
+#fi
 
 
 function env_gcc930(){
