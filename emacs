@@ -125,6 +125,9 @@
 ; Disable check if all files are saved before running grep/find
 (setq grep-save-buffers nil)
 
+; Increase font size in all buffers
+; (set-face-attribute 'default nil :height 120)
+   
 ;;;;;;;;;;;;;;;;;;; escape color in eshell and compilation modes
 (defun my-colorize-compilation-buffer ()
   (let ((inhibit-read-only t))
@@ -641,6 +644,11 @@ t " my-keys" 'my-keys-minor-mode-map)
 
             (setq org-return-follows-link  t)
 
+            ;; Make org agenda clock report wider
+            (setq org-agenda-clockreport-parameter-plist 
+                  '(:link t :maxlevel 6 :fileskip0 t :compact t :narrow 123 :score 0))
+
+    
             ;; Enable persistent org-clock across emacs sessions - jumps to active clock
             (org-clock-persistence-insinuate)
             (setq org-clock-persist t
