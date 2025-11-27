@@ -248,6 +248,9 @@
 
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
+; Insert space in front to skip adding Ibuffer to buffer history and work with 'xx' navigation
+(define-key my-keys-minor-mode-map (kbd "C-x C-b") (lambda () (interactive) (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1)))
+
 ;;;;;;;;;;;;;;;;;;;; Tabbar
 (define-key my-keys-minor-mode-map (kbd "M-c <left>") 'tabbar-backward-tab)
 (define-key my-keys-minor-mode-map (kbd "M-c <right>") 'tabbar-forward-tab)
@@ -415,8 +418,9 @@
 (key-chord-define-global "kk" 'kill-buffer)
 (key-chord-define-global "aa" 'match-paren)
 (key-chord-define-global "xx" (lambda () (interactive) (switch-to-buffer nil)))
-(key-chord-define-global "bb" (lambda ()  (interactive)
-(buffer-menu) (toggle-truncate-lines 1)))
+(key-chord-define-global "bb" (lambda () (interactive)
+                                (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1)))
+
 ;;(key-chord-define-global "xp" 'desktop+-load)
 (key-chord-define-global "t1" 'tabbar-backward-tab)
 (key-chord-define-global "t2" 'tabbar-forward-tab)
@@ -437,6 +441,29 @@
 t " my-keys" 'my-keys-minor-mode-map)
 
 (my-keys-minor-mode 1)
+
+
+
+
+;;;;;;;;;;;;;;;;;;;; IBuffer 
+; Replace *Buffer List* - for configurable filepaths 
+; - Compact columns - use filapath and in memory buffers in the same column
+; - Use relative paths where possible (file from the same file tree)
+(define-ibuffer-column buffer-or-file
+  (:name "Buffer/File")
+  (if buffer-file-name
+      (let* ((abs-path buffer-file-name)
+             (rel-path (file-relative-name abs-path command-line-default-directory)))
+        (if (and (not (string-prefix-p ".." rel-path))
+                 (< (length rel-path) (length abs-path)))
+            rel-path
+          abs-path))
+    (buffer-name)))
+
+(setq ibuffer-formats
+      '((mark modified read-only " "
+              buffer-or-file)))
+
 
 ;;;;;;;;;;;;;;;;;;;; C-key-bindings
 (defun c-mode-keys()

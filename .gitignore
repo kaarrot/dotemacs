@@ -5,4 +5,5 @@ emacs.d/savehist
 emacs.d/elpa
 emacs.d/.cache
 emacs.d/desktops
+emacs.d/*cache
 printers/__pycache__
