@@ -3,6 +3,7 @@
 ;; Disable melpa signiture check
 (setq package-check-signature nil)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 (package-initialize)
 
 ;; run gc only when idle
@@ -27,6 +28,7 @@
                   org-download
                   key-chord
                   rust-mode
+                  eat
 	  ))
 
 
@@ -300,12 +302,9 @@
 (define-key my-keys-minor-mode-map (kbd "C-c C-d") 'mc/keyboard-quit)
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm
-(define-key my-keys-minor-mode-map (kbd "C-c C-l") 'bm-toggle)
-(define-key my-keys-minor-mode-map (kbd "C-M-<up>") 'bm-toggle)
-(define-key my-keys-minor-mode-map (kbd "C-c C-.") 'bm-next)
-(define-key my-keys-minor-mode-map (kbd "C-M-<right>") 'bm-next)
-(define-key my-keys-minor-mode-map (kbd "C-c C-,") 'bm-previous)
-(define-key my-keys-minor-mode-map (kbd "C-M-<left>") 'bm-previous)
+(define-key my-keys-minor-mode-map (kbd "C-q <up>") 'bm-toggle)
+(define-key my-keys-minor-mode-map (kbd "C-q <right>") 'bm-next)
+(define-key my-keys-minor-mode-map (kbd "C-q <left>") 'bm-previous)
 
 ;;;;;;;;;;;;;;;;;;;; Move between windows
 (define-key my-keys-minor-mode-map (kbd "C-c <left>") 'windmove-left) ;work also in terminal
@@ -999,6 +998,15 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
         ))))
     ))
 
+;;;;;;;;;;;;;;;;;;;; Eat - terminal emulator
+
+; Fix hard to read colors in dark mode
+(with-eval-after-load 'eat
+    (set-face-foreground 'eat-term-color-red "tomato")
+    (set-face-foreground 'eat-term-color-blue "skyblue")
+    )
+
+ 
 ;; Auto-start eglot for configured languages
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-hook 'c++-mode-hook 'eglot-ensure)
