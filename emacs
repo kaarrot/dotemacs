@@ -101,7 +101,12 @@
 (require 'yasnippet)
 (require 'clang-format) ;; assumes clang-format is on the PATH
 (require 'go-mode)
-    
+
+
+(setq key-chord-typing-detection t)
+;(setq key-chord-typing-speed-threashold 2.0)
+;(setq key-chord-typing-reset-delay 2.0)
+(setq key-chord-one-key-delay 0.5)
 (key-chord-mode 1)
 
 (dumb-jump-mode t)
@@ -217,6 +222,9 @@
   (tool-bar-mode -1)
 )
 
+;; While pasting to incremental search text gets converted to lower case
+;; This results with both upper and lower case matches
+(setq search-upper-case 'not-yanks)
 
 ;;;;;;;;;;;;;;;;;;;; Bookmarks - 'bm   (needs to be loade first)
 ;;(when (display-graphic-p)
@@ -1004,8 +1012,8 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
 (with-eval-after-load 'eat
     (set-face-foreground 'eat-term-color-red "tomato")
     (set-face-foreground 'eat-term-color-blue "skyblue")
+    (set-face-foreground 'eat-term-color-bright-blue "DeepSkyBlue")
     )
-
  
 ;; Auto-start eglot for configured languages
 (add-hook 'c-mode-hook 'eglot-ensure)
