@@ -408,12 +408,10 @@
 
 ;;;;;;;;;;;;;;;;;;; Winner mode
 ;; Unbind existing key sequence first
+
 (global-unset-key (kbd "M-c"))
-(global-set-key (kbd "M-c u") 'winner-undo)
-(global-set-key (kbd "S-<left>") 'winner-undo)
-(global-set-key (kbd "C-c 0") 'winner-undo)
-(global-set-key (kbd "M-c 0") 'winner-redo)
-(global-set-key (kbd "S-<right>") 'winner-redo)
+(global-set-key (kbd "M-c ,") 'winner-undo)
+(global-set-key (kbd "M-c .") 'winner-redo)
 
 ;;;;;;;;;;;;;;;;;;; End of Global bindings
 
@@ -443,13 +441,16 @@
 (key-chord-define-global "88" 'ispell-word)
 (key-chord-define-global "99" 'toggle-truncate-lines)
 
+(key-chord-define-global ",," 'winner-undo)
+(key-chord-define-global " ," 'winner-undo)
+(key-chord-define-global " ." 'winner-undo)
+(key-chord-define-global "\\\\" 'occur)
+
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
 t " my-keys" 'my-keys-minor-mode-map)
 
 (my-keys-minor-mode 1)
-
-
 
 
 ;;;;;;;;;;;;;;;;;;;; IBuffer 
