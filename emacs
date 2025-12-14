@@ -644,7 +644,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;(disallow-cd-in-function dired-find-file)
 ;(disallow-cd-in-function find-file-noselect-1)
 ;(disallow-cd-in-function set-visited-file-name)
-    
+
 (setq Buffer-menu-name-width 40)
 (eval-after-load 'dired '(progn (require 'single-dired)))
 (defun dired-mode-keys()
@@ -656,7 +656,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'dired-mode-hook 'dired-mode-keys)
 
 ;;;;;;;;;;;;;;;;;;;; ORG
-        
+
 (add-to-list 'auto-mode-alist '(".notes" . org-mode))
 (load (message "%s/.emacs.d/modules/base64image.el" HOME))  ;; support for base64 images
 
@@ -667,8 +667,18 @@ t " my-keys" 'my-keys-minor-mode-map)
 (setq org-fold-show-context-detail
       '((agenda . tree)
         (isearch . tree)
-        (default . ancestors)))    
-    
+        (default . ancestors)))
+
+
+(setq org-agenda-custom-commands
+      '(
+        (" a" "ACTIVE tasks" todo "ACTIVE")
+        (" n" "NEXT tasks" todo "NEXT")
+        (" w" "WAITING tasks" todo "WAITING")
+        (" r" "READ tasks" todo "READ")
+        (" t" "TODO tasks" todo "TODO")
+        ))
+
 (defun org-mode-keys()
             (org-indent-mode t)
             (setq org-agenda-prefix-format "%t %s")
