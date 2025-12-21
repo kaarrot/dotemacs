@@ -441,10 +441,16 @@
 (key-chord-define-global "88" 'ispell-word)
 (key-chord-define-global "99" 'toggle-truncate-lines)
 
-(key-chord-define-global ",," 'winner-undo)
-(key-chord-define-global " ," 'winner-undo)
-(key-chord-define-global " ." 'winner-undo)
+(key-chord-define-global " z" 'winner-undo)
 (key-chord-define-global "\\\\" 'occur)
+
+(key-chord-define-global "ss" 'ispell-word)
+(key-chord-define-global "dd" 'flyspell-goto-next-error)
+
+;;; Org
+(key-chord-define-global ".." 'org-timestamp-up)
+(key-chord-define-global ",," 'org-timestamp-down)
+(key-chord-define-global " ." (lambda () (interactive) (org-time-stamp '(16))))
 
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
@@ -822,6 +828,80 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-hook 'calendar-mode-hook #'my-calendar-hook)
 
 
+;;;;;;;;;;;;;;;;;;; Org sound notification - Termux
+
+(if (string-match-p "com.termux" (or (getenv "PREFIX") ""))
+    (progn
+      ;; Define a GENERIC Termux Notification function
+      ;; This handles any text Org throws at it
+      (defun my-termux-notify (msg)
+        "Send a notification via Termux for any Org event."
+        (let ((clean-msg (replace-regexp-in-string "\"" "'" msg))) ;; Escape quotes
+          (start-process "termux-notify" nil
+                         "termux-notification"
+                         "--title" "Org Mode"
+                         "--content" clean-msg
+                         "--sound")
+          (start-process "termux-sound" nil
+                         "termux-media-player" "play" "Nudge.wav")))
+
+      ;; Override Org's default handler - The Fix for DBus Error
+      ;; This stops Org from trying to look for D-Bus
+      (setq org-show-notification-handler 'my-termux-notify)
+
+      ;;Appointment System Setup
+      (require 'appt)
+      (appt-activate 1)
+      (setq appt-time-msg-list nil)
+      (setq appt-display-interval 5)
+      (setq appt-message-warning-time 15)
+      (setq appt-display-mode-line t)
+      (setq appt-display-format 'window)
+
+      ;; Bridge Appointment System to our Generic Function
+      ;; Appt passes 2 arguments, so we wrap our 1-arg function
+      (defun my-appt-to-termux (min-to-app new-time msg)
+        (my-termux-notify (format "In %s min: %s" min-to-app msg)))
+
+      (setq appt-disp-window-function 'my-appt-to-termux)
+      (setq appt-delete-window-function (lambda () t)) ;; Prevent window errors
+
+      ;; Sync Agenda
+      ;; After scheduling new task - open agenda to register new reminder event      
+      (add-hook 'org-agenda-finalize-hook 'org-agenda-to-appt)))
+    
+;;;;;;;;;;;;;;;;;;;; Positioning of clock - Termux (small screens)
+
+(if (string-match-p "com.termux" (or (getenv "PREFIX") ""))
+    (setq-default mode-line-format
+                  (list
+                   "%e"
+                   mode-line-front-space
+                   mode-line-client
+                   mode-line-modified    ; The "**" or "--" status
+                   " "
+
+                   ;; The Timer - Placed First 
+                   '(:eval (if (org-timer-value-string)
+                               (propertize (concat " [" (org-timer-value-string) "] ")
+                                           'face 'error
+                                           'weight 'bold)
+                               ""))
+
+                   ;; Buffer Name
+                   mode-line-buffer-identification
+
+                   "  "
+                   ;; Line Number
+                   mode-line-position
+
+                   ;; Spacer - pushes everything else to the right
+                   "      "
+
+                   ;; Modes are moved to the end or hidden so they don't block the view
+                   mode-line-misc-info)))
+
+    
 ;;;;;;;;;;;;;;;;;;;; Ediff
 
 ;; don't start another frame
