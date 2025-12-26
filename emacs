@@ -1118,7 +1118,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
-   '("~/.notes_archive" "/data/data/com.termux/files/home/.notes"))
+   '("~/.notes_archive" "~/.notes"))
  '(org-babel-C++-compiler "g++ -v")
  '(org-babel-load-languages '((ditaa . t) (python . t) (C . t)))
  '(package-selected-packages
