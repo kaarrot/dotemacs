@@ -879,8 +879,9 @@ t " my-keys" 'my-keys-minor-mode-map)
                    mode-line-modified    ; The "**" or "--" status
                    " "
 
-                   ;; The Timer - Placed First 
-                   '(:eval (if (org-timer-value-string)
+                   ;; The Timer - Placed First
+                   '(:eval (if (and (fboundp 'org-timer-value-string)
+                                    (org-timer-value-string))
                                (propertize (concat " [" (org-timer-value-string) "] ")
                                            'face 'error
                                            'weight 'bold)
