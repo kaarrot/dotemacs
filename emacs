@@ -274,9 +274,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-<next>") 'tabbar-forward-tab)
 (define-key my-keys-minor-mode-map (kbd "M-c M-.") 'tabbar-forward-tab)
 (define-key my-keys-minor-mode-map (kbd "<C-M-prior>") 'tabbar-move-current-tab-one-place-left)  ; C-S-M-Page Up
-(define-key my-keys-minor-mode-map (kbd "M-c ,") 'tabbar-move-current-tab-one-place-left)
 (define-key my-keys-minor-mode-map (kbd "C-M-<next>") 'tabbar-move-current-tab-one-place-right) ; C-S-M-Page Down
-(define-key my-keys-minor-mode-map (kbd "M-c .") 'tabbar-move-current-tab-one-place-right)
 
 (if (version< emacs-version "26.2")
     (progn 
@@ -363,7 +361,7 @@
 (global-set-key  [M-backspace] 'lazy-backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
-(define-key my-keys-minor-mode-map (kbd "C-c 0") electric-indent-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c 0") 'electric-indent-mode)
 (define-key my-keys-minor-mode-map (kbd "<f12>") 'occur-methods)
 (define-key my-keys-minor-mode-map (kbd "C-c t") (lambda () (interactive) (setq tab-width 4)))
 
@@ -970,7 +968,6 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;; Check beginning of the line for the line number (pylint mode)
                ;; (save-match-data (and (setq match_data (string-match "\\([0-9]+\\)" currentline))
-               (message "%s" currentline)
                (if (string-match "^\\([0-9]+\\)" currentline)
                    (progn ; pylit case path\n\nline_number:
                      ;; store the line number and traverse up to extract a file
