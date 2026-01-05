@@ -12,7 +12,7 @@
 
 
 (setq package-selected-packages '(
-                  f           ; required by desktop±
+                  f           ; required by desktop+
 				  flycheck
 				  company
 				  multiple-cursors
@@ -31,6 +31,15 @@
                   eat
 	  ))
 
+(if (>= emacs-major-version 30)
+    ;; Emacs 30+: Use built-in VC support
+    (use-package claude-code-ide
+      :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+      :bind ("C-c '" . claude-code-ide-menu)
+      :config
+      (setq claude-code-ide-terminal-backend 'eat)  ; Use eat instead of vterm
+      (claude-code-ide-emacs-tools-setup))
+    )
 
 ;; Auto install required packages
 (when (cl-find-if-not #'package-installed-p package-selected-packages)
@@ -112,6 +121,8 @@
 (dumb-jump-mode t)
 (tabbar-mode)
 (yas-global-mode 1)
+
+;(fido-vertical-mode 1)
 
 (setq FIND_CMD "find")
 (setq XARGS_CMD "xargs")
@@ -386,7 +397,6 @@
 
 ;;;;;;;;;;;;;;;;;;; Save desktops
 (define-key my-keys-minor-mode-map (kbd "C-M-p") 'desktop+-load)
-(define-key my-keys-minor-mode-map (kbd "C-x p") 'desktop+-load)
 (define-key my-keys-minor-mode-map (kbd "S-C-M-p") 'desktop+-create)
 (define-key my-keys-minor-mode-map (kbd "C-x C-p") 'desktop+-create)
 
