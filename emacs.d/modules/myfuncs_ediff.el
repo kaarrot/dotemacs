@@ -43,21 +43,51 @@
                   (cadr my/stored-revisions))))))
 
 
- (defun my/ediff-stored-revisions ()
-   "Ediff file at point in diff using stored revisions."
-   (interactive)
-   (require 'ediff-vers)
-   (if (and my/stored-revisions (= (length my/stored-revisions) 2))
-       (let ((file (diff-find-file-name)))
-         (if file
-             (let ((clean-file (substring-no-properties file)))
-               (with-current-buffer (find-file-noselect clean-file)
-                 (ediff-vc-internal (car my/stored-revisions)
-                                    (cadr my/stored-revisions)
-                                    nil)))
-           (message "Cannot find file at point")))
-     (message "No stored revisions. Press D in log-view first")))
-
+(defun my/ediff-stored-revisions ()
+  "Ediff file at point using stored revisions or parse from diff buffer."
+  (interactive)
+  (require 'ediff-vers)
+  (let ((file (diff-find-file-name))
+        (revert-without-query '(".*")))
+    (if (not file)
+        (message "Cannot find file at point")
+      (let ((clean-file (substring-no-properties file)))
+        ;; Ensure absolute path
+        (unless (file-name-absolute-p clean-file)
+          (setq clean-file (expand-file-name clean-file default-directory)))
+        (cond
+         ;; Case 1: Two stored revisions
+         ((and my/stored-revisions (= (length my/stored-revisions) 2))
+          (with-current-buffer (find-file-noselect clean-file)
+            (ediff-vc-internal (car my/stored-revisions)
+                              (cadr my/stored-revisions)
+                              nil)))
+         
+         ;; Case 2: Single revision vs working tree
+         (t
+          (let ((rev (my/extract-revision-from-diff)))
+            (if rev
+                ;; Call with empty string for working tree
+                (let ((rev1 rev)
+                      (rev2 ""))
+                  (with-current-buffer (find-file-noselect clean-file)
+                    (ediff-vc-internal rev1 rev2 nil)))
+              (message "No stored revisions and couldn't parse diff header")))))))))
+         
+(defun my/extract-revision-from-diff ()
+  "Extract revision from current diff buffer header."
+  (save-excursion
+    (goto-char (point-min))
+    ;; Look for "diff --git" or similar patterns
+    (when (re-search-forward "^diff.*" nil t)
+      (forward-line -1)
+      ;; Try to find revision in various formats
+      (or
+       ;; Git: look for commit hash in header comments
+       (when (re-search-forward "^# \\([0-9a-f]\\{7,40\\}\\)" nil t)
+         (match-string 1))
+       ;; Fall back to HEAD
+       "HEAD"))))
 
 
  ;; Keybindings
