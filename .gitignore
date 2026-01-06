@@ -9,3 +9,4 @@ emacs.d/*cache
 emacs.d/OLD*/**
 printers/__pycache__
 
+emacs.d/modules/myfuncs_ediff.el

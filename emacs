@@ -927,7 +927,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;;[difftool "ediff"]
 ;;cmd = emacs --eval \"(ediff-files \\\"$LOCAL\\\" \\\"$REMOTE\\\")\"
 ;;# git difftool --tool=ediff --diff-filter=M tagname subdir
-(add-hook 'ediff-prepare-buffer-hook (lambda () (whitespace-mode 1) ) t)
+;(add-hook 'ediff-prepare-buffer-hook (lambda () (whitespace-mode 1) ) t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
