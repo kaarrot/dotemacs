@@ -32,13 +32,19 @@
 	  ))
 
 (if (>= emacs-major-version 30)
-    ;; Emacs 30+: Use built-in VC support
-    (use-package claude-code-ide
-      :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
-      :bind ("C-c '" . claude-code-ide-menu)
-      :config
-      (setq claude-code-ide-terminal-backend 'eat)  ; Use eat instead of vterm
-      (claude-code-ide-emacs-tools-setup))
+    (progn
+      ;; Refresh package metadata if claude-code-ide not installed yet
+      (unless (package-installed-p 'claude-code-ide)
+        (unless package-archive-contents
+          (package-refresh-contents)))
+
+      ;; Emacs 30+: Use built-in VC support
+      (use-package claude-code-ide
+        :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+        :bind ("C-c '" . claude-code-ide-menu)
+        :config
+        (setq claude-code-ide-terminal-backend 'eat)  ; Use eat instead of vterm
+        (claude-code-ide-emacs-tools-setup)))
     )
 
 ;; Auto install required packages
