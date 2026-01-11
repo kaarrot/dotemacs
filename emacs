@@ -119,8 +119,12 @@
 
 
 (setq key-chord-typing-detection t)
-;(setq key-chord-typing-speed-threashold 2.0)
-;(setq key-chord-typing-reset-delay 2.0)
+
+;; If you press keys within this threshold, chords are suppressed.
+;; First key stroke after 2 secs is considered a key-chord
+(setq key-chord-typing-speed-threshold 2.0)
+
+(setq key-chord-typing-reset-delay 2.0)
 (setq key-chord-one-key-delay 0.5)
 (key-chord-mode 1)
 
