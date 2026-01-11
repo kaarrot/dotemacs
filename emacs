@@ -276,7 +276,7 @@
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
 ; Insert space in front to skip adding Ibuffer to buffer history and work with 'xx' navigation
-(define-key my-keys-minor-mode-map (kbd "C-x C-b") (lambda () (interactive) (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1)))
+(define-key my-keys-minor-mode-map (kbd "C-x C-b") (lambda () (interactive) (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1) (goto-char (point-min)) (isearch-forward)))
 
 ;;;;;;;;;;;;;;;;;;;; Tabbar
 (define-key my-keys-minor-mode-map (kbd "M-c <left>") 'tabbar-backward-tab)
@@ -438,7 +438,7 @@
 (key-chord-define-global "aa" 'match-paren)
 (key-chord-define-global "xx" (lambda () (interactive) (switch-to-buffer nil)))
 (key-chord-define-global "bb" (lambda () (interactive)
-                                (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1)))
+                                (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1) (goto-char (point-min)) (isearch-forward)))
 
 ;;(key-chord-define-global "xp" 'desktop+-load)
 (key-chord-define-global "t1" 'tabbar-backward-tab)
