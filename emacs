@@ -705,10 +705,24 @@ t " my-keys" 'my-keys-minor-mode-map)
  'org-babel-load-languages '((C . t)))
 
 ;; Expand all headings when jumped agenda view
+(defun my-org-show-context-level-2 ()
+  "Show context and ensure levels 1-2 are visible, preserving deeper levels."
+  (org-show-context 'agenda)
+  (save-excursion
+    (goto-char (point-min))
+    (while (outline-next-heading)
+      (when (= (org-outline-level) 1)
+        (org-fold-show-children)))))
+
 (setq org-fold-show-context-detail
-      '((agenda . tree)
+      '((agenda . ancestors)
         (isearch . tree)
         (default . ancestors)))
+
+;; Prevent accidental deletion of hidden/folded content
+(setq org-catch-invisible-edits 'error)
+
+(add-hook 'org-agenda-after-show-hook 'my-org-show-context-level-2)
 
 
 (setq org-agenda-custom-commands
