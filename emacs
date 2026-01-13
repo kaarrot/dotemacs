@@ -123,9 +123,9 @@
 ;; If you press keys within this threshold, chords are suppressed.
 ;; First key stroke after 2 secs is considered a key-chord
 (setq key-chord-typing-speed-threshold 2.0)
-
 (setq key-chord-typing-reset-delay 2.0)
-(setq key-chord-one-key-delay 0.5)
+;; Longer delay work better on Termux with external keyboard
+(setq key-chord-one-key-delay 2.0)
 (key-chord-mode 1)
 
 (dumb-jump-mode t)
@@ -282,6 +282,10 @@
 ; Insert space in front to skip adding Ibuffer to buffer history and work with 'xx' navigation
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") (lambda () (interactive) (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1) (goto-char (point-min)) (isearch-forward)))
 
+;;;;;;;;;;;;;;;;;;;; Isearch
+(eval-after-load 'isearch
+  (define-key isearch-mode-map (kbd "RET") 'isearch-repeat-forward))
+    
 ;;;;;;;;;;;;;;;;;;;; Tabbar
 (define-key my-keys-minor-mode-map (kbd "M-c <left>") 'tabbar-backward-tab)
 (define-key my-keys-minor-mode-map (kbd "M-c <right>") 'tabbar-forward-tab)
@@ -436,12 +440,17 @@
 
 ;;;;;;;;;;;;;;;;;;; Key chords
 (key-chord-define-global "qq" 'avy-goto-char)
-(key-chord-define-global "ww" 'occur)
-(key-chord-define-global "uy" 'winner-undo)
 (key-chord-define-global "kk" 'kill-buffer)
-(key-chord-define-global "aa" 'match-paren)
+
+;(key-chord-define-global "aa" 'match-paren)
+(key-chord-define-global "aa" (lambda ()
+                                (interactive)
+                                (set-mark (line-beginning-position))
+                                (end-of-line)))
+
+
 (key-chord-define-global "xx" (lambda () (interactive) (switch-to-buffer nil)))
-(key-chord-define-global "bb" (lambda () (interactive)
+(key-chord-define-global "bb"  (lambda () (interactive)
                                 (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1) (goto-char (point-min)) (isearch-forward)))
 
 ;;(key-chord-define-global "xp" 'desktop+-load)
@@ -469,6 +478,13 @@
 (key-chord-define-global ".." 'org-timestamp-up)
 (key-chord-define-global ",," 'org-timestamp-down)
 (key-chord-define-global " ." (lambda () (interactive) (org-time-stamp '(16))))
+
+;(key-chord-define-global " f" 'project-find-file)
+(key-chord-define-global " f" 'my/project-find-file-fido)
+(key-chord-define-global " /" 'project-find-regexp)
+
+(key-chord-define-global " e" 'end-of-buffer)
+
 
 (define-minor-mode my-keys-minor-mode
 "A minor mode so that my key settings override annoying major modes."
@@ -1093,6 +1109,16 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
     (org-occur (message "^\\*+ .*%s" search-phrase))
 )
 
+(defun my/project-find-file-fido ()
+  "Run project-find-file with fido-vertical-mode temporarily enabled."
+  (interactive)
+  (unless fido-vertical-mode
+    (fido-vertical-mode 1)
+    (unwind-protect
+         (call-interactively 'project-find-file)
+      (fido-vertical-mode -1))))
+
+
 ;; Required in rust-analyzer for large codebase
 (setq eglot-connect-timeout 60)
 (setq eglot-sync-connect nil)
@@ -1115,6 +1141,12 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
         ))))
     ))
 
+;; Auto-start eglot for configured languages
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'rust-mode-hook 'eglot-ensure)
+
 ;;;;;;;;;;;;;;;;;;;; Eat - terminal emulator
 
 ; Fix hard to read colors in dark mode
@@ -1124,11 +1156,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
     (set-face-foreground 'eat-term-color-bright-blue "DeepSkyBlue")
     )
  
-;; Auto-start eglot for configured languages
-(add-hook 'c-mode-hook 'eglot-ensure)
-(add-hook 'c++-mode-hook 'eglot-ensure)
-(add-hook 'python-mode-hook 'eglot-ensure)
-(add-hook 'rust-mode-hook 'eglot-ensure)
+;;;;;;;;;;;;;;;;;;;; Configured by Emacs
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -1143,3 +1171,4 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
    '(eglot rust-mode dockerfile-mode gomacro-mode p4 go-mode flycheck
            company multiple-cursors dumb-jump yasnippet avy dap-mode
            which-key)))
+
