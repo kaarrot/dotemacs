@@ -734,6 +734,17 @@ t " my-keys" 'my-keys-minor-mode-map)
         (" t" "TODO tasks" todo "TODO")
         ))
 
+
+(with-eval-after-load 'org
+    (define-key org-mode-map (kbd "RET")
+      (lambda ()
+        (interactive)
+        (if (org-at-table-p)
+            (org-table-next-row)
+          (newline)
+          (indent-relative-first-indent-point)))))
+
+
 (defun org-mode-keys()
             (org-indent-mode t)
             (setq org-agenda-prefix-format "%t %s")
