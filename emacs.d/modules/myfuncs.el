@@ -470,6 +470,67 @@ In order to avoid interfference form project denoters we set them off. To restor
   (shell-command rclone-recent)
   )
 
+(defcustom dropbox-auto-sync-enabled t
+  "Whether to automatically check Dropbox for newer versions of org-agenda files.
+When enabled, opening any file in `org-agenda-files' will check if a newer version
+exists on Dropbox and automatically download it."
+  :type 'boolean
+  :group 'org)
+
+(defun dropbox-get-mtime (filename)
+  "Get modification time of a file on Dropbox. Returns time in seconds since epoch or nil if not found.
+Returns nil immediately if offline, command fails, or times out after 3 seconds."
+  (condition-case nil
+      (with-timeout (5 nil)  ; 5 second timeout, return nil if exceeded
+        (let* ((cmd (format "rclone lsl dropbox:%s --timeout 3s --contimeout 3s 2>/dev/null | awk '{print $2, $3}'" filename))
+               (output (string-trim (shell-command-to-string cmd))))
+          (when (and output (not (string-empty-p output)))
+            ;; Parse the date-time string from rclone output (format: "2024-01-18 16:23:45")
+            (let ((parsed-time (parse-time-string output)))
+              (when parsed-time
+                (float-time (encode-time parsed-time)))))))
+    (error nil)))  ; Return nil on any error
+
+(defun dropbox-file-newer-p (local-file remote-filename)
+  "Check if the remote file on Dropbox is newer than the local file."
+  (when (file-exists-p local-file)
+    (let ((local-mtime (float-time (file-attribute-modification-time (file-attributes local-file))))
+          (remote-mtime (dropbox-get-mtime remote-filename)))
+      (when remote-mtime
+        (> remote-mtime local-mtime)))))
+
+(defun dropbox-auto-sync-on-open ()
+  "Automatically sync from Dropbox if remote file is newer. Works for all org-agenda-files.
+Only runs if `dropbox-auto-sync-enabled' is non-nil."
+  (when (and dropbox-auto-sync-enabled
+             buffer-file-name
+             (boundp 'org-agenda-files)
+             (member (expand-file-name buffer-file-name)
+                     (mapcar #'expand-file-name org-agenda-files)))
+    (let ((filename (file-name-nondirectory buffer-file-name)))
+      (message "Checking Dropbox for newer version of %s..." filename)
+      (let ((is-newer (dropbox-file-newer-p buffer-file-name filename)))
+        (cond
+         ;; Remote file is newer - download it
+         ((eq is-newer t)
+          (message "Newer version found on Dropbox. Downloading...")
+          (condition-case nil
+              (with-timeout (10 (message "Download timeout for %s - operation cancelled" filename))
+                (let ((rclone-receive (format "rclone copy dropbox:%s %s --timeout 5s --contimeout 5s --retries 1"
+                                              filename (file-name-directory buffer-file-name))))
+                  (shell-command rclone-receive)
+                  (revert-buffer nil t t)
+                  (message "Synced %s from Dropbox" filename)))
+            (error (message "Error downloading %s from Dropbox" filename))))
+         ;; Couldn't check (offline, timeout, or error) - fail silently
+         ((null is-newer)
+          (message "Dropbox check skipped for %s (offline or timeout)" filename))
+         ;; Local is up to date - no message needed
+         (t nil))))))
+
+;; Add hook to auto-sync org-agenda-files from Dropbox on open
+(add-hook 'find-file-hook 'dropbox-auto-sync-on-open)
+
 ;;; Google drive
 (defun google-send (file-path)
   (interactive "bSpecify buffer name: ")
