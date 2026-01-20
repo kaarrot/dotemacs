@@ -468,7 +468,7 @@
 (key-chord-define-global "88" 'ispell-word)
 (key-chord-define-global "99" 'toggle-truncate-lines)
 
-(key-chord-define-global " z" 'winner-undo)
+(key-chord-define-global "zz" 'winner-undo)
 (key-chord-define-global "\\\\" 'occur)
 
 (key-chord-define-global "ss" 'ispell-word)
@@ -477,7 +477,7 @@
 ;;; Org
 (key-chord-define-global ".." 'org-timestamp-up)
 (key-chord-define-global ",," 'org-timestamp-down)
-(key-chord-define-global " ." (lambda () (interactive) (org-time-stamp '(16))))
+(key-chord-define-global "ii" (lambda () (interactive) (org-time-stamp '(16))))
 
 ;(key-chord-define-global " f" 'project-find-file)
 (key-chord-define-global " f" 'my/project-find-file-fido)
@@ -777,7 +777,7 @@ t " my-keys" 'my-keys-minor-mode-map)
             (setq org-reverse-note-order t)
 
             (add-to-list 'org-emphasis-alist
-             '("*" (:foreground "IndianRed")
+             '("*" (:foreground "gold")
                ))
             (if (not (search "termux" HOME))
                (flyspell-prog-mode))
