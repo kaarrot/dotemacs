@@ -1137,11 +1137,16 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
 (defun my/project-find-file-fido ()
   "Run project-find-file with fido-vertical-mode temporarily enabled."
   (interactive)
-  (unless fido-vertical-mode
-    (fido-vertical-mode 1)
+  (let ((fido-was-active fido-mode)
+        (fido-vertical-was-active fido-vertical-mode))
+    (unless fido-vertical-was-active
+      (fido-vertical-mode 1))
     (unwind-protect
          (call-interactively 'project-find-file)
-      (fido-vertical-mode -1))))
+      (unless fido-vertical-was-active
+        (fido-vertical-mode -1))
+      (unless fido-was-active
+        (fido-mode -1)))))
 
 
 ;; Required in rust-analyzer for large codebase
