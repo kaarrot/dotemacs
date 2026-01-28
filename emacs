@@ -445,7 +445,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;; Key chords
-(key-chord-define-global "qq" 'avy-goto-char)
+(key-chord-define-global "ww" 'avy-goto-char)
 (key-chord-define-global "kk" 'kill-buffer)
 
 ;(key-chord-define-global "aa" 'match-paren)
@@ -456,7 +456,7 @@
 
 
 (key-chord-define-global "xx" (lambda () (interactive) (switch-to-buffer nil)))
-(key-chord-define-global "bb"  (lambda () (interactive)
+(key-chord-define-global "vv"  (lambda () (interactive)
                                 (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1) (goto-char (point-min)) (isearch-forward)))
 
 ;;(key-chord-define-global "xp" 'desktop+-load)
@@ -478,7 +478,7 @@
 (key-chord-define-global "\\\\" 'occur)
 
 (key-chord-define-global "ss" 'ispell-word)
-(key-chord-define-global "dd" 'flyspell-goto-next-error)
+;;(key-chord-define-global "dd" 'flyspell-goto-next-error)
 
 ;;; Org
 (key-chord-define-global ".." 'org-timestamp-up)
@@ -718,12 +718,19 @@ t " my-keys" 'my-keys-minor-mode-map)
     (goto-char (point-min))
     (while (outline-next-heading)
       (when (= (org-outline-level) 1)
-        (org-fold-show-children)))))
+        (if (fboundp 'org-fold-show-children)
+            (org-fold-show-children)
+          (org-show-children))))))
 
-(setq org-fold-show-context-detail
-      '((agenda . ancestors)
-        (isearch . tree)
-        (default . ancestors)))
+(if (boundp 'org-fold-show-context-detail)
+    (setq org-fold-show-context-detail
+          '((agenda . ancestors)
+           (isearch . tree)
+           (default . ancestors)))
+  (setq org-show-context-detail
+        '((agenda . ancestors)
+         (isearch . tree)
+         (default . ancestors))))
 
 ;; Prevent accidental deletion of hidden/folded content
 (setq org-catch-invisible-edits 'error)
