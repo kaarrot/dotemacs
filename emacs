@@ -29,6 +29,7 @@
                   key-chord
                   rust-mode
                   eat
+                  diff-hl
 	  ))
 
 (if (>= emacs-major-version 30)
@@ -131,6 +132,7 @@
 (dumb-jump-mode t)
 (tabbar-mode)
 (yas-global-mode 1)
+(global-diff-hl-mode)
 
 ;(fido-vertical-mode 1)
 
@@ -427,6 +429,10 @@
 
 
 (global-set-key (kbd "C-x x")  (lambda () (interactive) (switch-to-buffer nil)))
+
+;;;;;;;;;;;;;;;;;;; Diff gutter (diff-hk)
+(define-key my-keys-minor-mode-map (kbd "C-c v n") 'diff-hl-next-hunk)
+(define-key my-keys-minor-mode-map (kbd "C-c v p") 'diff-hl-previous-hunk)
 
 ;;;;;;;;;;;;;;;;;;; Winner mode
 ;; Unbind existing key sequence first
