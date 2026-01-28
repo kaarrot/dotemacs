@@ -8,13 +8,16 @@
 
 (with-eval-after-load 'ediff
   (custom-set-faces
-   ;; '(ediff-fine-diff-A ((t (:background "dark red" :foreground "white"))))
-   ;; '(ediff-fine-diff-B ((t (:background "dark green" :foreground "white"))))
-   '(ediff-even-diff-A ((t (:background "red4"))))
-   '(ediff-even-diff-B ((t (:background "green4"))))
-   ;; '(ediff-odd-diff-A ((t (:background "red3"))))
-   ;; '(ediff-odd-diff-B ((t (:background "green3"))))
+   '(ediff-even-diff-A ((t (:background "#3a2020"))))
+   '(ediff-even-diff-B ((t (:background "#203a20"))))
+   '(ediff-odd-diff-A ((t (:background "#3a2020"))))
+   '(ediff-odd-diff-B ((t (:background "#203a20"))))
+   '(ediff-fine-diff-A ((t (:background "#552222"))))
+   '(ediff-fine-diff-B ((t (:background "#225522"))))
    )
+  ;; Disable line wrapping in ediff buffers
+  (add-hook 'ediff-prepare-buffer-hook
+            (lambda () (setq truncate-lines t)))
   ;; Override ediff-quit to skip all prompts and clean up temp buffers
   (defun ediff-quit (reverse-default-keep-variants)
     "Quit ediff without confirmation, killing temp revision buffers."
