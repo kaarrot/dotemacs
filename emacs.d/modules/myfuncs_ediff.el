@@ -14,7 +14,25 @@
    '(ediff-even-diff-B ((t (:background "green4"))))
    ;; '(ediff-odd-diff-A ((t (:background "red3"))))
    ;; '(ediff-odd-diff-B ((t (:background "green3"))))
-   ))
+   )
+  ;; Override ediff-quit to skip all prompts and clean up temp buffers
+  (defun ediff-quit (reverse-default-keep-variants)
+    "Quit ediff without confirmation, killing temp revision buffers."
+    (interactive "P")
+    (let ((buf-a ediff-buffer-A)
+          (buf-b ediff-buffer-B)
+          (ediff-keep-variants t))  ;; tell ediff to keep buffers (no prompt)
+      (ediff-really-quit reverse-default-keep-variants)
+      ;; now kill temp revision buffers ourselves
+      (let ((kill-buffer-query-functions nil))
+        (when (and (buffer-live-p buf-a)
+                   (string-match "\\.~.*~$" (buffer-name buf-a)))
+          (with-current-buffer buf-a (set-buffer-modified-p nil))
+          (kill-buffer buf-a))
+        (when (and (buffer-live-p buf-b)
+                   (string-match "\\.~.*~$" (buffer-name buf-b)))
+          (with-current-buffer buf-b (set-buffer-modified-p nil))
+          (kill-buffer buf-b))))))
 
  ;; Store revisions for later ediff
  (defvar my/stored-revisions nil
