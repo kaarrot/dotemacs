@@ -99,9 +99,11 @@
 (require 'tabbar)
 ;;(require 'anything-match-plugin)
 ;;(require 'anything-config)
+
+;; 27.2 Emavs had to declare these before require key-chord 
+(defvar read-key-full-map (make-sparse-keymap))
+(defvar read-key-empty-map (make-sparse-keymap))
 (require 'key-chord)
-
-
 
 ;; good to have
 (require 'wgrep)
