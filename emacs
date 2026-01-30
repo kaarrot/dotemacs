@@ -1,18 +1,17 @@
 ;; Requires Emacs 26.2 or higher
 (require 'package)
+
+;; Set to nil for vendored/offline setups (no internet access at startup)
+(defvar my-enable-package-install t
+  "When non-nil, automatically install missing packages from MELPA/ELPA.
+Set to nil for offline/vendored Emacs setups.")
+
 ;; Disable melpa signiture check
 (setq package-check-signature nil)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 (package-initialize)
 
-;; Helper to ensure a package is installed before requiring
-(defun ensure-package-installed (pkg)
-  "Install PKG if not already installed."
-  (unless (package-installed-p pkg)
-    (unless package-archive-contents
-      (package-refresh-contents))
-    (package-install pkg)))
 
 ;; run gc only when idle
 (setq gc-cons-threshold (eval-when-compile (* 1024 1024 1024)))
@@ -40,6 +39,15 @@
                   diff-hl
 	  ))
     
+;; Install all missing packages from package-selected-packages
+(when my-enable-package-install
+  (let ((missing-packages (seq-filter (lambda (pkg) (not (package-installed-p pkg)))
+                                      package-selected-packages)))
+    (when missing-packages
+      (package-refresh-contents)
+      (dolist (pkg missing-packages)
+        (package-install pkg)))))
+
 (when (>= emacs-major-version 30)
   ;; Refresh package metadata if claude-code-ide not installed yet
   (unless (package-installed-p 'claude-code-ide)
@@ -119,7 +127,6 @@
 (require 'yasnippet)
 (require 'clang-format) ;; assumes clang-format is on the PATH
 (require 'go-mode)
-(ensure-package-installed 'diff-hl)
 (require 'diff-hl)
 (global-diff-hl-mode)
 
@@ -1211,12 +1218,19 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files
-   '("~/.notes_archive" "~/.notes"))
- '(org-babel-C++-compiler "g++ -v")
- '(org-babel-load-languages '((ditaa . t) (python . t) (C . t)))
- '(package-selected-packages
-   '(eglot rust-mode dockerfile-mode gomacro-mode p4 go-mode flycheck
-           company multiple-cursors dumb-jump yasnippet avy dap-mode
-           which-key)))
+ '(package-selected-packages nil)
+ '(package-vc-selected-packages
+   '((claude-code-ide :url
+                      "https://github.com/manzaltu/claude-code-ide.el"))))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ediff-even-diff-A ((t (:background "#3a2020"))))
+ '(ediff-even-diff-B ((t (:background "#203a20"))))
+ '(ediff-fine-diff-A ((t (:background "#552222"))))
+ '(ediff-fine-diff-B ((t (:background "#225522"))))
+ '(ediff-odd-diff-A ((t (:background "#3a2020"))))
+ '(ediff-odd-diff-B ((t (:background "#203a20")))))
