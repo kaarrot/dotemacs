@@ -6,6 +6,14 @@
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 (package-initialize)
 
+;; Helper to ensure a package is installed before requiring
+(defun ensure-package-installed (pkg)
+  "Install PKG if not already installed."
+  (unless (package-installed-p pkg)
+    (unless package-archive-contents
+      (package-refresh-contents))
+    (package-install pkg)))
+
 ;; run gc only when idle
 (setq gc-cons-threshold (eval-when-compile (* 1024 1024 1024)))
 (run-with-idle-timer 2 t (lambda () (garbage-collect)))
@@ -31,7 +39,7 @@
                   eat
                   diff-hl
 	  ))
-
+    
 (when (>= emacs-major-version 30)
   ;; Refresh package metadata if claude-code-ide not installed yet
   (unless (package-installed-p 'claude-code-ide)
@@ -45,7 +53,6 @@
     :config
     (setq claude-code-ide-terminal-backend 'eat)  ; Use eat instead of vterm
     (claude-code-ide-emacs-tools-setup)))
-
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
@@ -112,7 +119,9 @@
 (require 'yasnippet)
 (require 'clang-format) ;; assumes clang-format is on the PATH
 (require 'go-mode)
-
+(ensure-package-installed 'diff-hl)
+(require 'diff-hl)
+(global-diff-hl-mode)
 
 (setq key-chord-typing-detection t)
 
@@ -127,7 +136,7 @@
 (dumb-jump-mode t)
 (tabbar-mode)
 (yas-global-mode 1)
-(global-diff-hl-mode)
+(global-hl-line-mode -1)
 
 ;(fido-vertical-mode 1)
 
@@ -185,6 +194,7 @@
 (setq ispell-alternate-dictionary (message "%s/temp/ispell_words" HOME))
 )
 
+
 ;;;;;;;;;;;;;;;;;;; Configuration
 
 
@@ -220,7 +230,7 @@
 
 (recentf-mode 1)
 
-(if (not (search "arm" system-configuration))
+(if (not (search "arm" system-configuration)) ;
       (show-paren-mode 1)  ;; Disable on Arm as it slow things down significantly.
 )
 
