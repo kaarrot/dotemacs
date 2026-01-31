@@ -895,6 +895,9 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 
 (add-hook 'org-mode-hook 'org-mode-keys)
+(add-hook 'org-mode-hook
+          (lambda ()
+            (add-hook 'org-tab-first-hook #'yas-expand nil t)))
 
 ;;;;;;;;;;;;;;;;;;;; Org-agenda
 
