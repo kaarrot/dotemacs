@@ -1242,6 +1242,8 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   '("~/.notes_archive" "~/.notes"))
  '(package-selected-packages nil)
  '(package-vc-selected-packages
    '((claude-code-ide :url
