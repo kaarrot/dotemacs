@@ -439,6 +439,31 @@ Set to nil for offline/vendored Emacs setups.")
 
 (global-set-key (kbd "C-x SPC") 'set-mark-command)
 
+;;;;;;;;;;;;;;;;;;; Occur mode customization
+;; Make occur buffer open in the same window instead of splitting
+(add-to-list 'display-buffer-alist
+             '("\\*Occur\\*"
+               (display-buffer-same-window)))
+
+;; Customize occur mode keybindings
+(defun my-occur-mode-keys ()
+  "Customize occur mode keybindings."
+  ;; RET goes to occurrence in the same window (replaces occur buffer)
+  (local-set-key (kbd "RET")
+                 (lambda ()
+                   (interactive)
+                   (let ((occur-window (selected-window))
+                         (pos (occur-mode-find-occurrence)))
+                     (pop-to-buffer (marker-buffer pos) '(display-buffer-same-window))
+                     (goto-char pos))))
+  ;; TAB goes to occurrence in a new split
+  (local-set-key (kbd "TAB")
+                 (lambda ()
+                   (interactive)
+                   (occur-mode-goto-occurrence-other-window))))
+
+(add-hook 'occur-mode-hook 'my-occur-mode-keys)
+
 
 (global-set-key (kbd "C-x x")  (lambda () (interactive) (switch-to-buffer nil)))
 
@@ -1172,7 +1197,6 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
         (fido-vertical-mode -1))
       (unless fido-was-active
         (fido-mode -1)))))
-
 
 ;; Required in rust-analyzer for large codebase
 (setq eglot-connect-timeout 60)
