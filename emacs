@@ -899,6 +899,10 @@ t " my-keys" 'my-keys-minor-mode-map)
           (lambda ()
             (add-hook 'org-tab-first-hook #'yas-expand nil t)))
 
+;; When follow mode is enabled 'F' - this also expand selected heading
+(add-hook 'org-agenda-after-show-hook 'org-show-entry)
+
+
 ;;;;;;;;;;;;;;;;;;;; Org-agenda
 
 ;; Disable nested heading from inheriting tags and displaying the color of the parent
