@@ -145,8 +145,6 @@ Set to nil for offline/vendored Emacs setups.")
 (yas-global-mode 1)
 (global-hl-line-mode -1)
 
-;(fido-vertical-mode 1)
-
 (setq FIND_CMD "find")
 (setq XARGS_CMD "xargs")
 (setq ECHO_CMD "echo")
@@ -1194,16 +1192,32 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
 (defun my/project-find-file-fido ()
   "Run project-find-file with fido-vertical-mode temporarily enabled."
   (interactive)
-  (let ((fido-was-active fido-mode)
-        (fido-vertical-was-active fido-vertical-mode))
-    (unless fido-vertical-was-active
-      (fido-vertical-mode 1))
-    (unwind-protect
-         (call-interactively 'project-find-file)
-      (unless fido-vertical-was-active
-        (fido-vertical-mode -1))
+  (if (version<= "28.0" emacs-version)
+      ;; Emacs 28+: Use fido-vertical-mode
+      (let ((fido-was-active fido-mode)
+            (fido-vertical-was-active fido-vertical-mode))
+        (unless fido-vertical-was-active
+          (fido-vertical-mode 1))
+        (unwind-protect
+            (call-interactively 'project-find-file)
+          (unless fido-vertical-was-active
+            (fido-vertical-mode -1))
+          (unless fido-was-active
+            (fido-mode -1))))
+    ;; Emacs 27: Use fido-mode with icomplete-vertical-mode
+    (let ((fido-was-active fido-mode)
+          (icomplete-vertical-was-active (and (fboundp 'icomplete-vertical-mode)
+                                               icomplete-vertical-mode)))
       (unless fido-was-active
-        (fido-mode -1)))))
+        (fido-mode 1))
+      (when (and (fboundp 'icomplete-vertical-mode) (not icomplete-vertical-was-active))
+        (icomplete-vertical-mode 1))
+      (unwind-protect
+          (call-interactively 'project-find-file)
+        (when (and (fboundp 'icomplete-vertical-mode) (not icomplete-vertical-was-active))
+          (icomplete-vertical-mode -1))
+        (unless fido-was-active
+          (fido-mode -1))))))
 
 ;; Required in rust-analyzer for large codebase
 (setq eglot-connect-timeout 60)
