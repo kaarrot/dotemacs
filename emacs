@@ -770,6 +770,13 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;; Prevent accidental deletion of hidden/folded content
 (setq org-catch-invisible-edits 'error)
 
+;; Persistent clock-in/out history across sessions
+(setq org-clock-history-length 20)
+(setq org-clock-persist t)
+(org-clock-persistence-insinuate)
+(add-hook 'org-clock-out-hook #'org-clock-save)
+
+;; following up the task unfolds the heading
 (add-hook 'org-agenda-after-show-hook 'my-org-show-context-level-2)
 
 
