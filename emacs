@@ -143,13 +143,30 @@ Set to nil for offline/vendored Emacs setups.")
 (global-diff-hl-mode)
 
 (setq key-chord-typing-detection t)
+;; If this is set to 2.0, you could press j, wait two full seconds,
+;;   then press k, and Emacs would still trigger the chord command.
+;; Comments:
+;; - Setting this too high (like 2.0) will make regular typing frustrating because Emacs will constantly "wait"
+;;   to see if you're about to complete a chord instead of just displaying the character you typed.
+;; - If you press keys within this threshold, chords are suppressed.
+;; - First key stroke after 2 secs is considered a key-chord
+(setq key-chord-typing-speed-threshold 0.5)
 
-;; If you press keys within this threshold, chords are suppressed.
-;; First key stroke after 2 secs is considered a key-chord
-(setq key-chord-typing-speed-threshold 2.0)
+;; It takes contrl immediately after you press any key.
+;; Circumstance: If you press j (the start of a chord) and then get distracted,
+;; Emacs waits for this duration before it  "forgets" that j was ever pressed as a potential chord starter.
+;; Comments:
+;; - It resets the interal state when you get back to typing after longer break
 (setq key-chord-typing-reset-delay 2.0)
-(setq key-chord-one-key-delay 2.0)
+
+;; This is specifically for double-tap chords
+;; This is the maximum window allowed between the first and second tap of the same key.
+;; Comments:
+;; - Longer delay work better on Termux with external keyboard
+(setq key-chord-one-key-delay 0.5)
+
 (key-chord-mode 1)
+
 
 (dumb-jump-mode t)
 (tabbar-mode)
