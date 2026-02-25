@@ -61,6 +61,18 @@ Set to nil for offline/vendored Emacs setups.")
     :config
     (setq claude-code-ide-terminal-backend 'eat)  ; Use eat instead of vterm
     (claude-code-ide-emacs-tools-setup)))
+
+;; Only execute if Emacs is running in terminal mode (no GUI)
+;; Use the 'xclip' package to bridge the terminal and system clipboard
+;; This requires you to have installed the package via M-x package-install RET xclip RET
+;; sudo apt install xclip xsel
+;; On Windows no action is needed
+(unless (display-graphic-p)
+  (use-package xclip
+    :ensure t
+    :config
+    (xclip-mode 1)))
+    
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
@@ -136,7 +148,6 @@ Set to nil for offline/vendored Emacs setups.")
 ;; First key stroke after 2 secs is considered a key-chord
 (setq key-chord-typing-speed-threshold 2.0)
 (setq key-chord-typing-reset-delay 2.0)
-;; Longer delay work better on Termux with external keyboard
 (setq key-chord-one-key-delay 2.0)
 (key-chord-mode 1)
 
@@ -1277,8 +1288,7 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files
-   '("~/.notes_archive" "~/.notes"))
+ '(org-agenda-files '("~/.notes_archive" "~/.notes"))
  '(package-selected-packages nil)
  '(package-vc-selected-packages
    '((claude-code-ide :url
