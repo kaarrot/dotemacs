@@ -749,6 +749,13 @@ t " my-keys" 'my-keys-minor-mode-map)
 (defun my-org-show-context-level-2 ()
   "Show context and ensure levels 1-2 are visible, preserving deeper levels."
   (org-show-context 'agenda)
+
+  ;; Explicitly show all immediate children of the specific task we jumped to
+  ;; It expects to keep 'ancestors' settings 
+  (if (fboundp 'org-fold-show-children)
+      (org-fold-show-children)
+    (org-show-children))
+
   (save-excursion
     (goto-char (point-min))
     (while (outline-next-heading)
