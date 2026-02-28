@@ -805,6 +805,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;; Prevent accidental deletion of hidden/folded content
 (setq org-catch-invisible-edits 'error)
 
+(setq org-agenda-window-setup 'only-window)
+
 ;; Persistent clock-in/out history across sessions
 (setq org-clock-history-length 20)
 (setq org-clock-persist t)
@@ -837,7 +839,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (defun org-mode-keys()
             (org-indent-mode t)
-            (setq org-agenda-prefix-format "%t %s")
+            (setq org-agenda-prefix-format "%t ")
             (org-display-inline-images)
             (setq org-image-actual-width nil) ;; so that we could scale them down #+ATTR_ORG: :width 123
             (org-id-update-id-locations)
