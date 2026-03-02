@@ -37,9 +37,15 @@ g-r () {
 git for-each-ref --sort=committerdate refs/heads/
 }
 
-g-l(){
-  echo $1
-  git log --pretty=oneline --abbrev-commit -n $1
+g-l() {
+  # Default to 5 commits if no count is provided
+  local count=${1:-5}
+  # Default to current branch (HEAD) if no branch is provided
+  local branch=${2:-HEAD}
+
+  echo "Showing $count commits from $branch"
+  git log $branch --abbrev-commit -n "$count" --pretty=format:"%h %an %s"
+  echo "" # Add a newline for cleanliness
 }
 
 g-c (){
