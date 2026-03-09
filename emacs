@@ -60,7 +60,11 @@ Set to nil for offline/vendored Emacs setups.")
     :bind ("C-c '" . claude-code-ide-menu)
     :config
     (setq claude-code-ide-terminal-backend 'eat)  ; Use eat instead of vterm
-    (claude-code-ide-emacs-tools-setup)))
+    (claude-code-ide-emacs-tools-setup)
+    (load (expand-file-name "~/.emacs.d/modules/gemini-code-ide.el") t t)
+    (load (expand-file-name "~/.emacs.d/modules/codex-code-ide.el") t t)
+    (when (featurep 'gemini-code-ide)
+      (gemini-code-ide-enable))))
 
 ;; Only execute if Emacs is running in terminal mode (no GUI)
 ;; Use the 'xclip' package to bridge the terminal and system clipboard
