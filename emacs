@@ -12,7 +12,6 @@ Set to nil for offline/vendored Emacs setups.")
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 (package-initialize)
 
-
 ;; run gc only when idle
 (setq gc-cons-threshold (eval-when-compile (* 1024 1024 1024)))
 (run-with-idle-timer 2 t (lambda () (garbage-collect)))
@@ -60,7 +59,28 @@ Set to nil for offline/vendored Emacs setups.")
     :bind ("C-c '" . claude-code-ide-menu)
     :config
     (setq claude-code-ide-terminal-backend 'eat)  ; Use eat instead of vterm
-    (claude-code-ide-emacs-tools-setup)))
+
+    (claude-code-ide-emacs-tools-setup)
+
+    ;; Gemini bridge disabled for now.
+    ;; When enabled, it uses project-local .gemini/settings.json for MCP wiring.
+    ;;     general.enableAutoUpdate: false
+    ;;     general.enableAutoUpdateNotification: false
+    ;; (load (expand-file-name "~/.emacs.d/modules/gemini-code-ide.el") t t) ; disabled for now
+    
+    (load (expand-file-name "~/.emacs.d/modules/codex-code-ide.el") t t)
+    (when (featurep 'codex-code-ide)
+      (setq codex-code-ide-wrapper-command "codex-run"
+            codex-code-ide-fallback-command "codex"
+            codex-code-ide-runtime-mcp-override t
+            codex-code-ide-register-selection-tool t
+            codex-code-ide-register-edit-tools t))
+    (cond
+     ((featurep 'codex-code-ide)
+      (codex-code-ide-enable))
+     ;; ((featurep 'gemini-code-ide)
+     ;;  (gemini-code-ide-enable))
+     )))
 
 ;; Only execute if Emacs is running in terminal mode (no GUI)
 ;; Use the 'xclip' package to bridge the terminal and system clipboard
