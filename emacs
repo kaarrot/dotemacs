@@ -55,7 +55,8 @@ Set to nil for offline/vendored Emacs setups.")
 
   ;; Emacs 30+: Use built-in VC support
   (use-package claude-code-ide
-    :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+    :vc (:url "https://github.com/manzaltu/claude-code-ide.el"
+              :rev "760240d7f03ff16f90ede9d4f4243cd94f3fed73")
     :bind ("C-c '" . claude-code-ide-menu)
     :config
     (setq claude-code-ide-terminal-backend 'eat)  ; Use eat instead of vterm
@@ -73,6 +74,7 @@ Set to nil for offline/vendored Emacs setups.")
       (setq codex-code-ide-wrapper-command "codex-run"
             codex-code-ide-fallback-command "codex"
             codex-code-ide-runtime-mcp-override t
+            codex-code-ide-mcp-client-startup-timeout-sec 45
             codex-code-ide-register-selection-tool t
             codex-code-ide-register-edit-tools t))
     (cond

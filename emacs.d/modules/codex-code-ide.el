@@ -13,6 +13,10 @@
 (require 'claude-code-ide-emacs-tools)
 (require 'claude-code-ide-mcp-server)
 
+(declare-function ws-process "web-server" (request))
+(declare-function ws-response-header "web-server" (proc code &rest headers))
+(declare-function ws-send "web-server" (proc msg))
+
 (defgroup codex-code-ide nil
   "Codex integration layer for claude-code-ide."
   :group 'tools
@@ -105,6 +109,12 @@ This is per-process and does not modify ~/.codex/config.toml."
   :type 'number
   :group 'codex-code-ide)
 
+(defcustom codex-code-ide-mcp-client-startup-timeout-sec 45
+  "Codex MCP client startup timeout, in seconds, for the `emacs_tools` server.
+Passed as a runtime `-c mcp_servers.<name>.startup_timeout_sec=...` override."
+  :type 'integer
+  :group 'codex-code-ide)
+
 (defvar codex-code-ide--enabled nil
   "Whether Codex bridge is currently enabled.")
 
@@ -119,6 +129,72 @@ This is per-process and does not modify ~/.codex/config.toml."
 
 (defvar codex-code-ide--last-selection-snapshot nil
   "Last observed file selection snapshot for Codex selection tool.")
+
+(defcustom codex-code-ide-mcp-streamable-http-compat t
+  "When non-nil, install Codex MCP compatibility fixes for Emacs tools.
+Current fixes:
+- return a minimal SSE stream on MCP GET requests
+- return HTTP 202 for MCP notifications (e.g. initialized)"
+  :type 'boolean
+  :group 'codex-code-ide)
+
+(defun codex-code-ide--mcp-http-handle-get-compatible (request)
+  "Serve a minimal SSE stream for MCP GET handshakes.
+Codex's streamable HTTP transport opens a GET channel during initialization.
+Some claude-code-ide revisions return 404 here, which closes the MCP transport."
+  (let ((process (ws-process request)))
+    (ws-response-header process 200
+                        (cons "Content-Type" "text/event-stream; charset=utf-8")
+                        (cons "Cache-Control" "no-cache")
+                        (cons "Connection" "keep-alive")
+                        (cons "Access-Control-Allow-Origin" "*")
+                        (cons "Transfer-Encoding" "chunked"))
+    ;; Keep stream open; we currently do not emit server-initiated events.
+    (ws-send process ": connected\n\n")
+    :keep-alive))
+
+(defun codex-code-ide--mcp-http-send-empty-response-compatible (request)
+  "Send HTTP 202 for MCP notifications.
+Codex RMCP expects `notifications/initialized` to return 202/204, not 200."
+  (let ((process (ws-process request)))
+    (ws-response-header process 202
+                        (cons "Content-Type" "text/plain")
+                        (cons "Content-Length" "0"))
+    (throw 'close-connection nil)))
+
+(defun codex-code-ide--uninstall-mcp-http-compat ()
+  "Remove all Codex MCP HTTP compatibility advices.
+Also removes stale advices from older experimental revisions."
+  (dolist (entry '((claude-code-ide-mcp-http-server--handle-get
+                    . codex-code-ide--mcp-http-handle-get-compatible)
+                   (claude-code-ide-mcp-http-server--send-empty-response
+                    . codex-code-ide--mcp-http-send-empty-response-compatible)
+                   ;; Historical cleanup from earlier experimental patches.
+                   (claude-code-ide-mcp-http-server--send-json-response
+                    . codex-code-ide--mcp-http-send-json-response-compatible)
+                   (claude-code-ide-mcp-http-server--handle-post
+                    . codex-code-ide--mcp-http-handle-post-compatible)))
+    (let ((target (car entry))
+          (fn (cdr entry)))
+      (when (fboundp target)
+        (advice-remove target fn)))))
+
+(defun codex-code-ide--install-mcp-http-compat ()
+  "Install compatibility advice for claude-code-ide MCP HTTP transport."
+  (codex-code-ide--uninstall-mcp-http-compat)
+  (when codex-code-ide-mcp-streamable-http-compat
+    (when (fboundp 'claude-code-ide-mcp-http-server--handle-get)
+      (unless (advice-member-p #'codex-code-ide--mcp-http-handle-get-compatible
+                               'claude-code-ide-mcp-http-server--handle-get)
+        (advice-add 'claude-code-ide-mcp-http-server--handle-get
+                    :override
+                    #'codex-code-ide--mcp-http-handle-get-compatible)))
+    (when (fboundp 'claude-code-ide-mcp-http-server--send-empty-response)
+      (unless (advice-member-p #'codex-code-ide--mcp-http-send-empty-response-compatible
+                               'claude-code-ide-mcp-http-server--send-empty-response)
+        (advice-add 'claude-code-ide-mcp-http-server--send-empty-response
+                    :override
+                    #'codex-code-ide--mcp-http-send-empty-response-compatible)))))
 
 (defun codex-code-ide--tool-name (tool-spec)
   "Extract normalized tool name from TOOL-SPEC."
@@ -234,6 +310,12 @@ If COMMAND resolves only to a shell function/alias, returns nil."
           codex-code-ide-mcp-server-name
           (codex-code-ide--toml-quoted mcp-url)))
 
+(defun codex-code-ide--runtime-mcp-timeout-config-arg ()
+  "Build `-c` override string for MCP startup timeout."
+  (format "mcp_servers.%s.startup_timeout_sec=%d"
+          codex-code-ide-mcp-server-name
+          (max 1 codex-code-ide-mcp-client-startup-timeout-sec)))
+
 (defun codex-code-ide--mcp-url (&optional session-id)
   "Extract current Emacs MCP URL.
 When SESSION-ID is non-nil, include it in endpoint path."
@@ -336,7 +418,9 @@ Returns non-nil on success."
           (when codex-code-ide-require-persist-success
             (user-error "Failed to persist Codex MCP server URL"))))
       (when (and mcp-url codex-code-ide-runtime-mcp-override)
-        (setq argv (append argv (list "-c" (codex-code-ide--runtime-mcp-config-arg mcp-url))))))
+        (setq argv (append argv
+                           (list "-c" (codex-code-ide--runtime-mcp-config-arg mcp-url)
+                                 "-c" (codex-code-ide--runtime-mcp-timeout-config-arg))))))
     (setq argv (append argv extra-args resume-args))
     argv))
 
@@ -636,6 +720,10 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
                                         'claude-code-ide--build-claude-command))
          (advice-cli (advice-member-p #'codex-code-ide--ensure-cli-around
                                       'claude-code-ide--ensure-cli))
+         (advice-mcp-get (advice-member-p #'codex-code-ide--mcp-http-handle-get-compatible
+                                          'claude-code-ide-mcp-http-server--handle-get))
+         (advice-mcp-notif (advice-member-p #'codex-code-ide--mcp-http-send-empty-response-compatible
+                                            'claude-code-ide-mcp-http-server--send-empty-response))
          (mcp-port (when (fboundp 'claude-code-ide-mcp-server-get-port)
                      (claude-code-ide-mcp-server-get-port)))
          (selection-tool-on (member codex-code-ide-selection-tool-name
@@ -651,6 +739,8 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
       (princ (format "fallback command: %s\n" codex-code-ide-fallback-command))
       (princ (format "build advice active: %s\n" (if advice-build "yes" "no")))
       (princ (format "cli-check advice active: %s\n" (if advice-cli "yes" "no")))
+      (princ (format "mcp GET compat advice: %s\n" (if advice-mcp-get "yes" "no")))
+      (princ (format "mcp notification-202 advice: %s\n" (if advice-mcp-notif "yes" "no")))
       (princ (format "claude-code-ide-cli-path: %s\n" claude-code-ide-cli-path))
       (princ (format "working dir: %s\n" working-dir))
       (princ (format "active session id: %s\n" (or session-id "<none>")))
@@ -676,6 +766,9 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
 (defun codex-code-ide-enable ()
   "Enable Codex support in claude-code-ide."
   (interactive)
+  (with-eval-after-load 'claude-code-ide-mcp-http-server
+    (codex-code-ide--install-mcp-http-compat))
+  (codex-code-ide--install-mcp-http-compat)
   (when (and codex-code-ide-disable-gemini-on-enable
              (fboundp 'gemini-code-ide-disable))
     (ignore-errors (gemini-code-ide-disable)))
@@ -704,6 +797,7 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
 (defun codex-code-ide-disable ()
   "Disable Codex support and restore previous claude-code-ide settings."
   (interactive)
+  (codex-code-ide--uninstall-mcp-http-compat)
   (advice-remove 'claude-code-ide--build-claude-command
                  #'codex-code-ide--build-command-around)
   (advice-remove 'claude-code-ide--ensure-cli
