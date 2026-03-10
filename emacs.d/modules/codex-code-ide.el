@@ -115,6 +115,11 @@ Passed as a runtime `-c mcp_servers.<name>.startup_timeout_sec=...` override."
   :type 'integer
   :group 'codex-code-ide)
 
+(defcustom codex-code-ide-termux-add-system-lib64 t
+  "When non-nil on Termux, ensure `/system/lib64` is present in LD_LIBRARY_PATH."
+  :type 'boolean
+  :group 'codex-code-ide)
+
 (defvar codex-code-ide--enabled nil
   "Whether Codex bridge is currently enabled.")
 
@@ -213,9 +218,46 @@ Also removes stale advices from older experimental revisions."
       (claude-code-ide--get-working-directory)
     (error default-directory)))
 
+(defun codex-code-ide--termux-p ()
+  "Return non-nil when running inside Termux."
+  (or (getenv "TERMUX_VERSION")
+      (let ((prefix (getenv "PREFIX")))
+        (and (stringp prefix)
+             (string-prefix-p "/data/data/com.termux/" prefix)))))
+
+(defun codex-code-ide--env-value (name env)
+  "Return environment variable NAME value from ENV."
+  (when-let ((entry (cl-find-if (lambda (item)
+                                  (string-prefix-p (concat name "=") item))
+                                env)))
+    (substring entry (1+ (length name)))))
+
+(defun codex-code-ide--env-with (name value env)
+  "Return ENV with NAME set to VALUE."
+  (cons (format "%s=%s" name value)
+        (cl-remove-if (lambda (item)
+                        (string-prefix-p (concat name "=") item))
+                      env)))
+
+(defun codex-code-ide--process-environment-with-termux-lib64 (env)
+  "Return ENV with Termux LD_LIBRARY_PATH adjustment when needed."
+  (if (and codex-code-ide-termux-add-system-lib64
+           (codex-code-ide--termux-p))
+      (let* ((ld-library-path (or (codex-code-ide--env-value "LD_LIBRARY_PATH" env) ""))
+             (segments (split-string ld-library-path ":" t))
+             (updated (if (member "/system/lib64" segments)
+                          ld-library-path
+                        (if (string-empty-p ld-library-path)
+                            "/system/lib64"
+                          (concat ld-library-path ":/system/lib64")))))
+        (codex-code-ide--env-with "LD_LIBRARY_PATH" updated env))
+    env))
+
 (defun codex-code-ide--shell-bootstrap ()
   "Shell snippet that prepares command environment."
-  (if codex-code-ide-source-bashrc
+  (if (and codex-code-ide-source-bashrc
+           (stringp codex-code-ide-bashrc-file)
+           (not (string-empty-p codex-code-ide-bashrc-file)))
       (let ((rc (expand-file-name codex-code-ide-bashrc-file)))
         (format "if [ -f %s ]; then . %s >/dev/null 2>&1; fi; "
                 (shell-quote-argument rc)
@@ -229,11 +271,13 @@ Also removes stale advices from older experimental revisions."
 (defun codex-code-ide--run-shell-script (script)
   "Run SCRIPT via `codex-code-ide-shell -lc` and capture output.
 Returns plist: (:exit <code> :output <string>)."
-  (with-temp-buffer
-    (let ((exit-code (call-process codex-code-ide-shell nil (current-buffer) nil "-lc" script))
-          (output nil))
-      (setq output (buffer-string))
-      (list :exit exit-code :output output))))
+  (let ((process-environment
+         (codex-code-ide--process-environment-with-termux-lib64 process-environment)))
+    (with-temp-buffer
+      (let ((exit-code (call-process codex-code-ide-shell nil (current-buffer) nil "-lc" script))
+            (output nil))
+        (setq output (buffer-string))
+        (list :exit exit-code :output output)))))
 
 (defun codex-code-ide--run-launcher (argv)
   "Run launcher ARGV in configured shell and capture output."
@@ -267,18 +311,24 @@ If COMMAND resolves only to a shell function/alias, returns nil."
   "Resolve preferred Codex launcher command."
   (or codex-code-ide--launcher-cache
       (setq codex-code-ide--launcher-cache
-            (cond
-             ((and codex-code-ide-wrapper-command
-                   (not (string-empty-p codex-code-ide-wrapper-command))
-                   (codex-code-ide--command-available-p codex-code-ide-wrapper-command))
-              (or (codex-code-ide--command-path codex-code-ide-wrapper-command)
-                  codex-code-ide-wrapper-command))
-             ((and codex-code-ide-fallback-command
-                   (not (string-empty-p codex-code-ide-fallback-command))
-                   (codex-code-ide--command-available-p codex-code-ide-fallback-command))
-              (or (codex-code-ide--command-path codex-code-ide-fallback-command)
-                  codex-code-ide-fallback-command))
-             (t nil)))))
+            (let* ((wrapper-ok (and codex-code-ide-wrapper-command
+                                    (not (string-empty-p codex-code-ide-wrapper-command))
+                                    (codex-code-ide--command-available-p codex-code-ide-wrapper-command)))
+                   (wrapper-path (and wrapper-ok
+                                      (codex-code-ide--command-path codex-code-ide-wrapper-command)))
+                   (fallback-ok (and codex-code-ide-fallback-command
+                                     (not (string-empty-p codex-code-ide-fallback-command))
+                                     (codex-code-ide--command-available-p codex-code-ide-fallback-command)))
+                   (fallback-path (and fallback-ok
+                                       (codex-code-ide--command-path codex-code-ide-fallback-command))))
+              (cond
+               ((and wrapper-ok
+                     (or wrapper-path
+                         (not (eq claude-code-ide-terminal-backend 'eat))))
+                (or wrapper-path codex-code-ide-wrapper-command))
+               (fallback-ok
+                (or fallback-path codex-code-ide-fallback-command))
+               (t nil))))))
 
 (defun codex-code-ide--node-script-launcher-p (launcher)
   "Return non-nil when LAUNCHER looks like a Node script wrapper."
@@ -447,6 +497,13 @@ Returns non-nil on success."
   (if codex-code-ide--enabled
       (codex-code-ide--build-command continue resume session-id)
     (funcall orig-fn continue resume session-id)))
+
+(defun codex-code-ide--create-terminal-session-around
+    (orig-fn buffer-name working-dir port continue resume session-id)
+  "Around advice for `claude-code-ide--create-terminal-session`."
+  (let ((process-environment
+         (codex-code-ide--process-environment-with-termux-lib64 process-environment)))
+    (funcall orig-fn buffer-name working-dir port continue resume session-id)))
 
 (defun codex-code-ide--ensure-cli-around (orig-fn)
   "Around advice for `claude-code-ide--ensure-cli`."
@@ -705,6 +762,7 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
               (alist-get 'url transport))
           (error nil))))))
 
+
 (defun codex-code-ide-status ()
   "Show current Codex bridge status for claude-code-ide."
   (interactive)
@@ -720,6 +778,8 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
                                         'claude-code-ide--build-claude-command))
          (advice-cli (advice-member-p #'codex-code-ide--ensure-cli-around
                                       'claude-code-ide--ensure-cli))
+         (advice-session-env (advice-member-p #'codex-code-ide--create-terminal-session-around
+                                              'claude-code-ide--create-terminal-session))
          (advice-mcp-get (advice-member-p #'codex-code-ide--mcp-http-handle-get-compatible
                                           'claude-code-ide-mcp-http-server--handle-get))
          (advice-mcp-notif (advice-member-p #'codex-code-ide--mcp-http-send-empty-response-compatible
@@ -739,6 +799,8 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
       (princ (format "fallback command: %s\n" codex-code-ide-fallback-command))
       (princ (format "build advice active: %s\n" (if advice-build "yes" "no")))
       (princ (format "cli-check advice active: %s\n" (if advice-cli "yes" "no")))
+      (princ (format "session-env advice active: %s\n"
+                     (if advice-session-env "yes" "no")))
       (princ (format "mcp GET compat advice: %s\n" (if advice-mcp-get "yes" "no")))
       (princ (format "mcp notification-202 advice: %s\n" (if advice-mcp-notif "yes" "no")))
       (princ (format "claude-code-ide-cli-path: %s\n" claude-code-ide-cli-path))
@@ -787,6 +849,10 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
                            'claude-code-ide--ensure-cli)
     (advice-add 'claude-code-ide--ensure-cli :around
                 #'codex-code-ide--ensure-cli-around))
+  (unless (advice-member-p #'codex-code-ide--create-terminal-session-around
+                           'claude-code-ide--create-terminal-session)
+    (advice-add 'claude-code-ide--create-terminal-session :around
+                #'codex-code-ide--create-terminal-session-around))
   (add-hook 'post-command-hook #'codex-code-ide--track-selection-snapshot)
   (when codex-code-ide-register-selection-tool
     (codex-code-ide-register-selection-tool))
@@ -802,6 +868,8 @@ When REPLACE-ALL is non-nil, replace all matches. Otherwise replace first match.
                  #'codex-code-ide--build-command-around)
   (advice-remove 'claude-code-ide--ensure-cli
                  #'codex-code-ide--ensure-cli-around)
+  (advice-remove 'claude-code-ide--create-terminal-session
+                 #'codex-code-ide--create-terminal-session-around)
   (remove-hook 'post-command-hook #'codex-code-ide--track-selection-snapshot)
   (setq codex-code-ide--enabled nil
         codex-code-ide--launcher-cache nil
