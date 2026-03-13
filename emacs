@@ -846,6 +846,7 @@ t " my-keys" 'my-keys-minor-mode-map)
         (" w" "WAITING tasks" todo "WAITING")
         (" r" "READ tasks" todo "READ")
         (" t" "TODO tasks" todo "TODO")
+        (" y" "TODAY tasks" todo "TODAY")
         ))
 
 
