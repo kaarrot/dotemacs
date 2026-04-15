@@ -512,6 +512,8 @@ Set to nil for offline/vendored Emacs setups.")
 
 (add-hook 'occur-mode-hook 'my-occur-mode-keys)
 
+;; Open preview in a split each time cursor moves to new line
+(add-hook 'occur-mode-hook #'next-error-follow-minor-mode)
 
 (global-set-key (kbd "C-x x")  (lambda () (interactive) (switch-to-buffer nil)))
 
