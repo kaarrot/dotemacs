@@ -568,6 +568,7 @@ Set to nil for offline/vendored Emacs setups.")
 ;;(key-chord-define-global "dd" 'flyspell-goto-next-error)
 
 ;;; Org
+(key-chord-define-global "qq" (lambda () (interactive) (org-capture nil "t")))
 (key-chord-define-global ".." 'org-timestamp-up)
 (key-chord-define-global ",," 'org-timestamp-down)
 (key-chord-define-global "ii" (lambda () (interactive) (org-time-stamp '(16))))
@@ -968,6 +969,10 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;; When follow mode is enabled 'F' - this also expand selected heading
 (add-hook 'org-agenda-after-show-hook 'org-show-entry)
+
+(with-eval-after-load 'org-capture
+  (key-chord-define org-capture-mode-map "qq" 'org-capture-finalize)
+  (key-chord-define org-capture-mode-map "yy" 'org-capture-kill))
 
 
 ;;;;;;;;;;;;;;;;;;;; Org-agenda
