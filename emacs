@@ -387,6 +387,12 @@ Set to nil for offline/vendored Emacs setups.")
 (define-key my-keys-minor-mode-map (kbd "M-<left>") 'go-ring-back)
 (define-key my-keys-minor-mode-map (kbd "M-<right>") 'go-ring-forward)
 
+;; Sync xref jumps (M-. via eglot/LSP) to the custom cursor history ring.
+;; xref saves position to its own xref--history before jumping, but go-ring-back
+;; only reads global-mark-ring, so M-<left> couldn't navigate back after M-.
+(advice-add 'xref-push-marker-stack :before
+            (lambda (&rest _) (add-to-global-ring)))
+
 ;;;;;;;;;;;;;;;;;;;; Multiple cursors
 (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'mc/edit-lines)
