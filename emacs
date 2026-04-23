@@ -85,14 +85,21 @@ Set to nil for offline/vendored Emacs setups.")
      )))
 
 ;; Only execute if Emacs is running in terminal mode (no GUI)
-;; Use the 'xclip' package to bridge the terminal and system clipboard
-;; This requires you to have installed the package via M-x package-install RET xclip RET
-;; sudo apt install xclip xsel
-;; On Windows no action is needed
+;; Use the 'xclip' package to bridge the terminal and system clipboard.
+;; On Wayland, prefer wl-clipboard so copied text reaches native apps.
+;; sudo apt install xclip xsel wl-clipboard
 (unless (display-graphic-p)
   (use-package xclip
     :ensure t
+    :init
+    (setq select-enable-clipboard t)
     :config
+    (when (and (or (getenv "WAYLAND_DISPLAY")
+                   (string= (getenv "XDG_SESSION_TYPE") "wayland"))
+               (executable-find "wl-copy")
+               (executable-find "wl-paste"))
+      (setq xclip-method 'wl-copy
+            xclip-program "wl-copy"))
     (xclip-mode 1)))
     
 (setq gc-cons-threshold (* 100 1024 1024)
