@@ -997,6 +997,22 @@ t " my-keys" 'my-keys-minor-mode-map)
       '(("urgent" . (:foreground "red" :weight bold))
         ("task" . (:foreground "orange"))))
 
+(defun my/org-agenda-hide-global-todo-header ()
+  "Remove Org's generated help header from global TODO agenda buffers."
+  (when (eq (get-text-property (point-min) 'org-agenda-type) 'todo)
+    (save-excursion
+      (let ((first-entry nil))
+        (goto-char (point-min))
+        (while (and (not first-entry) (not (eobp)))
+          (if (or (get-text-property (point) 'org-marker)
+                  (get-text-property (point) 'org-hd-marker))
+              (setq first-entry (line-beginning-position))
+            (goto-char (or (next-single-property-change
+                            (point) 'org-marker nil (point-max))
+                           (point-max)))))
+        (when (and first-entry (> first-entry (point-min)))
+          (delete-region (point-min) first-entry))))))
+
 (defun my/org-agenda-color-lines ()
   "Color entire Org Agenda lines based on tags."
   (save-excursion
@@ -1013,6 +1029,7 @@ t " my-keys" 'my-keys-minor-mode-map)
       (forward-line 1))))
 
 (add-hook 'org-agenda-finalize-hook #'my/org-agenda-color-lines)
+(add-hook 'org-agenda-finalize-hook #'my/org-agenda-hide-global-todo-header)
 
 ;; Search org files associated with the Agenda view
 (with-eval-after-load 'org-agenda
