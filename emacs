@@ -1013,6 +1013,20 @@ t " my-keys" 'my-keys-minor-mode-map)
         (when (and first-entry (> first-entry (point-min)))
           (delete-region (point-min) first-entry))))))
 
+(defun my/org-agenda-goto-last-todo-entry ()
+  "Move point to the last entry in global TODO agenda buffers."
+  (when (eq (get-text-property (point-min) 'org-agenda-type) 'todo)
+    (let (last-entry)
+      (save-excursion
+        (goto-char (point-min))
+        (while (not (eobp))
+          (when (or (get-text-property (line-beginning-position) 'org-marker)
+                    (get-text-property (line-beginning-position) 'org-hd-marker))
+            (setq last-entry (line-beginning-position)))
+          (forward-line 1)))
+      (when last-entry
+        (goto-char last-entry)))))
+
 (defun my/org-agenda-color-lines ()
   "Color entire Org Agenda lines based on tags."
   (save-excursion
@@ -1030,6 +1044,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (add-hook 'org-agenda-finalize-hook #'my/org-agenda-color-lines)
 (add-hook 'org-agenda-finalize-hook #'my/org-agenda-hide-global-todo-header)
+(add-hook 'org-agenda-finalize-hook #'my/org-agenda-goto-last-todo-entry t)
 
 ;; Search org files associated with the Agenda view
 (with-eval-after-load 'org-agenda
