@@ -2,7 +2,7 @@
 (require 'package)
 
 ;; Set to nil for vendored/offline setups (no internet access at startup)
-(defvar my-enable-package-install t
+(defvar my-enable-package-install nil
   "When non-nil, automatically install missing packages from MELPA/ELPA.
 Set to nil for offline/vendored Emacs setups.")
 
@@ -25,6 +25,7 @@ Set to nil for offline/vendored Emacs setups.")
 				  dumb-jump
 				  yasnippet
 				  avy
+				  use-package
 				  ;;dap-mode
 				  which-key
                   go-mode
@@ -36,6 +37,7 @@ Set to nil for offline/vendored Emacs setups.")
                   rust-mode
                   eat
                   diff-hl
+                  xclip
 	  ))
     
 ;; Install all missing packages from package-selected-packages
@@ -89,11 +91,8 @@ Set to nil for offline/vendored Emacs setups.")
 ;; On Wayland, prefer wl-clipboard so copied text reaches native apps.
 ;; sudo apt install xclip xsel wl-clipboard
 (unless (display-graphic-p)
-  (use-package xclip
-    :ensure t
-    :init
-    (setq select-enable-clipboard t)
-    :config
+  (setq select-enable-clipboard t)
+  (when (require 'xclip nil t)
     (when (and (or (getenv "WAYLAND_DISPLAY")
                    (string= (getenv "XDG_SESSION_TYPE") "wayland"))
                (executable-find "wl-copy")
