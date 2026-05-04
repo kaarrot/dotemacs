@@ -996,6 +996,37 @@ t " my-keys" 'my-keys-minor-mode-map)
       '(("urgent" . (:foreground "red" :weight bold))
         ("task" . (:foreground "orange"))))
 
+(defun my/org-entry-has-active-date-p (date)
+  "Return non-nil when the current Org entry already has active DATE."
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((end (save-excursion
+                 (or (outline-next-heading) (point-max)))))
+      (re-search-forward
+       (concat "<" (regexp-quote date) "\\(?:[^>\n]*\\)>")
+       end t))))
+
+(defun my/org-entry-insert-active-timestamp-at-top (timestamp)
+  "Insert active Org TIMESTAMP near the top of the current entry."
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((indent (make-string (org-outline-level) ?\s)))
+      (if (fboundp 'org-end-of-meta-data)
+          (org-end-of-meta-data t)
+        (forward-line 1))
+      (insert indent timestamp "\n"))))
+
+(defun my/org-add-done-timestamp ()
+  "Add today's active timestamp to headings marked DONE."
+  (when (and (boundp 'org-state)
+             (equal org-state "DONE"))
+    (let ((date (format-time-string "%Y-%m-%d"))
+          (timestamp (format-time-string "<%Y-%m-%d %a>")))
+      (unless (my/org-entry-has-active-date-p date)
+        (my/org-entry-insert-active-timestamp-at-top timestamp)))))
+
+(add-hook 'org-after-todo-state-change-hook #'my/org-add-done-timestamp)
+
 (defun my/org-agenda-hide-global-todo-header ()
   "Remove Org's generated help header from global TODO agenda buffers."
   (when (eq (get-text-property (point-min) 'org-agenda-type) 'todo)
@@ -1047,6 +1078,8 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 ;; Search org files associated with the Agenda view
 (with-eval-after-load 'org-agenda
+  (when (fboundp 'my/org-agenda-todo-with-done-timestamp)
+    (advice-remove 'org-agenda-todo #'my/org-agenda-todo-with-done-timestamp))
   (define-key org-agenda-mode-map (kbd "S") #'org-occur-in-agenda-files))
 
 ;;;;;;;;;;;;;;;;;;;; Calendar
