@@ -580,6 +580,10 @@ Set to nil for offline/vendored Emacs setups.")
 ;;(key-chord-define-global "dd" 'flyspell-goto-next-error)
 
 ;;; Org
+(setq org-capture-templates
+      '(("t" "Task" entry (file+headline "" "Tasks")
+         "* TODO %?\n  %u")))
+
 (key-chord-define-global "qq" (lambda () (interactive) (org-capture nil "t")))
 (key-chord-define-global ".." 'org-timestamp-up)
 (key-chord-define-global ",," 'org-timestamp-down)
