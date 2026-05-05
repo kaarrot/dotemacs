@@ -1010,6 +1010,12 @@ t " my-keys" 'my-keys-minor-mode-map)
        (concat "<" (regexp-quote date) "\\(?:[^>\n]*\\)>")
        end t))))
 
+(defun my/org-entry-scheduled-repeater-p ()
+  "Return non-nil when the current Org entry has a repeating SCHEDULED timestamp."
+  (let ((scheduled (org-entry-get nil "SCHEDULED")))
+    (and scheduled
+         (string-match-p "[.+]?[+][0-9]+[hdwmy]" scheduled))))
+
 (defun my/org-entry-insert-active-timestamp-at-top (timestamp)
   "Insert active Org TIMESTAMP near the top of the current entry."
   (save-excursion
@@ -1021,12 +1027,13 @@ t " my-keys" 'my-keys-minor-mode-map)
       (insert indent timestamp "\n"))))
 
 (defun my/org-add-done-timestamp ()
-  "Add today's active timestamp to headings marked DONE."
+  "Add today's active timestamp to non-repeating headings marked DONE."
   (when (and (boundp 'org-state)
              (equal org-state "DONE"))
     (let ((date (format-time-string "%Y-%m-%d"))
           (timestamp (format-time-string "<%Y-%m-%d %a>")))
-      (unless (my/org-entry-has-active-date-p date)
+      (unless (or (my/org-entry-has-active-date-p date)
+                  (my/org-entry-scheduled-repeater-p))
         (my/org-entry-insert-active-timestamp-at-top timestamp)))))
 
 (add-hook 'org-after-todo-state-change-hook #'my/org-add-done-timestamp)
