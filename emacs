@@ -90,7 +90,17 @@ Set to nil for offline/vendored Emacs setups.")
 ;; Use the 'xclip' package to bridge the terminal and system clipboard.
 ;; On Wayland, prefer wl-clipboard so copied text reaches native apps.
 ;; sudo apt install xclip xsel wl-clipboard
+(defun my-enable-terminal-mouse ()
+  "Enable mouse support for xterm-compatible terminal frames."
+  (unless (or noninteractive (display-graphic-p))
+    (require 'xt-mouse)
+    (xterm-mouse-mode 1)
+    (mouse-wheel-mode 1)))
+
+(add-hook 'tty-setup-hook #'my-enable-terminal-mouse)
+
 (unless (display-graphic-p)
+  (my-enable-terminal-mouse)
   (setq select-enable-clipboard t)
   (when (require 'xclip nil t)
     (when (and (or (getenv "WAYLAND_DISPLAY")
