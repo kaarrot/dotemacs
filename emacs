@@ -1006,6 +1006,9 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;; Disable nested heading from inheriting tags and displaying the color of the parent
 (setq org-agenda-use-tag-inheritance nil)
 
+;; Keep generated [inactive] creation timestamps out of agenda comments.
+(setq org-agenda-include-inactive-timestamps nil)
+
 (setq org-tag-faces
       '(("urgent" . (:foreground "red" :weight bold))
         ("task" . (:foreground "orange"))))
@@ -1078,6 +1081,98 @@ t " my-keys" 'my-keys-minor-mode-map)
       (when last-entry
         (goto-char last-entry)))))
 
+(require 'subr-x)
+(require 'org-element)
+
+(defun my/org-marker-in-headline-drawer-p (marker)
+  "Return non-nil when MARKER points inside an Org drawer."
+  (when (and marker (marker-buffer marker))
+    (with-current-buffer (marker-buffer marker)
+      (save-excursion
+        (goto-char marker)
+        (let ((context (org-element-context)))
+          (or (memq (org-element-type context)
+                    '(drawer property-drawer node-property))
+              (org-element-lineage context '(drawer property-drawer) t)))))))
+
+(defun my/org-agenda-timestamp-context-text (marker)
+  "Return one-line context text from the active timestamp line at MARKER."
+  (when (and marker
+             (marker-buffer marker)
+             (not (my/org-marker-in-headline-drawer-p marker)))
+    (with-current-buffer (marker-buffer marker)
+      (save-excursion
+        (goto-char marker)
+        (unless (org-at-heading-p)
+          (let ((line (buffer-substring-no-properties
+                       (line-beginning-position)
+                       (line-end-position))))
+            (when (string-match-p org-ts-regexp line)
+              (let ((text (string-trim
+                           (replace-regexp-in-string
+                            org-ts-regexp-both "" line))))
+                (when (string-match-p
+                       "\\`\\(?:SCHEDULED\\|DEADLINE\\|CLOSED\\):"
+                       text)
+                  (setq text
+                        (string-trim
+                         (replace-regexp-in-string
+                          "\\(?:\\`\\|[[:space:]]+\\)\\(?:SCHEDULED\\|DEADLINE\\|CLOSED\\):"
+                          " " text))))
+                (unless (string-empty-p text)
+                  text)))))))))
+
+(defun my/org-agenda-remove-drawer-timestamp-lines ()
+  "Remove agenda lines sourced from timestamps inside Org drawers."
+  (when (eq org-agenda-type 'agenda)
+    (let ((inhibit-read-only t))
+      (save-excursion
+        (goto-char (point-min))
+        (while (not (eobp))
+          (let ((marker (get-text-property
+                         (line-beginning-position) 'org-marker)))
+            (if (my/org-marker-in-headline-drawer-p marker)
+                (delete-region
+                 (line-beginning-position)
+                 (min (point-max) (1+ (line-end-position))))
+              (forward-line 1))))))))
+
+(defun my/org-agenda-remove-timestamp-context-lines ()
+  "Remove timestamp context lines inserted into the current agenda buffer."
+  (let ((inhibit-read-only t)
+        pos)
+    (save-excursion
+      (goto-char (point-min))
+      (while (setq pos (text-property-any
+                        (point) (point-max)
+                        'my-org-agenda-timestamp-context t))
+        (goto-char pos)
+        (delete-region (line-beginning-position)
+                       (min (point-max) (1+ (line-end-position))))))))
+
+(defun my/org-agenda-add-timestamp-context-lines ()
+  "Show one source timestamp line below matching agenda items."
+  (when (eq org-agenda-type 'agenda)
+    (let ((inhibit-read-only t))
+      (my/org-agenda-remove-timestamp-context-lines)
+      (save-excursion
+        (goto-char (point-min))
+        (while (not (eobp))
+          (let* ((line-start (line-beginning-position))
+                 (marker (get-text-property line-start 'org-marker))
+                 (context (my/org-agenda-timestamp-context-text marker)))
+            (when context
+              (end-of-line)
+              (let ((props (append (text-properties-at line-start)
+                                   '(my-org-agenda-timestamp-context t
+                                     face shadow))))
+                (insert "\n")
+                (add-text-properties
+                 (point)
+                 (progn (insert "    " context) (point))
+                 props))))
+          (forward-line 1))))))
+
 (defun my/org-agenda-color-lines ()
   "Color entire Org Agenda lines based on tags."
   (save-excursion
@@ -1093,6 +1188,8 @@ t " my-keys" 'my-keys-minor-mode-map)
                                '(face (:foreground "black" :background "lightblue"))))))
       (forward-line 1))))
 
+(add-hook 'org-agenda-finalize-hook #'my/org-agenda-remove-drawer-timestamp-lines)
+(add-hook 'org-agenda-finalize-hook #'my/org-agenda-add-timestamp-context-lines)
 (add-hook 'org-agenda-finalize-hook #'my/org-agenda-color-lines)
 (add-hook 'org-agenda-finalize-hook #'my/org-agenda-hide-global-todo-header)
 (add-hook 'org-agenda-finalize-hook #'my/org-agenda-goto-last-todo-entry t)
