@@ -444,6 +444,9 @@ In order to avoid interfference form project denoters we set them off. To restor
   )
 
 ;;; Dropbox
+(require 'subr-x)
+(require 'json)
+
 (defun dropbox-send (file-path)
   (interactive "bSpecify buffer name: ")
   ;; Use absolute path
@@ -477,18 +480,32 @@ exists on Dropbox and automatically download it."
   :type 'boolean
   :group 'org)
 
+(defcustom dropbox-auto-sync-mtime-tolerance 2
+  "Seconds remote files must be newer before Dropbox auto-sync downloads them."
+  :type 'number
+  :group 'org)
+
 (defun dropbox-get-mtime (filename)
   "Get modification time of a file on Dropbox. Returns time in seconds since epoch or nil if not found.
 Returns nil immediately if offline, command fails, or times out after 3 seconds."
   (condition-case nil
       (with-timeout (5 nil)  ; 5 second timeout, return nil if exceeded
-        (let* ((cmd (format "rclone lsl dropbox:%s --timeout 3s --contimeout 3s 2>/dev/null | awk '{print $2, $3}'" filename))
-               (output (string-trim (shell-command-to-string cmd))))
-          (when (and output (not (string-empty-p output)))
-            ;; Parse the date-time string from rclone output (format: "2024-01-18 16:23:45")
-            (let ((parsed-time (parse-time-string output)))
-              (when parsed-time
-                (float-time (encode-time parsed-time)))))))
+        (when (executable-find "rclone")
+          (with-temp-buffer
+            (let ((status (call-process "rclone" nil t nil
+                                        "lsjson" (concat "dropbox:" filename)
+                                        "--files-only"
+                                        "--no-mimetype"
+                                        "--timeout" "3s"
+                                        "--contimeout" "3s")))
+              (when (and (zerop status) (> (buffer-size) 0))
+                (let* ((json-array-type 'list)
+                       (json-object-type 'alist)
+                       (json-key-type 'symbol)
+                       (items (json-read-from-string (buffer-string)))
+                       (modtime (alist-get 'ModTime (car items))))
+                  (when (and modtime (not (string-empty-p modtime)))
+                    (float-time (date-to-time modtime)))))))))
     (error nil)))  ; Return nil on any error
 
 (defun dropbox-file-newer-p (local-file remote-filename)
@@ -497,13 +514,14 @@ Returns nil immediately if offline, command fails, or times out after 3 seconds.
     (let ((local-mtime (float-time (file-attribute-modification-time (file-attributes local-file))))
           (remote-mtime (dropbox-get-mtime remote-filename)))
       (when remote-mtime
-        (> remote-mtime local-mtime)))))
+        (> (- remote-mtime local-mtime) dropbox-auto-sync-mtime-tolerance)))))
 
 (defun dropbox-auto-sync-on-open ()
   "Automatically sync from Dropbox if remote file is newer. Works for all org-agenda-files.
 Only runs if `dropbox-auto-sync-enabled' is non-nil."
   (when (and dropbox-auto-sync-enabled
              buffer-file-name
+             (not (buffer-modified-p))
              (boundp 'org-agenda-files)
              (member (expand-file-name buffer-file-name)
                      (mapcar #'expand-file-name org-agenda-files)))
