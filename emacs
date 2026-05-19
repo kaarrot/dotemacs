@@ -956,7 +956,10 @@ t " my-keys" 'my-keys-minor-mode-map)
                                   (error (message "Copy Id"))) ;; Needed to silent error and execute next expression
                                 (org-id-copy))
                               ))
-            (local-set-key (kbd "C-c s") 'search-headlines)
+            (local-set-key (kbd "C-c d d") 'org-deadline)
+            (local-set-key (kbd "C-c s s") 'org-schedule)
+            (local-set-key (kbd "C-c s h") 'search-headlines)
+            (local-set-key (kbd "C-c c c") 'org-archive-subtree-default)
 
             (setq org-ditaa-jar-path "~/bin/ditaa0_9.jar")
             (org-babel-do-load-languages
@@ -1245,7 +1248,10 @@ t " my-keys" 'my-keys-minor-mode-map)
 (with-eval-after-load 'org-agenda
   (when (fboundp 'my/org-agenda-todo-with-done-timestamp)
     (advice-remove 'org-agenda-todo #'my/org-agenda-todo-with-done-timestamp))
-  (define-key org-agenda-mode-map (kbd "S") #'org-occur-in-agenda-files))
+  (define-key org-agenda-mode-map (kbd "S") #'org-occur-in-agenda-files)
+  (define-key org-agenda-mode-map (kbd "C-c d d") #'org-agenda-deadline)
+  (define-key org-agenda-mode-map (kbd "C-c s s") #'org-agenda-schedule)
+  (define-key org-agenda-mode-map (kbd "C-c c c") #'org-agenda-archive-default))
 
 ;;;;;;;;;;;;;;;;;;;; Calendar
 (defun my-calendar-hook ()
