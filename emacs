@@ -1009,9 +1009,24 @@ t " my-keys" 'my-keys-minor-mode-map)
 ;; Keep generated [inactive] creation timestamps out of agenda comments.
 (setq org-agenda-include-inactive-timestamps nil)
 
+(defface my/org-agenda-urgent
+  '((t :inherit error :weight bold))
+  "Face used for urgent entries in Org agenda.")
+
+(defface my/org-agenda-task
+  '((t :inherit font-lock-keyword-face))
+  "Face used for one-off task entries in Org agenda.")
+
+(defface my/org-agenda-recurring-scheduled
+  '((t :inherit font-lock-builtin-face))
+  "Face used for recurring scheduled entries in Org agenda.")
+
 (setq org-tag-faces
-      '(("urgent" . (:foreground "red" :weight bold))
-        ("task" . (:foreground "orange"))))
+      '(("urgent" . my/org-agenda-urgent)
+        ("task" . my/org-agenda-task)))
+
+(defconst my/org-timestamp-repeater-regexp "[.+]?[+][0-9]+[hdwmy]"
+  "Regexp matching Org timestamp repeater intervals.")
 
 (defun my/org-entry-has-active-date-p (date)
   "Return non-nil when the current Org entry already has active DATE."
@@ -1027,7 +1042,7 @@ t " my-keys" 'my-keys-minor-mode-map)
   "Return non-nil when the current Org entry has a repeating SCHEDULED timestamp."
   (let ((scheduled (org-entry-get nil "SCHEDULED")))
     (and scheduled
-         (string-match-p "[.+]?[+][0-9]+[hdwmy]" scheduled))))
+         (string-match-p my/org-timestamp-repeater-regexp scheduled))))
 
 (defun my/org-entry-insert-active-timestamp-at-top (timestamp)
   "Insert active Org TIMESTAMP near the top of the current entry."
@@ -1173,19 +1188,51 @@ t " my-keys" 'my-keys-minor-mode-map)
                  props))))
           (forward-line 1))))))
 
+(defun my/org-agenda-line-marker ()
+  "Return the Org source marker for the current agenda line."
+  (let ((line-start (line-beginning-position))
+        (line-end (line-end-position)))
+    (or (my/org-agenda-line-marker-property 'org-hd-marker line-start line-end)
+        (my/org-agenda-line-marker-property 'org-marker line-start line-end))))
+
+(defun my/org-agenda-line-marker-property (property line-start line-end)
+  "Return PROPERTY value between LINE-START and LINE-END."
+  (let ((pos line-start)
+        value)
+    (while (and (not value) (< pos line-end))
+      (setq value (get-text-property pos property))
+      (setq pos (or (next-single-property-change pos property nil line-end)
+                    line-end)))
+    value))
+
+(defun my/org-agenda-line-scheduled-repeater-p ()
+  "Return non-nil when the current agenda line is a repeating scheduled entry."
+  (let ((marker (my/org-agenda-line-marker)))
+    (when (and marker (marker-buffer marker))
+      (with-current-buffer (marker-buffer marker)
+        (save-excursion
+          (goto-char marker)
+          (my/org-entry-scheduled-repeater-p))))))
+
 (defun my/org-agenda-color-lines ()
-  "Color entire Org Agenda lines based on tags."
+  "Color entire Org agenda lines based on tags and repeaters."
   (save-excursion
     (goto-char (point-min))
     (while (not (eobp))
-      (let ((line (thing-at-point 'line t)))
-        (cond
-         ((and line (string-match ":urgent:" line))
-          (add-text-properties (line-beginning-position) (line-end-position)
-                               '(face (:foreground "white" :background "red" :weight bold))))
-         ((and line (string-match ":task:" line))
-          (add-text-properties (line-beginning-position) (line-end-position)
-                               '(face (:foreground "black" :background "lightblue"))))))
+      (let* ((line-start (line-beginning-position))
+             (line-end (line-end-position))
+             (line (buffer-substring-no-properties line-start line-end)))
+        (unless (get-text-property line-start 'my-org-agenda-timestamp-context)
+          (cond
+           ((string-match-p ":urgent:" line)
+            (add-face-text-property line-start line-end
+                                    'my/org-agenda-urgent))
+           ((my/org-agenda-line-scheduled-repeater-p)
+            (add-face-text-property line-start line-end
+                                    'my/org-agenda-recurring-scheduled))
+           ((string-match-p ":task:" line)
+            (add-face-text-property line-start line-end
+                                    'my/org-agenda-task)))))
       (forward-line 1))))
 
 (add-hook 'org-agenda-finalize-hook #'my/org-agenda-remove-drawer-timestamp-lines)
