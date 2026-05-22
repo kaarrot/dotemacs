@@ -864,6 +864,49 @@ t " my-keys" 'my-keys-minor-mode-map)
 (org-clock-persistence-insinuate)
 (add-hook 'org-clock-out-hook #'org-clock-save)
 
+(defun my-org-clock-select-task (&optional prompt)
+  "Like `org-clock-select-task' but uses completing-read for incremental filtering.
+Replaces the single-key selection buffer with a searchable minibuffer.
+Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i)."
+  (org-clock-load)
+  (let (pairs)
+    (dolist (spec `(("[default] "    . ,org-clock-default-task)
+                    ("[interrupted] " . ,org-clock-interrupted-task)
+                    ,@(when (org-clocking-p)
+                        `(("[current] " . ,org-clock-marker)))))
+      (let ((prefix (car spec)) (m (cdr spec)))
+        (when (and m (marker-buffer m))
+          (with-current-buffer (org-base-buffer (marker-buffer m))
+            (org-with-wide-buffer
+             (ignore-errors
+               (goto-char m)
+               (push (cons (concat prefix (org-get-heading 'notags)) m) pairs)))))))
+    (dolist (m (seq-uniq org-clock-history))
+      (when (marker-buffer m)
+        (with-current-buffer (org-base-buffer (marker-buffer m))
+          (org-with-wide-buffer
+           (ignore-errors
+             (goto-char m)
+             (push (cons (org-get-heading 'notags) m)
+                   pairs))))))
+    (setq pairs (nreverse pairs))
+    (unless pairs (user-error "No recent clock"))
+    (let* ((fido-vertical-was-active fido-vertical-mode)
+           (completion-extra-properties
+            '(:display-sort-function identity :cycle-sort-function identity))
+           chosen)
+      (unless fido-vertical-was-active (fido-vertical-mode 1))
+      (unwind-protect
+          (setq chosen (completing-read
+                        (or prompt "Clock in on task: ")
+                        (mapcar #'car pairs)
+                        nil t))
+        (unless fido-vertical-was-active (fido-vertical-mode -1)))
+      (cdr (assoc chosen pairs)))))
+
+(with-eval-after-load 'org-clock
+  (advice-add 'org-clock-select-task :override #'my-org-clock-select-task))
+
 ;; following up the task unfolds the heading
 (add-hook 'org-agenda-after-show-hook 'my-org-show-context-level-2)
 
