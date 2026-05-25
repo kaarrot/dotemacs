@@ -49,6 +49,25 @@ Set to nil for offline/vendored Emacs setups.")
       (dolist (pkg missing-packages)
         (package-install pkg)))))
 
+;; Emacs 27 compat: fido-vertical-mode ships in 28+; back-port via icomplete-vertical
+(when (version< emacs-version "28")
+  (add-to-list 'package-selected-packages 'icomplete-vertical)
+  (when my-enable-package-install
+    (unless (package-installed-p 'icomplete-vertical)
+      (unless package-archive-contents (package-refresh-contents))
+      (package-install 'icomplete-vertical)))
+  (require 'icomplete-vertical nil t)
+  (defvar fido-vertical-mode nil)
+  (defun fido-vertical-mode (&optional arg)
+    (interactive (list (or current-prefix-arg 'toggle)))
+    (let ((enable (if (eq arg 'toggle)
+                      (not fido-vertical-mode)
+                    (> (prefix-numeric-value arg) 0))))
+      (setq fido-vertical-mode enable)
+      (fido-mode (if enable 1 -1))
+      (when (fboundp 'icomplete-vertical-mode)
+        (icomplete-vertical-mode (if enable 1 -1))))))
+
 (when (>= emacs-major-version 30)
   ;; Refresh package metadata if claude-code-ide not installed yet
   (unless (package-installed-p 'claude-code-ide)
