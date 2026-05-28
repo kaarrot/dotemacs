@@ -66,9 +66,9 @@ Useful links.
     <key c="z"/>
     <key width="1.2" c="x" ne="cursor_up" sw="cursor_down"/>
     <key c="c" ne="," sw="."/>
-    <key c="v" ne="&gt;" sw="&lt;"/>
+    <key c="v" ne=";" sw=":"/>    
     <key c="b" ne="/" sw="\?"/>
-    <key c="n" ne=";" sw=":"/>
+    <key c="n" ne="&gt;" sw="&lt;"/>
     <key c="m" ne="&quot;" sw="'"/>
     <key width="1.5" c="backspace" ne="delete"/>
 </row>
