@@ -1074,6 +1074,10 @@ Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
 ;; Keep generated [inactive] creation timestamps out of agenda comments.
 (setq org-agenda-include-inactive-timestamps nil)
 
+;; Place tags in org buffer and agenda just after the main text
+(setq org-agenda-tags-column 0)
+(setq org-tags-column 0)
+
 (defface my/org-agenda-urgent
   '((t :inherit error :weight bold))
   "Face used for urgent entries in Org agenda.")
