@@ -961,7 +961,9 @@ Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
         (" n" "NEXT tasks" todo "NEXT")
         (" w" "WAITING tasks" todo "WAITING")
         (" r" "READ tasks" todo "READ")
-        (" t" "TODO tasks" todo "TODO")
+        (" t" "TODO tasks (toggle sort with h)" todo "TODO"
+         ((org-agenda-sorting-strategy '(user-defined-up))
+          (org-agenda-cmp-user-defined #'my/org-cmp-todo)))
         (" y" "TODAY tasks" todo "TODAY")
         ))
 
@@ -1160,6 +1162,56 @@ Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
 
 (add-hook 'org-after-todo-state-change-hook #'my/org-add-done-timestamp)
 
+(defun my/org-bump-state-changes (&rest _)
+  "Increment :STATE_CHANGES: on the entry at point, skipping repeaters."
+  (unless (my/org-entry-scheduled-repeater-p)
+    (let ((n (string-to-number
+              (or (org-entry-get nil "STATE_CHANGES") "0"))))
+      (org-entry-put nil "STATE_CHANGES" (number-to-string (1+ n))))))
+
+(defun my/org-bump-state-changes-on-state ()
+  (when (and (boundp 'org-state) org-state)
+    (my/org-bump-state-changes)))
+
+(add-hook 'org-after-todo-state-change-hook #'my/org-bump-state-changes-on-state)
+(advice-add 'org-schedule :after #'my/org-bump-state-changes)
+
+(defun my/org-entry-state-changes ()
+  (string-to-number (or (org-entry-get nil "STATE_CHANGES") "0")))
+
+(defun my/org-entry-creation-time ()
+  "Float-time of the first inactive timestamp under the heading, else 0.
+Relies on the capture template's `%u'."
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((end (save-excursion (outline-next-heading) (point))))
+      (if (re-search-forward org-ts-regexp-inactive end t)
+          (float-time (org-time-string-to-time (match-string 0)))
+        0))))
+
+(defvar my/org-todo-sort-mode 'churn
+  "Sort key for the TODO agenda view: `churn' or `created'.
+Sorted ascending in both modes so the high value (most changes /
+newest) lands at the bottom of the buffer.")
+
+(defun my/org-cmp-todo (a b)
+  (let* ((ma (get-text-property 0 'org-hd-marker a))
+         (mb (get-text-property 0 'org-hd-marker b))
+         (getter (if (eq my/org-todo-sort-mode 'created)
+                     #'my/org-entry-creation-time
+                   #'my/org-entry-state-changes))
+         (va (org-with-point-at ma (funcall getter)))
+         (vb (org-with-point-at mb (funcall getter))))
+    (cond ((< va vb) -1) ((> va vb) +1))))
+
+(defun my/org-agenda-toggle-todo-sort ()
+  "Flip TODO agenda sort key between churn and created, then refresh."
+  (interactive)
+  (setq my/org-todo-sort-mode
+        (if (eq my/org-todo-sort-mode 'churn) 'created 'churn))
+  (message "TODO sort: by %s" my/org-todo-sort-mode)
+  (org-agenda-redo))
+
 (defun my/org-agenda-hide-global-todo-header ()
   "Remove Org's generated help header from global TODO agenda buffers."
   (when (eq (get-text-property (point-min) 'org-agenda-type) 'todo)
@@ -1342,7 +1394,8 @@ Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
   (define-key org-agenda-mode-map (kbd "S") #'org-occur-in-agenda-files)
   (define-key org-agenda-mode-map (kbd "C-c d d") #'org-agenda-deadline)
   (define-key org-agenda-mode-map (kbd "C-c s s") #'org-agenda-schedule)
-  (define-key org-agenda-mode-map (kbd "C-c c c") #'org-agenda-archive-default))
+  (define-key org-agenda-mode-map (kbd "C-c c c") #'org-agenda-archive-default)
+  (define-key org-agenda-mode-map (kbd "h") #'my/org-agenda-toggle-todo-sort))
 
 ;;;;;;;;;;;;;;;;;;;; Calendar
 (defun my-calendar-hook ()
