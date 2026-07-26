@@ -1169,11 +1169,18 @@ Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
               (or (org-entry-get nil "STATE_CHANGES") "0"))))
       (org-entry-put nil "STATE_CHANGES" (number-to-string (1+ n))))))
 
-(defun my/org-bump-state-changes-on-state ()
-  (when (and (boundp 'org-state) org-state)
-    (my/org-bump-state-changes)))
+(defun my/org-bump-state-changes-on-trigger (change)
+  "Bump :STATE_CHANGES: only when a task returns to TODO from another state."
+  (let ((from (plist-get change :from))
+        (to   (plist-get change :to)))
+    (when (and (eq (plist-get change :type) 'todo-state-change)
+               (equal to "TODO")
+               from
+               (not (equal from ""))
+               (not (equal from to)))
+      (my/org-bump-state-changes))))
 
-(add-hook 'org-after-todo-state-change-hook #'my/org-bump-state-changes-on-state)
+(add-hook 'org-trigger-hook #'my/org-bump-state-changes-on-trigger)
 (advice-add 'org-schedule :after #'my/org-bump-state-changes)
 
 (defun my/org-entry-state-changes ()
