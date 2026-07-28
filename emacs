@@ -106,9 +106,14 @@ Set to nil for offline/vendored Emacs setups.")
      )))
 
 ;; Only execute if Emacs is running in terminal mode (no GUI)
-;; Use the 'xclip' package to bridge the terminal and system clipboard.
-;; On Wayland, prefer wl-clipboard so copied text reaches native apps.
-;; sudo apt install xclip xsel wl-clipboard
+;; Copy via an OSC 52 escape sequence, which asks the terminal emulator itself
+;; to set the clipboard.  Under Crostini the terminal is a host-side ChromeOS
+;; app reached over vsh, so it is a client of neither the container's Wayland
+;; compositor nor its Xwayland: wl-copy blocks forever waiting for keyboard
+;; focus it never receives, and xclip writes into a headless X server that
+;; nothing outside the container can read.  OSC 52 rides the terminal's own
+;; byte stream, so it is the only path here that reaches the real clipboard --
+;; and it keeps working over SSH and inside containers generally.
 (defun my-enable-terminal-mouse ()
   "Enable mouse support for xterm-compatible terminal frames."
   (unless (or noninteractive (display-graphic-p))
@@ -118,17 +123,21 @@ Set to nil for offline/vendored Emacs setups.")
 
 (add-hook 'tty-setup-hook #'my-enable-terminal-mouse)
 
+(defun my-osc52-copy (text)
+  "Set the terminal's clipboard to TEXT using an OSC 52 escape sequence."
+  (send-string-to-terminal
+   (format "\e]52;c;%s\a"
+           (base64-encode-string (encode-coding-string text 'utf-8) t))))
+
 (unless (display-graphic-p)
   (my-enable-terminal-mouse)
   (setq select-enable-clipboard t)
-  (when (require 'xclip nil t)
-    (when (and (or (getenv "WAYLAND_DISPLAY")
-                   (string= (getenv "XDG_SESSION_TYPE") "wayland"))
-               (executable-find "wl-copy")
-               (executable-find "wl-paste"))
-      (setq xclip-method 'wl-copy
-            xclip-program "wl-copy"))
-    (xclip-mode 1)))
+  ;; Terminals accept OSC 52 writes but almost always refuse reads, since
+  ;; letting a remote host siphon the clipboard is a security hole.  So there
+  ;; is no way to pull the system clipboard back in: leave yanks to the kill
+  ;; ring and use the terminal's own paste (Ctrl+Shift+V) for outside text.
+  (setq interprogram-cut-function #'my-osc52-copy
+        interprogram-paste-function nil))
     
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
