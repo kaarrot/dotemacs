@@ -911,18 +911,246 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (setq org-agenda-window-setup 'only-window)
 
-;; Persistent clock-in/out history across sessions
+;; Persistent clock-in/out history across sessions.
+;;
+;; Org's own history is stored as raw character offsets: `org-clock-save' writes
+;; (FILE . POSITION) pairs and `org-clock-load' rebuilds markers from them.  Any
+;; text inserted earlier in the file shifts every later offset, so entries deep
+;; in a big notes file drift onto a neighbouring heading, or off the front into
+;; the preamble where `org-get-heading' signals "before first heading" and the
+;; task silently disappears from the selector.  `global-auto-revert-mode' makes
+;; it worse: reverting relocates live markers, and the next save persists the
+;; collapsed positions as truth.
+;;
+;; So keep our own recency list keyed by what a heading *is* (id / outline path /
+;; heading text) rather than where it currently sits, and leave org responsible
+;; only for resuming a running clock.
 (setq org-clock-history-length 20)
-(setq org-clock-persist t)
+(setq org-clock-persist 'clock)         ;; resume only -- history is ours, below
 (org-clock-persistence-insinuate)
 (add-hook 'org-clock-out-hook #'org-clock-save)
+
+(defvar my-org-clock-history-file
+  (expand-file-name "my-org-clock-history.el" user-emacs-directory)
+  "File `my-org-clock-history' is persisted to.  Data only, never loaded as code.")
+
+(defvar my-org-clock-history-length 20
+  "How many recently clocked tasks to remember.")
+
+(defvar my-org-clock-history nil
+  "Recently clocked tasks, most recent first.
+Each entry is a plist of :file :id :olp :heading :pos :time.  The position is
+only a hint for disambiguating identical headings -- entries are resolved by
+id, outline path or heading text, so they survive edits elsewhere in the file.")
+
+(defun my-org-clock-history--entry-at-point ()
+  "Return a history entry plist for the Org heading at point, or nil."
+  (let ((file (buffer-file-name (org-base-buffer (current-buffer)))))
+    (when (and file (derived-mode-p 'org-mode))
+      (org-with-wide-buffer
+       (when (ignore-errors (org-back-to-heading t) t)
+         (list :file (file-truename file)
+               :id (org-id-get)
+               :olp (org-get-outline-path t)
+               :heading (org-get-heading t t t t)
+               :pos (point)
+               :time (format-time-string "%Y-%m-%d %a %H:%M")))))))
+
+(defun my-org-clock-history--key (entry)
+  "Identity of ENTRY for de-duplication."
+  (or (plist-get entry :id)
+      (cons (plist-get entry :file) (plist-get entry :olp))))
+
+(defun my-org-clock-history--read ()
+  "Return the entry list stored in `my-org-clock-history-file'.
+A missing or corrupt file just reads as empty."
+  (condition-case err
+      (with-temp-buffer
+        (insert-file-contents my-org-clock-history-file)
+        (goto-char (point-min))
+        (let ((data (read (current-buffer)))) ;; data, never `load-file'
+          (and (listp data) data)))
+    (file-missing nil)
+    (error (message "my-org-clock-history: unreadable, ignoring: %s"
+                    (error-message-string err))
+           nil)))
+
+(defun my-org-clock-history--merge (a b)
+  "Union of entry lists A and B: newest :time first, de-duplicated by identity.
+Ties keep A's order, so the entry just clocked in stays at the front."
+  (cond
+   ((null b) a)
+   ((null a) b)
+   (t (let (out seen)
+        (dolist (e (sort (append a b)
+                         (lambda (x y) (string> (or (plist-get x :time) "")
+                                                (or (plist-get y :time) "")))))
+          (let ((key (my-org-clock-history--key e)))
+            (unless (member key seen)
+              (push key seen)
+              (push e out))))
+        (nreverse out)))))
+
+(defun my-org-clock-history--write (entries)
+  "Write ENTRIES to `my-org-clock-history-file', replacing its contents."
+  (condition-case err
+      (with-temp-file my-org-clock-history-file
+        (insert ";; -*- lisp-data -*-\n"
+                ";; Recently clocked org tasks; written by `my-org-clock-history-save'.\n")
+        (let ((print-length nil) (print-level nil))
+          (prin1 entries (current-buffer)))
+        (insert "\n"))
+    (error (message "my-org-clock-history: save failed: %s"
+                    (error-message-string err)))))
+
+(defun my-org-clock-history-save ()
+  "Persist `my-org-clock-history', merging with whatever is already on disk.
+Merging means a second Emacs instance cannot clobber this one's entries, and an
+empty in-memory list never wipes a good file -- that wipe is exactly what used
+to poison org's own history file."
+  (let ((merged (seq-take (my-org-clock-history--merge
+                           my-org-clock-history (my-org-clock-history--read))
+                          my-org-clock-history-length)))
+    (when merged
+      (setq my-org-clock-history merged)
+      (my-org-clock-history--write merged))))
+
+(defun my-org-clock-history-load ()
+  "Read `my-org-clock-history' back from `my-org-clock-history-file'."
+  (setq my-org-clock-history (my-org-clock-history--read)))
+
+(defun my-org-clock-history-push (entry)
+  "Move ENTRY to the front of `my-org-clock-history' and persist the list."
+  (when entry
+    (let ((key (my-org-clock-history--key entry)))
+      (setq my-org-clock-history
+            (cons entry
+                  (seq-remove (lambda (e)
+                                (equal key (my-org-clock-history--key e)))
+                              my-org-clock-history))))
+    (when (> (length my-org-clock-history) my-org-clock-history-length)
+      (setq my-org-clock-history
+            (seq-take my-org-clock-history my-org-clock-history-length)))
+    (my-org-clock-history-save)))
+
+(defun my-org-clock-history-record ()
+  "Remember the task just clocked in.  For `org-clock-in-hook'."
+  (let ((m org-clock-hd-marker))
+    (when (and (markerp m) (marker-buffer m))
+      (with-current-buffer (org-base-buffer (marker-buffer m))
+        (org-with-wide-buffer
+         (goto-char m)
+         (my-org-clock-history-push (my-org-clock-history--entry-at-point)))))))
+
+(defun my-org-clock-history-add-current ()
+  "Remember the heading at point as a recent task, without clocking in.
+Useful for seeding the selector with tasks you return to often."
+  (interactive)
+  (let ((entry (my-org-clock-history--entry-at-point)))
+    (unless entry (user-error "Not on an Org heading in a file"))
+    (my-org-clock-history-push entry)
+    (message "Added to clock history: %s" (plist-get entry :heading))))
+
+(defun my-org-clock-history--heading-positions (heading)
+  "Return the positions of all headings in this buffer whose text is HEADING.
+Matches like `org-find-exact-headline-in-buffer', i.e. tolerating a TODO
+keyword, a priority cookie and tags around HEADING."
+  (org-with-wide-buffer
+   (goto-char (point-min))
+   (let ((re (format org-complex-heading-regexp-format (regexp-quote heading)))
+         (case-fold-search nil)
+         hits)
+     (while (re-search-forward re nil t)
+       (push (match-beginning 0) hits)
+       (goto-char (match-end 0)))
+     (nreverse hits))))
+
+(defun my-org-clock-history--nearest (positions pos)
+  "Return the element of POSITIONS closest to POS, or nil if POSITIONS is empty."
+  (car (sort (copy-sequence positions)
+             (lambda (a b) (< (abs (- a pos)) (abs (- b pos)))))))
+
+(defun my-org-clock-history-resolve (entry)
+  "Return a fresh marker on the heading ENTRY refers to, or nil if it is gone.
+Tries the stored id, then the outline path, then the heading text.  Never falls
+back to the stored position on its own: clocking into whatever now sits at an
+old offset is worse than failing, because it silently mis-records time."
+  (let ((id (plist-get entry :id))
+        (file (plist-get entry :file))
+        (heading (plist-get entry :heading))
+        (olp (plist-get entry :olp))
+        (pos (or (plist-get entry :pos) 1)))
+    (or (and id (ignore-errors (org-id-find id 'marker)))
+        (and file heading (file-readable-p file)
+             (let ((buf (ignore-errors (find-file-noselect file t))))
+               (when (buffer-live-p buf)
+                 (with-current-buffer (org-base-buffer buf)
+                   (when (derived-mode-p 'org-mode)
+                     (let* ((hits (my-org-clock-history--heading-positions heading))
+                            ;; `org-find-olp' would do this, but it errors out on
+                            ;; non-unique headings -- and duplicated heading text
+                            ;; is normal in these notes.  Prefer the hit whose
+                            ;; whole outline path matches, then the nearest one.
+                            (same-olp
+                             (seq-filter
+                              (lambda (p)
+                                (equal olp (org-with-wide-buffer
+                                            (goto-char p)
+                                            (org-get-outline-path t))))
+                              hits))
+                            (best (my-org-clock-history--nearest
+                                   (or same-olp hits) pos)))
+                       (when best
+                         (org-with-wide-buffer
+                          (goto-char best)
+                          (point-marker))))))))))))
+
+(defun my-org-clock-history-prune ()
+  "Drop history entries whose heading can no longer be found."
+  (interactive)
+  (let* ((before (length my-org-clock-history))
+         (kept (seq-filter (lambda (e)
+                             (let ((m (my-org-clock-history-resolve e)))
+                               (when m (set-marker m nil) t)))
+                           my-org-clock-history)))
+    (setq my-org-clock-history kept)
+    ;; Direct write: a merging save would read the dropped entries straight back.
+    (my-org-clock-history--write kept)
+    (message "Clock history: dropped %d, kept %d" (- before (length kept))
+             (length kept))))
+
+(defun my-org-clock-history--label (entry multi-file)
+  "Return the completion label for ENTRY.
+Appends the parent outline path (and the file name when MULTI-FILE) so that
+repeated heading text stays distinguishable."
+  (let* ((context (append (when multi-file
+                            (list (file-name-nondirectory (plist-get entry :file))))
+                          (butlast (plist-get entry :olp)))))
+    (concat (plist-get entry :heading)
+            (when context
+              (concat "  " (propertize (mapconcat #'identity context "/")
+                                       'face 'shadow))))))
+
+(defun my-org-clock-history--unique-label (label pairs)
+  "Return LABEL, suffixed if needed so it does not collide within PAIRS."
+  (if (not (assoc label pairs))
+      label
+    (let ((n 2))
+      (while (assoc (format "%s <%d>" label n) pairs) (setq n (1+ n)))
+      (format "%s <%d>" label n))))
 
 (defun my-org-clock-select-task (&optional prompt)
   "Like `org-clock-select-task' but uses completing-read for incremental filtering.
 Replaces the single-key selection buffer with a searchable minibuffer.
-Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i)."
-  (org-clock-load)
-  (let (pairs)
+Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
+
+Candidates come from `my-org-clock-history', built from the stored heading text,
+so the list needs no open buffers and cannot come back empty just because a
+buffer was killed.  Only the chosen entry is resolved to a marker."
+  (let ((multi-file (> (length (seq-uniq (mapcar (lambda (e) (plist-get e :file))
+                                                 my-org-clock-history)))
+                       1))
+        pairs)
     (dolist (spec `(("[default] "    . ,org-clock-default-task)
                     ("[interrupted] " . ,org-clock-interrupted-task)
                     ,@(when (org-clocking-p)
@@ -934,14 +1162,10 @@ Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
              (ignore-errors
                (goto-char m)
                (push (cons (concat prefix (org-get-heading 'notags)) m) pairs)))))))
-    (dolist (m (seq-uniq org-clock-history))
-      (when (marker-buffer m)
-        (with-current-buffer (org-base-buffer (marker-buffer m))
-          (org-with-wide-buffer
-           (ignore-errors
-             (goto-char m)
-             (push (cons (org-get-heading 'notags) m)
-                   pairs))))))
+    (dolist (entry my-org-clock-history)
+      (let ((label (my-org-clock-history--unique-label
+                    (my-org-clock-history--label entry multi-file) pairs)))
+        (push (cons label entry) pairs)))
     (setq pairs (nreverse pairs))
     (unless pairs (user-error "No recent clock"))
     (let* ((fido-vertical-was-active fido-vertical-mode)
@@ -955,10 +1179,44 @@ Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
                         (mapcar #'car pairs)
                         nil t))
         (unless fido-vertical-was-active (fido-vertical-mode -1)))
-      (cdr (assoc chosen pairs)))))
+      (let ((sel (cdr (assoc chosen pairs))))
+        (cond
+         ;; [default]/[interrupted]/[current]: copy, because `org-clock-in'
+         ;; clears the marker it is handed.
+         ((markerp sel) (copy-marker sel))
+         (sel (or (my-org-clock-history-resolve sel)
+                  (user-error "Heading no longer found: %s (in %s) -- M-x my-org-clock-history-prune"
+                              (plist-get sel :heading)
+                              (file-name-nondirectory (plist-get sel :file))))))))))
 
+(add-hook 'org-clock-in-hook #'my-org-clock-history-record)
+(add-hook 'kill-emacs-hook #'my-org-clock-history-save)
+(my-org-clock-history-load)
+
+;; Selector relies on fido-vertical-mode (shimmed for Emacs 27; see top of file).
 (with-eval-after-load 'org-clock
   (advice-add 'org-clock-select-task :override #'my-org-clock-select-task))
+
+;; `org-clock-load' honours `org-clock-persist' only when *saving*: it pushes
+;; `org-clock-stored-history' unconditionally, so an old persist file (any host
+;; not yet updated, or one written before this change) would still inject
+;; offset-based markers.  Drop them -- the recency list above is the only source.
+(defun my-org-clock-drop-restored-history (&rest _)
+  "Forget the offset-based markers `org-clock-load' restores from old files."
+  (setq org-clock-history nil))
+(with-eval-after-load 'org-clock
+  (advice-add 'org-clock-load :after #'my-org-clock-drop-restored-history))
+
+;; `org-clock-history' now starts out empty each session (org only persists the
+;; running clock), so plain C-c C-x C-j would error with "No active or recent
+;; clock task".  Offer the recency list instead.
+(defun my-org-clock-goto-fallback (orig &optional select)
+  "Fall back to the task selector when org has no in-session clock history."
+  (if (or select (org-clocking-p) org-clock-history)
+      (funcall orig select)
+    (funcall orig '(4))))
+(with-eval-after-load 'org-clock
+  (advice-add 'org-clock-goto :around #'my-org-clock-goto-fallback))
 
 ;; following up the task unfolds the heading
 (add-hook 'org-agenda-after-show-hook 'my-org-show-context-level-2)
@@ -1001,12 +1259,10 @@ Called by `org-clock-in' when invoked with a universal prefix (C-u C-c C-x C-i).
                   '(:link t :maxlevel 6 :fileskip0 t :compact t :narrow 123 :score 0))
 
     
-            ;; Enable persistent org-clock across emacs sessions - jumps to active clock
-            (org-clock-persistence-insinuate)
-            (setq org-clock-persist t
-                  org-clock-persist-query-resume nil
+            ;; Persistent org-clock is configured once at load time (see
+            ;; `my-org-clock-history' section above); only per-mode behavior here.
+            (setq org-clock-persist-query-resume nil
                   org-clock-auto-clock-resolution 'when-no-clock-is-running
-                  org-clock-history-length 23
                   org-clock-in-resume t)
 
             (setq org-refile-use-outline-path 'file)

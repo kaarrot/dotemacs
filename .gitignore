@@ -6,5 +6,6 @@ emacs.d/elpa
 emacs.d/.cache
 emacs.d/desktops
 emacs.d/*cache
+emacs.d/my-org-clock-history.el
 emacs.d/OLD*/**
 printers/__pycache__
