@@ -627,8 +627,8 @@ Set to nil for offline/vendored Emacs setups.")
 (key-chord-define-global ",," 'org-timestamp-down)
 (defun my/ii-org-time-stamp ()
   "Insert an active timestamp with time.
-If point is on an existing timestamp, keep its date but replace the
-time portion with the current time."
+If point is on an existing timestamp, keep its date (and any repeater
+or warning cookie) but replace the time portion with the current time."
   (interactive)
   (let ((ts (save-excursion
               (let ((bol (line-beginning-position)))
@@ -645,11 +645,41 @@ time portion with the current time."
                (new-time (encode-time 0 (nth 1 now) (nth 2 now) day month year))
                (begin (org-element-property :begin ts))
                (end (- (org-element-property :end ts)
-                       (or (org-element-property :post-blank ts) 0))))
+                       (or (org-element-property :post-blank ts) 0)))
+               (cookie (my/org-timestamp-cookie-string ts)))
           (delete-region begin end)
           (goto-char begin)
-          (org-insert-time-stamp new-time t nil))
+          (org-insert-time-stamp new-time t nil)
+          (when (and cookie (not (string-empty-p cookie)))
+            (save-excursion
+              (search-backward ">")
+              (insert " " cookie))))
       (org-time-stamp '(16)))))
+
+(defun my/org-timestamp-cookie-string (ts)
+  "Return the repeater/warning cookie suffix for timestamp element TS."
+  (let* ((rep-type (org-element-property :repeater-type ts))
+         (rep-val (org-element-property :repeater-value ts))
+         (rep-unit (org-element-property :repeater-unit ts))
+         (warn-type (org-element-property :warning-type ts))
+         (warn-val (org-element-property :warning-value ts))
+         (warn-unit (org-element-property :warning-unit ts))
+         (unit-char (lambda (u) (pcase u
+                                  ('hour "h") ('day "d") ('week "w")
+                                  ('month "m") ('year "y"))))
+         (parts nil))
+    (when (and rep-type rep-val rep-unit)
+      (push (format "%s%d%s"
+                    (pcase rep-type
+                      ('cumulate "+") ('catch-up "++") ('restart ".+"))
+                    rep-val (funcall unit-char rep-unit))
+            parts))
+    (when (and warn-type warn-val warn-unit)
+      (push (format "%s%d%s"
+                    (pcase warn-type ('all "-") ('first "--"))
+                    warn-val (funcall unit-char warn-unit))
+            parts))
+    (mapconcat #'identity (nreverse parts) " ")))
 (key-chord-define-global "ii" 'my/ii-org-time-stamp)
 
 ;(key-chord-define-global " f" 'project-find-file)
