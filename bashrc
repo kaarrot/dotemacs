@@ -34,7 +34,7 @@ alias g-d='git diff --name-only'
 alias g-prev='git reset --hard `git log -n 1 --skip 1 --format="%H"`'
 
 g-r () {
-git for-each-ref --sort=committerdate refs/heads/
+git for-each-ref --sort=committerdate --format='%(refname:short)' refs/heads/
 }
 
 g-l() {
