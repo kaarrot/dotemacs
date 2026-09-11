@@ -498,7 +498,11 @@ Set to nil for offline/vendored Emacs setups.")
   (lambda () (interactive) (if indent-tabs-mode (progn (setq indent-tabs-mode nil) (message "spaces")) (progn (setq indent-tabs-mode t) (python-indent-guess-indent-offset) (message "tabs")) )))
 (global-set-key (kbd "<f8>") 'ispell-word) ;; Flyspel
 (global-set-key (kbd "C-c 8") 'ispell-word)
-(global-set-key  [M-backspace] 'lazy-backward-kill-word)
+;; Non-greedy Alt/Ctrl-Backspace: stop at the beginning of the line.
+;; M-DEL is what a terminal sends for Alt+Backspace; [M-backspace] is the GUI key.
+(global-set-key (kbd "M-DEL")         'kr/backward-kill-word)
+(global-set-key [M-backspace]         'kr/backward-kill-word)
+(global-set-key (kbd "<C-backspace>") 'kr/backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "<f9>") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'toggle-truncate-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c 0") 'electric-indent-mode)

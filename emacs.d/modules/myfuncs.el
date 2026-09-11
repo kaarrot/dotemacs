@@ -728,6 +728,20 @@ Only runs if `dropbox-auto-sync-enabled' is non-nil."
       (kill-region cp (- cp 1)))         ;; word is non-english word
     ))
 
+(defun kr/backward-kill-word ()
+  "Delete the word before point, but never past the beginning of the line.
+At the beginning of a line, delete just the newline (join with previous line).
+This gives the non-greedy behaviour of modern editors, unlike
+`backward-kill-word' which happily eats the newline and the word beyond it.
+Text is deleted, not killed, so it does not land on the kill ring."
+  (interactive)
+  (cond
+   ((bobp) nil)
+   ((bolp) (delete-char -1))
+   (t (delete-region (max (line-beginning-position)
+                          (save-excursion (backward-word 1) (point)))
+                     (point)))))
+
 (setq show-dirs-substring "png")
 (defun show-dirs-without-substring(search_string)
   "List directories from the current dired level which do not contain specific substring"
