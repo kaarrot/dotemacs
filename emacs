@@ -12,6 +12,13 @@ Set to nil for offline/vendored Emacs setups.")
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 (package-initialize)
 
+;; Load local helpers before configuring claude-code-ide.  In particular,
+;; myfuncs.el installs its MCP session-root fallback via `with-eval-after-load',
+;; so it must be present before the package setup below can create a session.
+(setq HOME (expand-file-name "~"))
+(add-to-list 'load-path "~/.emacs.d/modules")
+(load (message "%s/.emacs.d/modules/myfuncs.el" HOME))
+
 ;; run gc only when idle
 (setq gc-cons-threshold (eval-when-compile (* 1024 1024 1024)))
 (run-with-idle-timer 2 t (lambda () (garbage-collect)))
@@ -149,11 +156,7 @@ Set to nil for offline/vendored Emacs setups.")
 
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(setq HOME (expand-file-name "~"))
-
-(add-to-list 'load-path "~/.emacs.d/modules")
 (add-to-list 'load-path "~/.emacs.d/anything")
-(load (message "%s/.emacs.d/modules/myfuncs.el" HOME ))
 (load (message "%s/.emacs.d/modules/myfuncs_ediff.el" HOME ))
 
 (if (version< emacs-version "29.1")

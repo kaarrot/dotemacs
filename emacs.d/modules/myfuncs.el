@@ -787,3 +787,84 @@ The resulting directory is added to `load-path`."
     ;; Add to load-path
     (add-to-list 'load-path extract-dir)
     (message "Added %s to load-path." extract-dir)))
+
+;;; ---------------------------------------------------------------------------
+;;; claude-code-ide: resolve a session root for buffers outside project.el
+;;;
+;;; `claude-code-ide' registers its session under `default-directory' when
+;;; `project-current' returns nil (claude-code-ide.el:551), but
+;;; `claude-code-ide-mcp--get-buffer-project' has no matching fallback -- it
+;;; just returns nil.  Every consumer threads that through `when-let*', so in a
+;;; directory that is not a project.el project (say /tmp) the session is never
+;;; found and selection tracking silently sends nothing at all.
+;;;
+;;; Fall back to the sessions that are actually registered: if an active
+;;; session's root is a genuine path-prefix of the buffer's file, use that root.
+;;; Longest match wins, so a session on a nested directory beats one on its
+;;; parent.  Nothing under elpa/ is touched, so a package update cannot clobber
+;;; this; `advice-remove' on the function below reverts it.
+
+(require 'subr-x)                       ; hash-table-keys
+
+(defvar my-claude-code-ide-session-root-enable t
+  "Non-nil to resolve claude-code-ide sessions for non-project buffers.")
+
+(defun my-claude-code-ide--session-root-for-path (path)
+  "Return the registered claude-code-ide session root containing PATH.
+The hash key is returned verbatim so callers can `gethash' with it, or nil
+when no active session root is a prefix of PATH.  Pure string comparison --
+no filesystem access, because this runs from `post-command-hook'."
+  (when (and (stringp path)
+             (boundp 'claude-code-ide-mcp--sessions)
+             (hash-table-p claude-code-ide-mcp--sessions))
+    (let ((target (expand-file-name path))
+          (best nil)
+          (best-length 0))
+      ;; `dolist' over the keys rather than `maphash' with a lambda: this file
+      ;; is loaded without lexical binding, so a capturing closure would be
+      ;; leaning on dynamic scope.
+      (dolist (key (hash-table-keys claude-code-ide-mcp--sessions))
+        (when (stringp key)
+          ;; `file-name-as-directory' forces the trailing separator, so a
+          ;; /tmp/foo session cannot match /tmp/foobar.
+          (let ((root (file-name-as-directory (expand-file-name key))))
+            (when (and (string-prefix-p root target)
+                       (> (length root) best-length))
+              (setq best key
+                    best-length (length root))))))
+      best)))
+
+(defun my-claude-code-ide--buffer-project-fallback (orig &rest args)
+  "Around advice for `claude-code-ide-mcp--get-buffer-project'.
+Pass ORIG's answer through when it names a directory that has a live session;
+otherwise fall back to the root of whichever registered session contains this
+buffer's file.  ARGS is passed to ORIG untouched."
+  (let ((result (apply orig args)))
+    (if (or (not my-claude-code-ide-session-root-enable)
+            (and result
+                 (claude-code-ide-mcp--get-session-for-project result)))
+        result
+      ;; This runs from `post-command-hook', and Emacs quietly removes a hook
+      ;; function that signals -- which would disable selection tracking
+      ;; everywhere, invisibly.  Never let the fallback escape an error.
+      (condition-case nil
+          (let ((dir (my-claude-code-ide--session-root-for-path
+                      (buffer-file-name))))
+            (if (not dir)
+                result
+              ;; Poison the buffer-local cache positively rather than
+              ;; invalidating it: ORIG caches nil and re-runs `project-current'
+              ;; only when the cache is invalid, so invalidating here would walk
+              ;; the directory tree on every keystroke (the regression upstream
+              ;; 907f28e fixed).  Storing the key verbatim also lets
+              ;; `claude-code-ide-mcp-stop-session' clear this via `string='.
+              (setq claude-code-ide-mcp--buffer-project-cache dir
+                    claude-code-ide-mcp--buffer-cache-valid t)
+              dir))
+        (error result)))))
+
+(with-eval-after-load 'claude-code-ide-mcp
+  (unless (advice-member-p #'my-claude-code-ide--buffer-project-fallback
+                           'claude-code-ide-mcp--get-buffer-project)
+    (advice-add 'claude-code-ide-mcp--get-buffer-project
+                :around #'my-claude-code-ide--buffer-project-fallback)))
