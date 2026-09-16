@@ -910,6 +910,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 
 (add-to-list 'auto-mode-alist '(".notes" . org-mode))
 (load (message "%s/.emacs.d/modules/base64image.el" HOME))  ;; support for base64 images
+(load (message "%s/.emacs.d/modules/org-ticket-links.el" HOME))  ;; clickable TD-/DEV- ticket mentions
 
 (org-babel-do-load-languages
  'org-babel-load-languages '((C . t)))
@@ -1290,6 +1291,9 @@ buffer was killed.  Only the chosen entry is resolved to a marker."
             (org-id-update-id-locations)
 
             (setq org-return-follows-link  t)
+
+            ;; Plain-text TD-/DEV- ticket mentions jump to their headline
+            (my/org-ticket-links-mode 1)
 
             ;; Make org agenda clock report wider
             (setq org-agenda-clockreport-parameter-plist 
