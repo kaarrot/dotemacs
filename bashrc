@@ -264,6 +264,8 @@ _g_w_ensure_root () {
 }
 
 # Resolve a .worktrees entry by directory name, branch, path, or unique prefix.
+# A unique prefix is ignored when the query is an exact local branch name, so
+# g-wc can add that branch instead of jumping to a longer worktree name.
 # Prints the worktree path on stdout.
 _g_w_find () {
   local query="$1"
@@ -308,6 +310,9 @@ _g_w_find () {
   if [ ${#exact[@]} -gt 0 ]; then
     matches=("${exact[@]}")
   else
+    if [ ${#prefix[@]} -gt 0 ] && git show-ref --verify --quiet "refs/heads/$query"; then
+      return 1
+    fi
     matches=("${prefix[@]}")
   fi
 
