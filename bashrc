@@ -159,7 +159,7 @@ alias g-d='git diff --name-only'
 alias g-prev='git reset --hard `git log -n 1 --skip 1 --format="%H"`'
 
 g-r () {
-  local path branch wt
+  local path branch wt main
   local -A wts
   if _g_w_in_linked 2>/dev/null; then
     g-wr
@@ -167,11 +167,18 @@ g-r () {
   fi
   while IFS= read -r line || [ -n "$line" ]; do
     case "$line" in
-      worktree\ *) path=${line#worktree } ;;
+      worktree\ *)
+        path=${line#worktree }
+        [ -n "$main" ] || main=$path
+        ;;
       branch\ *)
         branch=${line#branch }
         branch=${branch#refs/heads/}
-        wts["$branch"]=$(basename "$path")
+        if [ "$path" = "$main" ]; then
+          wts["$branch"]="[current]"
+        else
+          wts["$branch"]="[worktree: $branch]"
+        fi
         ;;
       "") path=; branch= ;;
     esac
@@ -180,7 +187,7 @@ g-r () {
   while IFS= read -r branch; do
     wt=${wts[$branch]}
     if [ -n "$wt" ]; then
-      printf '%s  [worktree: %s]\n' "$branch" "$wt"
+      printf '%s  %s\n' "$branch" "$wt"
     else
       printf '%s\n' "$branch"
     fi
