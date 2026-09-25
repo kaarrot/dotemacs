@@ -17,6 +17,9 @@
 ;; mouse-1/mouse-2 and C-c C-o (`org-open-at-point') jump.  RET does not, and
 ;; needs no special handling: `org-return' only defers to `org-open-at-point' for
 ;; real links, timestamps and citations, none of which a plain mention is.
+;; The origin is pushed onto `global-mark-ring' (same as xref/M-.) so
+;; M-<left>/M-<right> (`go-ring-back'/`go-ring-forward') walk back and forth,
+;; and onto org's own mark ring so C-c & still comes back.
 
 (require 'org)
 (require 'org-element)
@@ -321,7 +324,11 @@ not separate them either."
     (nreverse candidates)))
 
 (defun my/org-ticket-links--goto (position)
-  "Jump to POSITION, pushing the mark ring so \\[org-mark-ring-goto] comes back."
+  "Jump to POSITION, recording origin for M-<left> and \\[org-mark-ring-goto]."
+  ;; Origin, not destination: `go-ring-back' records point on first use,
+  ;; matching the `xref-push-marker-stack' advice in the init file.
+  (when (fboundp 'add-to-global-ring)
+    (add-to-global-ring))
   (org-mark-ring-push)
   (goto-char position)
   (org-back-to-heading t)
