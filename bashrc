@@ -205,32 +205,32 @@ g-l() {
   echo "" # Add a newline for cleanliness
 }
 
-# Switch branch in the main checkout only. A .worktrees directory stays on
-# its branch; use g-wc to cd into another worktree instead.
+# cd into an existing .worktrees entry matching the name, otherwise switch
+# branch in the main checkout. A .worktrees directory stays on its branch;
+# use g-wc to add a worktree for a branch that has none yet.
 g-c () {
-  local rc wt find_rc
+  local rc wt
+  if [ $# -eq 1 ] && [ "${1#-}" = "$1" ] && git rev-parse --git-dir >/dev/null 2>&1; then
+    wt=$(_g_w_find "$1")
+    rc=$?
+    if [ $rc -eq 0 ]; then
+      cd_func "$wt"
+      return
+    fi
+    if [ $rc -eq 2 ]; then
+      return 1
+    fi
+  fi
   if _g_w_in_linked 2>/dev/null; then
     echo "g-c cannot change branch inside a worktree (on $(git branch --show-current))" >&2
     if [ $# -eq 1 ] && [ "${1#-}" = "$1" ]; then
-      echo "use g-wc $1 to move to another worktree" >&2
+      echo "no worktree matching '$1'; use g-wc $1 to add one" >&2
     else
       echo "use g-wc <branch> to move to another worktree" >&2
     fi
     return 1
   fi
   git checkout "$@"
-  rc=$?
-  if [ $rc -eq 0 ]; then
-    return 0
-  fi
-  if [ $# -eq 1 ] && [ "${1#-}" = "$1" ]; then
-    wt=$(_g_w_find "$1")
-    find_rc=$?
-    if [ $find_rc -eq 0 ]; then
-      echo "use g-wc $1 to move to that worktree" >&2
-    fi
-  fi
-  return $rc
 }
 
 g-s(){
