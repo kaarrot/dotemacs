@@ -1420,7 +1420,7 @@ buffer was killed.  Only the chosen entry is resolved to a marker."
   "Face used for one-off task entries in Org agenda.")
 
 (defface my/org-agenda-recurring-scheduled
-  '((t :inherit font-lock-builtin-face))
+  '((t :inherit shadow))
   "Face used for recurring scheduled entries in Org agenda.")
 
 (setq org-tag-faces
@@ -1702,6 +1702,7 @@ newest) lands at the bottom of the buffer.")
 
 ;; Search org files associated with the Agenda view
 (with-eval-after-load 'org-agenda
+  (setq org-agenda-confirm-kill nil)
   (when (fboundp 'my/org-agenda-todo-with-done-timestamp)
     (advice-remove 'org-agenda-todo #'my/org-agenda-todo-with-done-timestamp))
   (define-key org-agenda-mode-map (kbd "S") #'org-occur-in-agenda-files)
@@ -2059,3 +2060,26 @@ NOTE: moved from myfunc.el as 'grep-locations key binding did not corectly regis
  '(ediff-fine-diff-B ((t (:background "#225522"))))
  '(ediff-odd-diff-A ((t (:background "#3a2020"))))
  '(ediff-odd-diff-B ((t (:background "#203a20")))))
+
+;; Added to sort recurring tasks to the bottom of the agenda
+(defun my/org-agenda-cmp-recurring (a b)
+  "Sort recurring tasks to the bottom."
+  (let* ((ma (or (get-text-property 0 'org-marker a)
+                 (get-text-property 0 'org-hd-marker a)))
+         (mb (or (get-text-property 0 'org-marker b)
+                 (get-text-property 0 'org-hd-marker b)))
+         (ta (when ma (org-with-point-at ma (org-entry-get nil "SCHEDULED"))))
+         (tb (when mb (org-with-point-at mb (org-entry-get nil "SCHEDULED"))))
+         (ra (and ta (string-match-p "\\+[0-9]+[hdwmy]" ta)))
+         (rb (and tb (string-match-p "\\+[0-9]+[hdwmy]" tb))))
+    (cond
+     ((and ra (not rb)) +1)
+     ((and rb (not ra)) -1)
+     (t nil))))
+
+(setq org-agenda-cmp-user-defined #'my/org-agenda-cmp-recurring)
+(setq org-agenda-sorting-strategy
+      '((agenda habit-down user-defined-up time-up priority-down category-keep)
+        (todo priority-down category-keep)
+        (tags priority-down category-keep)
+        (search category-keep)))
