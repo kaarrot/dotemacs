@@ -392,8 +392,71 @@ Set to nil for offline/vendored Emacs setups.")
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") (lambda () (interactive) (ibuffer nil " *Ibuffer*") (toggle-truncate-lines 1) (goto-char (point-min)) (isearch-forward)))
 
 ;;;;;;;;;;;;;;;;;;;; Isearch
-(eval-after-load 'isearch
-  (define-key isearch-mode-map (kbd "RET") 'isearch-repeat-forward))
+(defun my/isearch-ret ()
+  "RET in isearch: jump to the next match, except in the buffer list.
+In Ibuffer (the `vv' / C-x C-b search) end the search and visit the buffer
+on the matched line, so typing part of a name and RET opens it.  A failing
+search stays in isearch instead of opening whatever line point was left on."
+  (interactive)
+  (cond
+   ((not (derived-mode-p 'ibuffer-mode)) (isearch-repeat-forward))
+   ((not isearch-success) (ding))
+   (t (let ((search-nonincremental-instead nil)) ; empty string: no prompt
+        (isearch-exit))
+      (ibuffer-visit-buffer))))
+
+;; Buffer-list searches keep their own history, so <up> recalls buffer names
+;; rather than whatever was last searched for in code.  isearch reads and
+;; updates `search-ring' in the searched buffer, so swap it in on entry and
+;; copy it back on exit (isearch-done updates the ring before the end hook).
+(defvar my/ibuffer-search-ring nil
+  "Search strings used in the Ibuffer isearch, newest first.")
+(with-eval-after-load 'savehist
+  (add-to-list 'savehist-additional-variables 'my/ibuffer-search-ring))
+
+(defun my/ibuffer-isearch-start ()
+  (when (derived-mode-p 'ibuffer-mode)
+    (setq-local search-ring my/ibuffer-search-ring)))
+
+(defun my/ibuffer-isearch-end ()
+  (when (derived-mode-p 'ibuffer-mode)
+    (setq my/ibuffer-search-ring search-ring)))
+
+(add-hook 'isearch-mode-hook #'my/ibuffer-isearch-start)
+(add-hook 'isearch-mode-end-hook #'my/ibuffer-isearch-end)
+
+(defun my/isearch-ring-or-exit (ring-command)
+  "In Ibuffer run RING-COMMAND; elsewhere end isearch and replay the key.
+Replaying keeps the stock behaviour outside the buffer list, where an arrow
+ends the search and moves point."
+  (if (derived-mode-p 'ibuffer-mode)
+      ;; Without search-ring-update the ring commands open the string for
+      ;; editing in the minibuffer; with it they search it in place.  Search
+      ;; from the top, as `vv' does: the list is in recency order, so the
+      ;; recalled buffer may sit above the current match.
+      (let ((search-ring-update t))
+        (goto-char (point-min))
+        (funcall ring-command))
+    (isearch-done)
+    (isearch-clean-overlays)
+    (setq unread-command-events
+          (append (listify-key-sequence (this-command-keys-vector))
+                  unread-command-events))))
+
+(defun my/isearch-up ()
+  "<up> in isearch: previous buffer-list search in Ibuffer, else exit."
+  (interactive)
+  (my/isearch-ring-or-exit #'isearch-ring-retreat))
+
+(defun my/isearch-down ()
+  "<down> in isearch: next buffer-list search in Ibuffer, else exit."
+  (interactive)
+  (my/isearch-ring-or-exit #'isearch-ring-advance))
+
+(with-eval-after-load 'isearch
+  (define-key isearch-mode-map (kbd "RET") #'my/isearch-ret)
+  (define-key isearch-mode-map (kbd "<up>") #'my/isearch-up)
+  (define-key isearch-mode-map (kbd "<down>") #'my/isearch-down))
     
 ;;;;;;;;;;;;;;;;;;;; Tabbar
 (define-key my-keys-minor-mode-map (kbd "M-c <left>") 'tabbar-backward-tab)
