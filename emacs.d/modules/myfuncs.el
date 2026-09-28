@@ -62,6 +62,18 @@
 (defvar nav-ring-index 0 "Current position in navigation history")
 (defvar nav-last-direction nil "Last navigation direction: 'back or 'forward")
 
+(defun nav-ring--live-index (start step)
+  "Return the first index from START, stepping by STEP, that holds a live mark.
+Markers whose buffer has been killed -- an agenda buffer that was quit, a file
+closed since it was visited -- are stepped over instead of aborting the walk.
+Returns nil when the ring runs out."
+  (let ((i start)
+        (len (length global-mark-ring)))
+    (while (and (>= i 0) (< i len)
+                (not (marker-buffer (nth i global-mark-ring))))
+      (setq i (+ i step)))
+    (and (>= i 0) (< i len) i)))
+
 (defun go-ring-back()
   (interactive)
   ;; Navigate backwards in the mark ring
@@ -84,15 +96,18 @@
     (setq nav-ring-index (1- (length global-mark-ring)))
     (error "Already at oldest mark"))
 
-  (let* ((marker (nth nav-ring-index global-mark-ring))
-         (buf (marker-buffer marker))
-         (pos (marker-position marker)))
+  (let* ((idx (nav-ring--live-index nav-ring-index 1))
+         (marker (and idx (nth idx global-mark-ring)))
+         (buf (and marker (marker-buffer marker)))
+         (pos (and marker (marker-position marker))))
     (if (and buf pos)
         (progn
+          (setq nav-ring-index idx)
           (switch-to-buffer buf)
           (goto-char pos)
           (setq nav-last-direction 'back))
-      (error "Mark points to invalid location"))))
+      (setq nav-ring-index (1- (length global-mark-ring)))
+      (error "Already at oldest mark"))))
 
 (defun go-ring-forward()
   ;; Navigate forwards in the mark ring
@@ -109,24 +124,26 @@
   ;; Decrement index and navigate
   (setq nav-ring-index (1- nav-ring-index))
 
-  (let* ((marker (nth nav-ring-index global-mark-ring))
-         (buf (marker-buffer marker))
-         (pos (marker-position marker)))
+  (let* ((idx (nav-ring--live-index nav-ring-index -1))
+         (marker (and idx (nth idx global-mark-ring)))
+         (buf (and marker (marker-buffer marker)))
+         (pos (and marker (marker-position marker))))
     (if (and buf pos)
         (progn
+          (setq nav-ring-index idx)
           (switch-to-buffer buf)
           (goto-char pos)
           (setq nav-last-direction 'forward))
-      (error "Mark points to invalid location"))))
+      (setq nav-ring-index 0)
+      (error "Already at newest mark"))))
 
-(defun add-to-global-ring()
-  ;; Force push a mark into a global ring even if it already exists
+(defun add-to-global-ring(&optional marker)
+  ;; Force push a mark into a global ring even if it already exists.
+  ;; MARKER defaults to point in the current buffer.  Callers that record a
+  ;; place they have *already* left -- see the Org task-switch advice in
+  ;; ~/.emacs -- pass the origin explicitly instead.
   (interactive)
-  (let (_marker)
-    ;; (activate-mark nil)
-    (setq _marker (make-marker))
-    (set-marker _marker (point))
-
+  (let ((_marker (or marker (copy-marker (point)))))
     ;; If manually adding while in middle of history, truncate forward history
     (when (and nav-last-direction (> nav-ring-index 0))
       (setq global-mark-ring (nthcdr nav-ring-index global-mark-ring)))

@@ -440,6 +440,52 @@ Set to nil for offline/vendored Emacs setups.")
 (advice-add 'xref-push-marker-stack :before
             (lambda (&rest _) (add-to-global-ring)))
 
+;; Feed Org task switches into the same cursor history.  Opening the agenda and
+;; then jumping to a heading (RET / TAB / mouse), or jumping to the clocked
+;; task, changes where you are working, but nothing pushed the place you left --
+;; so M-<left> could not walk back through the tasks you had been on.
+;;
+;; The origin is pushed *after* the jump, not before: `go-ring-back' pushes the
+;; current spot itself on the first press, so recording only the origin keeps
+;; M-<right> working and avoids a duplicate entry per jump.
+(defvar my/org-ring-jump-commands
+  '(org-agenda
+    org-agenda-switch-to
+    org-agenda-goto
+    org-agenda-goto-mouse
+    org-clock-goto)
+  "Commands whose Org jumps are recorded in the cursor history ring.
+Only the command the user actually typed counts, so peeking at an entry with
+SPC (`org-agenda-show', which calls `org-agenda-goto' internally and then hands
+the window back) leaves the ring alone.  Drop `org-agenda' from the list to stop
+recording the spot you were in before the agenda replaced the window.")
+
+(defun my/org-ring--push (buffer pos)
+  "Push BUFFER at POS onto the cursor history ring, unless it is already newest."
+  (when (and (buffer-live-p buffer)
+             (let ((newest (car global-mark-ring)))
+               (not (and newest
+                         (eq (marker-buffer newest) buffer)
+                         (eq (marker-position newest) pos)))))
+    (with-current-buffer buffer
+      (add-to-global-ring (copy-marker pos)))))
+
+(defun my/org-ring-record-jump (orig &rest args)
+  "Run ORIG, then record the location it left behind.  For `advice-add' :around."
+  (let ((buffer (current-buffer))
+        (pos (point)))
+    (prog1 (apply orig args)
+      (when (and (memq this-command my/org-ring-jump-commands)
+                 (or (not (eq buffer (current-buffer)))
+                     (/= pos (point))))
+        (my/org-ring--push buffer pos)))))
+
+(with-eval-after-load 'org-agenda
+  (dolist (cmd '(org-agenda org-agenda-switch-to org-agenda-goto))
+    (advice-add cmd :around #'my/org-ring-record-jump)))
+(with-eval-after-load 'org-clock
+  (advice-add 'org-clock-goto :around #'my/org-ring-record-jump))
+
 ;;;;;;;;;;;;;;;;;;;; Multiple cursors
 (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'mc/edit-lines)
@@ -1206,7 +1252,8 @@ buffer was killed.  Only the chosen entry is resolved to a marker."
         (push (cons label entry) pairs)))
     (setq pairs (nreverse pairs))
     (unless pairs (user-error "No recent clock"))
-    (let* ((fido-vertical-was-active fido-vertical-mode)
+    (let* ((fido-was-active fido-mode)
+           (fido-vertical-was-active fido-vertical-mode)
            (completion-extra-properties
             '(:display-sort-function identity :cycle-sort-function identity))
            chosen)
@@ -1216,7 +1263,10 @@ buffer was killed.  Only the chosen entry is resolved to a marker."
                         (or prompt "Clock in on task: ")
                         (mapcar #'car pairs)
                         nil t))
-        (unless fido-vertical-was-active (fido-vertical-mode -1)))
+        ;; Turning the native (28+) fido-vertical-mode off leaves the
+        ;; fido-mode it switched on running, so restore that too.
+        (unless fido-vertical-was-active (fido-vertical-mode -1))
+        (unless fido-was-active (fido-mode -1)))
       (let ((sel (cdr (assoc chosen pairs))))
         (cond
          ;; [default]/[interrupted]/[current]: copy, because `org-clock-in'
