@@ -957,6 +957,7 @@ t " my-keys" 'my-keys-minor-mode-map)
 (add-to-list 'auto-mode-alist '(".notes" . org-mode))
 (load (message "%s/.emacs.d/modules/base64image.el" HOME))  ;; support for base64 images
 (load (message "%s/.emacs.d/modules/org-ticket-links.el" HOME))  ;; clickable TD-/DEV- ticket mentions
+(load (message "%s/.emacs.d/modules/org-open-items.el" HOME))  ;; last open - [ ] item per headline
 
 (org-babel-do-load-languages
  'org-babel-load-languages '((C . t)))
@@ -1463,6 +1464,7 @@ buffer was killed.  Only the chosen entry is resolved to a marker."
         (define-key org-mode-map (kbd "C-c r") #'org-redisplay-inline-images)
         (define-key org-mode-map (kbd "C-c e") #'iimage-mode)
         (define-key org-mode-map (kbd "C-c t") #'occur-timestamp-sort)
+        (define-key org-mode-map (kbd "C-c u") #'my/org-open-items-occur)
      )
 
      (key-chord-define org-mode-map "jj" 'org-global-cycle )
