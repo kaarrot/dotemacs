@@ -1135,6 +1135,40 @@ Useful for seeding the selector with tasks you return to often."
     (my-org-clock-history-push entry)
     (message "Added to clock history: %s" (plist-get entry :heading))))
 
+(defun my-org-clock-history-seed-from-logbook (&optional file)
+  "Rebuild `my-org-clock-history' from the newest CLOCK: lines in FILE.
+FILE defaults to the first of `org-agenda-files'.  Read-only: it only harvests
+the clock lines org has already written into the notes, which is how to get the
+recency list back after the old offset-based history was lost."
+  (interactive)
+  (let* ((file (or file (car (org-agenda-files))))
+         (buf (find-file-noselect file))
+         (re (concat "^[ \t]*" org-clock-string " *\\[\\([^]\n]+\\)\\]"))
+         stamps found)
+    (with-current-buffer (org-base-buffer buf)
+      (org-with-wide-buffer
+       ;; Cheap pass first: just timestamp and position, newest last.
+       (goto-char (point-min))
+       (while (re-search-forward re nil t)
+         (push (cons (match-string 1) (match-beginning 0)) stamps))
+       ;; Then resolve headings newest-first, only until the list is full.
+       (dolist (stamp (sort stamps (lambda (a b) (string> (car a) (car b)))))
+         (when (< (length found) my-org-clock-history-length)
+           (goto-char (cdr stamp))
+           (let ((entry (my-org-clock-history--entry-at-point)))
+             (when entry
+               (setq entry (plist-put entry :time (car stamp)))
+               (unless (seq-find (lambda (e) (equal (my-org-clock-history--key e)
+                                                   (my-org-clock-history--key entry)))
+                                 found)
+                 (push entry found))))))))
+    (setq my-org-clock-history
+          (seq-take (my-org-clock-history--merge (nreverse found) my-org-clock-history)
+                    my-org-clock-history-length))
+    (my-org-clock-history--write my-org-clock-history)
+    (message "Clock history seeded with %d task(s) from %s"
+             (length my-org-clock-history) (file-name-nondirectory file))))
+
 (defun my-org-clock-history--heading-positions (heading)
   "Return the positions of all headings in this buffer whose text is HEADING.
 Matches like `org-find-exact-headline-in-buffer', i.e. tolerating a TODO
