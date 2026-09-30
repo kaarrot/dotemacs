@@ -1851,6 +1851,7 @@ newest) lands at the bottom of the buffer.")
 
 ;; Search org files associated with the Agenda view
 (with-eval-after-load 'org-agenda
+  (setq org-agenda-span 'day)
   (setq org-agenda-confirm-kill nil)
   (when (fboundp 'my/org-agenda-todo-with-done-timestamp)
     (advice-remove 'org-agenda-todo #'my/org-agenda-todo-with-done-timestamp))
