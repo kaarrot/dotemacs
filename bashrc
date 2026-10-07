@@ -406,7 +406,8 @@ g-wr () {
   printf '%s\n' "${rows[@]}" | sort -n | cut -f2-
 }
 
-# cd to a .worktrees checkout. If none exists, add one for an existing local branch.
+# cd to a .worktrees checkout. If none exists, add one for an existing local branch,
+# or for an exact origin/<branch> name (creates the local tracking branch).
 # g-wc -b <branch>  creates a new branch + worktree under .worktrees/ from HEAD.
 g-wc () {
   local path root name dir rc
@@ -444,7 +445,9 @@ g-wc () {
   fi
   name=$(_g_w_branch "$1")
   rc=$?
-  if [ $rc -ne 0 ]; then
+  if [ $rc -eq 1 ] && git show-ref --verify --quiet "refs/remotes/origin/$1"; then
+    name=$1  # remote-only: git worktree add creates the tracking branch
+  elif [ $rc -ne 0 ]; then
     if [ $rc -eq 1 ]; then
       echo "no worktree or branch matching '$1'" >&2
     fi
