@@ -1100,7 +1100,9 @@ id, outline path or heading text, so they survive edits elsewhere in the file.")
          (list :file (file-truename file)
                :id (org-id-get)
                :olp (org-get-outline-path t)
-               :heading (org-get-heading t t t t)
+               ;; Plain text: fontification, `occur' etc. leave text properties
+               ;; (even markers) on the heading, which would not read back.
+               :heading (substring-no-properties (org-get-heading t t t t))
                :pos (point)
                :time (format-time-string "%Y-%m-%d %a %H:%M")))))))
 
@@ -1146,7 +1148,16 @@ Ties keep A's order, so the entry just clocked in stays at the front."
         (insert ";; -*- lisp-data -*-\n"
                 ";; Recently clocked org tasks; written by `my-org-clock-history-save'.\n")
         (let ((print-length nil) (print-level nil))
-          (prin1 entries (current-buffer)))
+          ;; Strip properties again here so entries recorded before the fix
+          ;; in `my-org-clock-history--entry-at-point' cannot poison the file.
+          (prin1 (mapcar (lambda (e)
+                           (let ((h (plist-get e :heading)))
+                             (if (stringp h)
+                                 (plist-put (copy-sequence e) :heading
+                                            (substring-no-properties h))
+                               e)))
+                         entries)
+                 (current-buffer)))
         (insert "\n"))
     (error (message "my-org-clock-history: save failed: %s"
                     (error-message-string err)))))
