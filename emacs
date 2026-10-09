@@ -378,6 +378,20 @@ Set to nil for offline/vendored Emacs setups.")
 ;;;;;;;;;;;;;;;;;; Theme
 (load-theme 'tango-dark t)
 
+;; Force readable org-agenda face colors regardless of terminal color-cells.
+;; Without these, 8-color TTY fallback makes overdue items red-bold and
+;; day headers plain `blue' (nearly invisible on black).
+(with-eval-after-load 'org-faces
+  (set-face-attribute 'org-scheduled-previously nil :foreground "chocolate1" :weight 'normal)
+  (set-face-attribute 'org-upcoming-deadline    nil :foreground "chocolate1" :weight 'normal)
+  (set-face-attribute 'org-imminent-deadline    nil :inherit nil :foreground "chocolate1")
+  (set-face-attribute 'org-warning              nil :inherit nil :foreground "chocolate1")
+  (set-face-attribute 'org-agenda-structure     nil :foreground "LightSkyBlue")
+  (set-face-attribute 'org-agenda-date          nil :inherit nil :foreground "LightSkyBlue")
+  (set-face-attribute 'org-agenda-date-weekend  nil :inherit nil :foreground "LightSkyBlue" :weight 'bold)
+  (set-face-attribute 'org-agenda-date-today    nil :inherit nil :foreground "LightSkyBlue" :weight 'bold :slant 'italic)
+  (set-face-attribute 'org-todo                 nil :foreground "gold1" :weight 'bold))
+
 ;;;;;;;;;;;;;;;;;;;;; Save minibuffer commands accross sessions
 (setq savehist-save-minibuffer-history 1)
 (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring) savehist-file (message "%s/.emacs.d/savehist" HOME ))
