@@ -1,4 +1,4 @@
-
+;;; -*- lexical-binding: nil -*-
 ;; Limit prompts when opening new ediff session and previous file already exist
 (global-auto-revert-mode 1)
 (setq global-auto-revert-non-file-buffers t)

@@ -1,4 +1,4 @@
-;;; bm.el --- Visible bookmarks in buffer.
+;;; bm.el --- Visible bookmarks in buffer.  -*- lexical-binding: nil -*-
 ;; Version: 20140303.1532
 
 ;; Copyrigth (C) 2000-2013  Jo Odland

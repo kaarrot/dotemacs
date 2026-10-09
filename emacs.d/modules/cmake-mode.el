@@ -1,4 +1,4 @@
-;;; cmake-mode.el --- major-mode for editing CMake sources
+;;; cmake-mode.el --- major-mode for editing CMake sources  -*- lexical-binding: nil -*-
 
 ; Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 ; file Copyright.txt or https://cmake.org/licensing for details.

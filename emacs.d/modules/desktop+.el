@@ -1,4 +1,4 @@
-;;; desktop+.el --- Handle special buffers when saving & restoring sessions
+;;; desktop+.el --- Handle special buffers when saving & restoring sessions  -*- lexical-binding: nil -*-
 
 ;; Copyright (C) 2014-2015 François Févotte
 ;; Author:  François Févotte <fevotte@gmail.com>

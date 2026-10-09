@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil -*-
 (defun toggle-themes()
   (interactive)
    (if (string= (car custom-enabled-themes) 'tango-dark)

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil -*-
 ;; Requires Emacs 26.2 or higher
 (require 'package)
 

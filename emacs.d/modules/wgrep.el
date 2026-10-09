@@ -1,4 +1,4 @@
-;;; wgrep.el --- Writable grep buffer and apply the changes to files
+;;; wgrep.el --- Writable grep buffer and apply the changes to files  -*- lexical-binding: nil -*-
 
 ;; Copyright (C) 2010-2020 Masahiro Hayashi
 

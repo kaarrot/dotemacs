@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: nil -*-
 (require 'org)
 (require 'org-element)
 (require 'subr-x) ;; for when-let
