@@ -391,7 +391,11 @@ Set to nil for offline/vendored Emacs setups.")
   (set-face-attribute 'org-agenda-date          nil :inherit nil :foreground "LightSkyBlue")
   (set-face-attribute 'org-agenda-date-weekend  nil :inherit nil :foreground "LightSkyBlue" :weight 'bold)
   (set-face-attribute 'org-agenda-date-today    nil :inherit nil :foreground "LightSkyBlue" :weight 'bold :slant 'italic)
-  (set-face-attribute 'org-todo                 nil :foreground "gold1" :weight 'bold))
+  (set-face-attribute 'org-todo                 nil :foreground "gold1" :weight 'bold)
+  (set-face-attribute 'org-date                 nil :inherit nil :foreground "LightSkyBlue" :underline nil)
+  (set-face-attribute 'org-special-keyword      nil :inherit nil :foreground "gray70")
+  (set-face-attribute 'org-drawer               nil :foreground "gray60")
+  (set-face-attribute 'org-property-value       nil :inherit nil :foreground "gray85"))
 
 ;;;;;;;;;;;;;;;;;;;;; Save minibuffer commands accross sessions
 (setq savehist-save-minibuffer-history 1)
