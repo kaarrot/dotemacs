@@ -405,6 +405,44 @@ Set to nil for offline/vendored Emacs setups.")
 ;;;;;;;;;;;;;;;;;; Company mode
 (add-hook 'after-init-hook 'global-company-mode)
 
+;; Emacs 31 added a builtin `all' function, which makes (functionp 'all)
+;; true and causes company-dabbrev{,-code}'s pcase to match the
+;; (pred functionp) arm before the literal `all', signalling
+;; "Wrong number of arguments: (2 . 2), 1".  Reorder the arms so the
+;; literal `all' wins.  Harmless on older Emacs where no `all' builtin
+;; exists.  Fixed upstream in company > 2026-04; drop this once that
+;; version is vendored.
+(with-eval-after-load 'company-dabbrev
+  (defun company-dabbrev--fetch ()
+    (company-dabbrev--search (company-dabbrev--make-regexp)
+                             company-dabbrev-time-limit
+                             (pcase company-dabbrev-other-buffers
+                               (`t (list major-mode))
+                               (`all 'all)
+                               ((pred functionp)
+                                (funcall company-dabbrev-other-buffers
+                                         (current-buffer)))))))
+
+(with-eval-after-load 'company-dabbrev-code
+  (defun company-dabbrev-code--table (prefix)
+    (let ((regexp (company-dabbrev-code--make-regexp prefix)))
+      (company-cache-fetch
+       'dabbrev-code-candidates
+       (lambda ()
+         (company-dabbrev--search
+          regexp
+          company-dabbrev-code-time-limit
+          (pcase company-dabbrev-code-other-buffers
+            (`t (list major-mode))
+            (`code company-dabbrev-code-modes)
+            (`all 'all)
+            ((pred functionp)
+             (funcall company-dabbrev-code-other-buffers (current-buffer))))
+          (not company-dabbrev-code-everywhere)))
+       :expire t
+       :check-tag
+       (cons regexp company-dabbrev-code-completion-styles)))))
+
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
 ; Insert space in front to skip adding Ibuffer to buffer history and work with 'xx' navigation
