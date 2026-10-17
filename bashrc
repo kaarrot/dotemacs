@@ -30,6 +30,9 @@ export PATH=$GOBIN:$PATH
 export PATH=$PATH:$HOME/go/src/github.com/cosmos72/gomacro
 export PATH=$HOME/bin:$PATH
 
+# Helix finds its grammars and queries here wherever hx itself lives.
+export HELIX_RUNTIME=$HOME/SRC/helix/runtime
+
 
 env-houdini(){
   # apt-get install -y '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
